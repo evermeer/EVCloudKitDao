@@ -47,7 +47,7 @@ dao.query(dao.recordType(Message()), completionHandler: { results in
     }, errorHandler: { error in
         NSLog("<--- ERROR query Message")
     })
-'''
+```
 
 ## License
 
