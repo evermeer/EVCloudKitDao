@@ -1,0 +1,10 @@
+
+*.xcworkspacedata
+
+*.xcuserstate
+
+AppMessage/AppMessage.xcodeproj/xcuserdata/evermeer.xcuserdatad/xcschemes/xcschememanagement.plist
+
+AppMessage/AppMessage.xcodeproj/xcuserdata/evermeer.xcuserdatad/xcschemes/AppMessage.xcscheme
+
+AppMessage/AppMessage.xcodeproj/xcuserdata/evermeer.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
