@@ -19,7 +19,7 @@ This is a work in progress. Both Shift and CloudKit are in beta (this is tested 
 - Storing CKAsset has not been tested yet
 
 ## How to use this
-Create your data objects like this:
+```swift
 class Message : NSObject {
     var From : String = ""
     var To : String = ""
@@ -47,7 +47,7 @@ dao.query(dao.recordType(Message()), completionHandler: { results in
     }, errorHandler: { error in
         NSLog("<--- ERROR query Message")
     })
-
+'''
 
 ## License
 
