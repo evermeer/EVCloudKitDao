@@ -34,8 +34,7 @@ var dao: EVCloudKitDao = EVCloudKitDao.instance
 var message = Message()
 message.From = "me@me.com"
 message.To = "you@me.com"
-message.Subject = "This is the subject"
-message.Body = "This is the message"
+message.Text = "This is the message text"
 
 dao.saveItem(message, completionHandler: {record in
         createdId = record.recordID.recordName;
