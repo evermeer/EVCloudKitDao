@@ -54,19 +54,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
+        // Look who of our contact is also using this app, the To for the test message will be for the last contact in the list
+        sema = dispatch_semaphore_create(0)
+        var userIdTo: String = userId
         dao.allContactsUserInfo({ users in
                 NSLog("AllContactUserInfo count = \(users.count)");
                 for user: AnyObject in users {
+                    userIdTo = user.userRecordID!.recordName
                     NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
                 }
+                dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
                 NSLog("<-- ERROR in allContactsUserInfo : \(error.description)")
+                dispatch_semaphore_signal(sema);
             })
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         
         // New message (to self)
         var message = Message()
         message.From = dao.referenceForId(userId)
-        message.To = dao.referenceForId(userId)
+        message.To = dao.referenceForId(userIdTo)
         message.Text = "This is the message ext"
         message.HasAttachments = true
         
