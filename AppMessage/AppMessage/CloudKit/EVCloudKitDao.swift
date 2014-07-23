@@ -273,7 +273,9 @@ class EVCloudKitDao {
         var myobject: AnyObject = nsobject as AnyObject
         var fromDict = toDictionary(myobject)
         for (key: String, value: AnyObject?) in fromDict {
-            nsobject.setValue(record.valueForKey(key), forKey: key)
+            if record.valueForKey(key) {
+                nsobject.setValue(record.valueForKey(key), forKey: key)
+            }
         }
         return myobject
     }

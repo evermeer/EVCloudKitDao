@@ -13,20 +13,20 @@ This is a work in progress. Both Shift and CloudKit are in beta (this is tested 
 - You do not have to parse from and to CKRecord (is based on reflection)
 - Generic and simplified query handling
 - Error handling (seperate completionHandler and errorHandler code blocs)
-- Organising subscriptions
+- Storing CKReference objects
+- Storing CKAsset objects
+- Organising subscription
 
 ## Todo's'
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
 - All tests are now executed from the appdelegate. Convert this to a simple app
-- Storing CKAsset has not been tested yet (should work)
 
 ## How to use this
 ```swift
 class Message : NSObject {
     var From : String = ""
     var To : String = ""
-    var Subject : String = ""
-    var Body : String = ""
+    var Text : String = ""
 }
 
 var dao: EVCloudKitDao = EVCloudKitDao.instance

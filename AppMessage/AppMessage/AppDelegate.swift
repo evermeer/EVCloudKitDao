@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Registering for iCloud availability change notifications (log in as different user, clear all user related data)
         var localeChangeObserver = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: NSOperationQueue.mainQueue()) { _ in
             println("The user’s iCloud login changed: should refresh all user data.")
+            
             self.runTests() //TODO: why are we still loged out? Do we need a delay?
         }
         
@@ -66,20 +67,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var message = Message()
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userId)
-        message.Subject = "This is the subject"
-        message.Body = "And this is the message body"
-        //message.File =
-        message.FileType = "None"
+        message.Text = "This is the message ext"
+        message.HasAttachments = true
         
-        // Save a data item
+        var asset = Asset()
+        asset.File = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("test", ofType: "png")))
+        asset.FileName = "test"
+        asset.FileType = "png"
+        
+        // Save the message
+        dao.saveItem(message, completionHandler: {record in
+                NSLog("saveItem Message: \(record.recordID.recordName)");
+                // Save the attached image
+                asset.Message = CKReference(recordID: record.recordID, action: .DeleteSelf)
+                dao.saveItem(asset, completionHandler: {record in
+                        NSLog("saveItem Asset: \(record.recordID.recordName)");
+                    }, errorHandler: {error in
+                        NSLog("<--- ERROR saveItem asset");
+                    })
+            
+            }, errorHandler: {error in
+                NSLog("<--- ERROR saveItem message");
+            })
+
+        // Save an other instance without the file, make the action synchronous so we can use the id for query and deletion
         sema = dispatch_semaphore_create(0);
         var createdId = "";
+        message.HasAttachments = false
         dao.saveItem(message, completionHandler: {record in
                 createdId = record.recordID.recordName;
-                NSLog("saveItem : \(createdId)");
+                NSLog("saveItem Message: \(createdId)");
                 dispatch_semaphore_signal(sema);
             }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem");
+                NSLog("<--- ERROR saveItem message");
                 dispatch_semaphore_signal(sema);
             })
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
@@ -90,13 +110,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             dao.logObject(item)
             }, errorHandler: { error in
                 NSLog("<--- ERROR getItem")
-            })
-
-        // Delete a data item
-        dao.deleteItem(createdId, completionHandler: { recordId in
-                NSLog("deleteItem : \(recordId)")
-            }, errorHandler: {error in
-                NSLog("<--- ERROR deleteItem");
             })
         
         // Get all records of a recordType
@@ -149,12 +162,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
-        // Save an other item
-        dao.saveItem(message, completionHandler: {record in
-                createdId = record.recordID.recordName;
-                NSLog("saveItem : \(createdId)");
+        // Delete the just created data item
+        dao.deleteItem(createdId, completionHandler: { recordId in
+            NSLog("deleteItem : \(recordId)")
             }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem");
+                NSLog("<--- ERROR deleteItem");
             })
     }
     

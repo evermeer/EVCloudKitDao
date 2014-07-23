@@ -15,6 +15,8 @@
 		7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
 		7F434A4C1962AE780081F35C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4B1962AE780081F35C /* Message.swift */; };
 		7F434A4F1962B95D0081F35C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F434A4E1962B95D0081F35C /* CloudKit.framework */; };
+		7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F76554B197FF0FE008AD0D5 /* Asset.swift */; };
+		7F765550197FF60F008AD0D5 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = 7F76554F197FF60F008AD0D5 /* test.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +44,8 @@
 		7F434A4D1962B94E0081F35C /* AppMessage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppMessage.entitlements; sourceTree = "<group>"; };
 		7F434A4E1962B95D0081F35C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		7F51F15B197E6BA300A9E5B2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		7F76554B197FF0FE008AD0D5 /* Asset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
+		7F76554F197FF60F008AD0D5 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = test.png; path = ../../../../test.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,7 @@
 		7F434A1A19628D490081F35C = {
 			isa = PBXGroup;
 			children = (
+				7F76554F197FF60F008AD0D5 /* test.png */,
 				7F51F15B197E6BA300A9E5B2 /* README.md */,
 				7F434A4E1962B95D0081F35C /* CloudKit.framework */,
 				7F434A2519628D490081F35C /* AppMessage */,
@@ -135,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				7F434A4B1962AE780081F35C /* Message.swift */,
+				7F76554B197FF0FE008AD0D5 /* Asset.swift */,
 			);
 			path = DataObjects;
 			sourceTree = "<group>";
@@ -230,6 +236,7 @@
 			files = (
 				7F434A2E19628D490081F35C /* Main.storyboard in Resources */,
 				7F434A3019628D490081F35C /* Images.xcassets in Resources */,
+				7F765550197FF60F008AD0D5 /* test.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +256,7 @@
 			files = (
 				7F434A2B19628D490081F35C /* ViewController.swift in Sources */,
 				7F434A4C1962AE780081F35C /* Message.swift in Sources */,
+				7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */,
 				7F434A2919628D490081F35C /* AppDelegate.swift in Sources */,
 				7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */,
 			);
