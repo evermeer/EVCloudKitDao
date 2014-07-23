@@ -18,51 +18,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
         
         // Make sure we receive subscription notifications
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Alert | UIUserNotificationType.Badge, categories: nil))
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
         application.registerForRemoteNotifications()
 
         // Registering for iCloud availability change notifications (log in as different user, clear all user related data)
         var localeChangeObserver = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: NSOperationQueue.mainQueue()) { _ in
-            println("The user’s iCloud login changed: should clear all user data.")
+            println("The user’s iCloud login changed: should refresh all user data.")
+            self.runTests() //TODO: why are we still loged out? Do we need a delay?
         }
-
+        
+        runTests()
+        
+        return true
+    }
+    
+    func runTests() {
         var dao: EVCloudKitDao = EVCloudKitDao.instance
         
         // retrieve our CloudKit user id. (made syncronous for this demo)
         var sema = dispatch_semaphore_create(0)
         var userId: String = ""
-        dao.requestDiscoverabilityPermission({ discoverable in
-                if discoverable {
-                    dao.discoverUserInfo({user in
-                            userId = user.userRecordID.recordName
-                            NSLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
-                            dispatch_semaphore_signal(sema);
-                        }, errorHandler: { error in
-                            NSLog("<--- ERROR in discoverUserInfo");
-                            dispatch_semaphore_signal(sema);
-                        })
-                } else
-                {
-                    NSLog("requestDiscoverabilityPermission : No permissions")
-                    dispatch_semaphore_signal(sema);
-                }
+        dao.getUserInfo({user in
+            userId = user.userRecordID.recordName
+            NSLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
+            dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
-                NSLog("<-- ERROR in requestDiscoverabilityPermission : \(error.description)")
+                NSLog("<--- ERROR in getUserInfo");
                 dispatch_semaphore_signal(sema);
             })
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         
         if userId.isEmpty {
             NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account")
-            return false
+            return
         }
         
-        
         dao.allContactsUserInfo({ users in
-                NSLog("AllContactUserInfo count = \(users.count)");
+            NSLog("AllContactUserInfo count = \(users.count)");
             for user: AnyObject in users {
-                    NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
-                }
+                NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
+            }
             }, errorHandler: { error in
                 NSLog("<-- ERROR in allContactsUserInfo : \(error.description)")
             })
@@ -80,9 +75,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sema = dispatch_semaphore_create(0);
         var createdId = "";
         dao.saveItem(message, completionHandler: {record in
-                createdId = record.recordID.recordName;
-                NSLog("saveItem : \(createdId)");
-                dispatch_semaphore_signal(sema);
+            createdId = record.recordID.recordName;
+            NSLog("saveItem : \(createdId)");
+            dispatch_semaphore_signal(sema);
             }, errorHandler: {error in
                 NSLog("<--- ERROR saveItem");
                 dispatch_semaphore_signal(sema);
@@ -92,53 +87,53 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Delete a data item
         dao.deleteItem(createdId, completionHandler: { recordId in
-                NSLog("deleteItem : \(recordId)")
+            NSLog("deleteItem : \(recordId)")
             }, errorHandler: {error in
                 NSLog("<--- ERROR deleteItem");
             })
         
         // D84F85B2-2286-48B8-B20B-B87F22C26041
-        dao.getItem("D84F85B2-2286-48B8-B20B-B87F22C26041", completionHandler: { item in
-                NSLog("getItem: with the keys and values:")
-                dao.logObject(item)
+        dao.getItem("36ECE3F5-5190-4B58-BD12-131B9FC7480F", completionHandler: { item in
+            NSLog("getItem: with the keys and values:")
+            dao.logObject(item)
             }, errorHandler: { error in
                 NSLog("<--- ERROR getItem")
             })
         
         // Get all records of a recordType
         dao.query(dao.recordType(Message()), completionHandler: { results in
-                NSLog("query : result count = \(results.count)")
+            NSLog("query : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message")
             })
-
+        
         // Get all user related record of a recordType
         dao.query(dao.recordType(Message()), referenceRecordName:userId, referenceField:"To", completionHandler: { results in
-                NSLog("query : result count = \(results.count)")
+            NSLog("query : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message for user")
             })
-  
+        
         // Get all users containing some words
-//        dao.query(dao.recordType(Message()), tokens:"ik je", completionHandler: { results in
-//                NSLog("query : result count = \(results.count)")
-//            }, errorHandler: { error in
-//                NSLog("<--- ERROR query Message for words")
-//            })
+        //        dao.query(dao.recordType(Message()), tokens:"ik je", completionHandler: { results in
+        //                NSLog("query : result count = \(results.count)")
+        //            }, errorHandler: { error in
+        //                NSLog("<--- ERROR query Message for words")
+        //            })
         
         // Unsubscribe for update notifications
-        dao.unsubscribeForRecordType(dao.recordType(Message()), errorHandler: { error in
-                NSLog("<--- ERROR unsubscribeForRecordType")
+        dao.unsubscribe(dao.recordType(Message()), errorHandler: { error in
+            NSLog("<--- ERROR unsubscribeForRecordType")
             })
         
         // Subscribe for update notifications
         dao.subscribe(dao.recordType(Message()), errorHandler: { error in
-                NSLog("<--- ERROR subscribeForRecordType")
+            NSLog("<--- ERROR subscribeForRecordType")
             })
         
         // Unsubscribe for update notifications where you are in the To field
         dao.unsubscribe(dao.recordType(Message()), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
-                NSLog("<--- ERROR subscribeForRecordType reference")
+            NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Subscribe for update notifications where you are in the To field
@@ -148,15 +143,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Save an other item
         dao.saveItem(message, completionHandler: {record in
-                createdId = record.recordID.recordName;
-                NSLog("saveItem : \(createdId)");
+            createdId = record.recordID.recordName;
+            NSLog("saveItem : \(createdId)");
             }, errorHandler: {error in
                 NSLog("<--- ERROR saveItem");
             })
-        
-        return true
     }
-
     
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

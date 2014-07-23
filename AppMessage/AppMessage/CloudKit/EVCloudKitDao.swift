@@ -55,9 +55,10 @@ class EVCloudKitDao {
     
     // Generic query handling
     func queryRecords(query: CKQuery, completionHandler: (results: NSArray) -> Void, errorHandler:(error: NSError) -> Void) {
-        if !query.sortDescriptors {
-            query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        }
+        // Not sortable anymore!?
+//        if !query.sortDescriptors {
+//            query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+//        }
         var operation = CKQueryOperation(query: query)
         var results = NSMutableArray()
         operation.recordFetchedBlock = { record in
@@ -98,6 +99,26 @@ class EVCloudKitDao {
         })
     }
 
+    // Combined ask for rights and get user
+    func getUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:(error:NSError) -> Void) {
+        self.requestDiscoverabilityPermission({ discoverable in
+            if discoverable {
+                self.discoverUserInfo({user in
+                        completionHandler(user: user)
+                    }, errorHandler: { error in
+                        errorHandler(error: error)
+                    })
+            } else
+            {
+                NSLog("requestDiscoverabilityPermission : No permissions")
+                var error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
+                errorHandler(error: error)
+            }
+        }, errorHandler: { error in
+            errorHandler(error: error)
+        })
+    }
+    
     // Who is using our app
     func allContactsUserInfo(completionHandler: (users: [AnyObject]!) -> Void, errorHandler:(error:NSError) -> Void) {
         container.discoverAllContactUserInfosWithCompletionHandler({users, error in
@@ -174,14 +195,22 @@ class EVCloudKitDao {
     // - Data methods - Subscriptions
     // ------------------------------------------------------------------------
 
-    // subscribe for aditions to a recordType and predicate (and register it under filterId)
+    // subscribe for modifications to a recordType and predicate (and register it under filterId)
     func subscribe(recordType : String, predicate:NSPredicate, filterId:String ,errorHandler:(error: NSError) -> Void) {
         var defaults = NSUserDefaults.standardUserDefaults()
         if defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
         
-        var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: CKSubscriptionOptions.FiresOnRecordCreation)
+        var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
         subscription.notificationInfo = CKNotificationInfo()
         subscription.notificationInfo.alertBody = "New item added to \(recordType), \(filterId)"
+        // subscription.notificationInfo.alertLocalizationKey = "subscriptionMessage"
+        // subscription.notificationInfo.alertLocalizationArgs = [recordType, filterId]
+        // subscription.notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
+        // subscription.notificationInfo.alertLaunchImage = "alertImage"
+        // subscription.notificationInfo.soundName = "alertSound"
+        // subscription.notificationInfo.shouldBadge = true
+        // subscription.notificationInfo.desiredKeys = [""]
+        subscription.notificationInfo.shouldSendContentAvailable = true
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
                 defaults.setBool(true, forKey: "subscriptionFor_\(recordType)_\(filterId)")
@@ -190,23 +219,25 @@ class EVCloudKitDao {
             })
     }
     
-    // unsubscribe for aditions to a recordType and predicate (and unregister is under filterId)
+    // unsubscribe for modifications to a recordType and predicate (and unregister is under filterId)
     func unsubscribe(recordType : String, filterId:String, errorHandler:(error: NSError) -> Void) {
         var defaults = NSUserDefaults.standardUserDefaults()
         if !defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
         
         var modifyOperation = CKModifySubscriptionsOperation()
-        modifyOperation.subscriptionIDsToDelete = [defaults.objectForKey("subscriptionIDFor\(recordType)")]
-        modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
-                defaults.removeObjectForKey("subscriptionFor_\(recordType)_\(filterId)")
-                })
+        var subscriptionID : String? = defaults.objectForKey("subscriptionIDFor\(recordType)") as? String
+        if subscriptionID {
+            modifyOperation.subscriptionIDsToDelete = [subscriptionID!]
+            modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
+                self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+                    defaults.removeObjectForKey("subscriptionFor_\(recordType)_\(filterId)")
+                    })
+            }
+            database.addOperation(modifyOperation)
         }
-        database.addOperation(modifyOperation)
     }
-
     
-    // subscribe for aditions to a recordType with a reference to the user
+    // subscribe for modifications to a recordType with a reference to the user
     func subscribe(recordType:String, referenceRecordName:String, referenceField:String, errorHandler:(error: NSError) -> Void) {
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
@@ -214,18 +245,18 @@ class EVCloudKitDao {
         subscribe(recordType, predicate: predicate, filterId: "reference_\(referenceField)", errorHandler: errorHandler)
     }
     
-    // unsubscribe for aditions to a recordType
+    // unsubscribe for modifications to a recordType with a reference to the user
     func unsubscribe(recordType : String, referenceRecordName:String, referenceField:String, errorHandler:(error: NSError) -> Void) {
         unsubscribe(recordType, filterId: "reference_\(referenceField)", errorHandler: errorHandler)
     }
 
-    // subscribe for aditions to a recordType
+    // subscribe for modifications to a recordType
     func subscribe(recordType : String, errorHandler:(error: NSError) -> Void) {
         subscribe(recordType, predicate: NSPredicate(value: true), filterId: "all", errorHandler: errorHandler)
     }
 
-    // unsubscribe for aditions to a recordType
-    func unsubscribeForRecordType(recordType : String, errorHandler:(error: NSError) -> Void) {
+    // unsubscribe for modifications to a recordType
+    func unsubscribe(recordType : String, errorHandler:(error: NSError) -> Void) {
         unsubscribe(recordType, filterId: "all", errorHandler: errorHandler)
     }
 
