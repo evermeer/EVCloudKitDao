@@ -39,9 +39,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var sema = dispatch_semaphore_create(0)
         var userId: String = ""
         dao.getUserInfo({user in
-            userId = user.userRecordID.recordName
-            NSLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
-            dispatch_semaphore_signal(sema);
+                userId = user.userRecordID.recordName
+                NSLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
+                dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
                 NSLog("<--- ERROR in getUserInfo");
                 dispatch_semaphore_signal(sema);
@@ -54,10 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         dao.allContactsUserInfo({ users in
-            NSLog("AllContactUserInfo count = \(users.count)");
-            for user: AnyObject in users {
-                NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
-            }
+                NSLog("AllContactUserInfo count = \(users.count)");
+                for user: AnyObject in users {
+                    NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
+                }
             }, errorHandler: { error in
                 NSLog("<-- ERROR in allContactsUserInfo : \(error.description)")
             })
@@ -75,9 +75,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sema = dispatch_semaphore_create(0);
         var createdId = "";
         dao.saveItem(message, completionHandler: {record in
-            createdId = record.recordID.recordName;
-            NSLog("saveItem : \(createdId)");
-            dispatch_semaphore_signal(sema);
+                createdId = record.recordID.recordName;
+                NSLog("saveItem : \(createdId)");
+                dispatch_semaphore_signal(sema);
             }, errorHandler: {error in
                 NSLog("<--- ERROR saveItem");
                 dispatch_semaphore_signal(sema);
@@ -87,31 +87,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Delete a data item
         dao.deleteItem(createdId, completionHandler: { recordId in
-            NSLog("deleteItem : \(recordId)")
+                NSLog("deleteItem : \(recordId)")
             }, errorHandler: {error in
                 NSLog("<--- ERROR deleteItem");
             })
         
         // D84F85B2-2286-48B8-B20B-B87F22C26041
         dao.getItem("36ECE3F5-5190-4B58-BD12-131B9FC7480F", completionHandler: { item in
-            NSLog("getItem: with the keys and values:")
-            dao.logObject(item)
+                NSLog("getItem: with the keys and values:")
+                dao.logObject(item)
             }, errorHandler: { error in
                 NSLog("<--- ERROR getItem")
             })
         
         // Get all records of a recordType
         dao.query(dao.recordType(Message()), completionHandler: { results in
-            NSLog("query : result count = \(results.count)")
+                NSLog("query recordType : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message")
             })
         
         // Get all user related record of a recordType
-        dao.query(dao.recordType(Message()), referenceRecordName:userId, referenceField:"To", completionHandler: { results in
-            NSLog("query : result count = \(results.count)")
+        dao.query(dao.recordType(Message()) ,referenceRecordName:userId, referenceField:"To", completionHandler: { results in
+                NSLog("query recordType reference : result count = \(results.count)")
             }, errorHandler: { error in
-                NSLog("<--- ERROR query Message for user")
+                NSLog("<--- ERROR query Message for user in To")
+            })
+
+        // Get all records of a recordType that are created by me using a predicate
+        var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
+        dao.query(dao.recordType(Message()), predicate: predicate, completionHandler: { results in
+                NSLog("query recordType created by: result count = \(results.count)")
+            }, errorHandler: { error in
+                NSLog("<--- ERROR query Message created by user")
             })
         
         // Get all users containing some words
@@ -123,28 +131,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Unsubscribe for update notifications
         dao.unsubscribe(dao.recordType(Message()), errorHandler: { error in
-            NSLog("<--- ERROR unsubscribeForRecordType")
+                NSLog("<--- ERROR unsubscribeForRecordType")
             })
         
         // Subscribe for update notifications
         dao.subscribe(dao.recordType(Message()), errorHandler: { error in
-            NSLog("<--- ERROR subscribeForRecordType")
+                NSLog("<--- ERROR subscribeForRecordType")
             })
         
         // Unsubscribe for update notifications where you are in the To field
         dao.unsubscribe(dao.recordType(Message()), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
-            NSLog("<--- ERROR subscribeForRecordType reference")
+                NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Subscribe for update notifications where you are in the To field
         dao.subscribe(dao.recordType(Message()), referenceRecordName:userId, referenceField:"To", errorHandler: { error in
-            NSLog("<--- ERROR subscribeForRecordType reference")
+                NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Save an other item
         dao.saveItem(message, completionHandler: {record in
-            createdId = record.recordID.recordName;
-            NSLog("saveItem : \(createdId)");
+                createdId = record.recordID.recordName;
+                NSLog("saveItem : \(createdId)");
             }, errorHandler: {error in
                 NSLog("<--- ERROR saveItem");
             })

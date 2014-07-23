@@ -4,3 +4,9 @@
 *.xcuserstate
 
 */xcuserdata/*
+
+*.xcscheme
+
+*.xcbkptlist
+
+AppMessage/AppMessage.xcodeproj/xcuserdata/evermeer.xcuserdatad/xcschemes/xcschememanagement.plist
