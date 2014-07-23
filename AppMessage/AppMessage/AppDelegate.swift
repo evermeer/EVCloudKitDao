@@ -66,10 +66,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var message = Message()
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userId)
-        message.Subject = "Hier gaat het over"
-        message.Body = "Dit wil je vertellen"
+        message.Subject = "This is the subject"
+        message.Body = "And this is the message body"
         //message.File =
-        message.FileType = "Image"
+        message.FileType = "None"
         
         // Save a data item
         sema = dispatch_semaphore_create(0);
@@ -84,20 +84,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         
-        
+        // Get the just created data item
+        dao.getItem(createdId, completionHandler: { item in
+            NSLog("getItem: with the keys and values:")
+            dao.logObject(item)
+            }, errorHandler: { error in
+                NSLog("<--- ERROR getItem")
+            })
+
         // Delete a data item
         dao.deleteItem(createdId, completionHandler: { recordId in
                 NSLog("deleteItem : \(recordId)")
             }, errorHandler: {error in
                 NSLog("<--- ERROR deleteItem");
-            })
-        
-        // D84F85B2-2286-48B8-B20B-B87F22C26041
-        dao.getItem("36ECE3F5-5190-4B58-BD12-131B9FC7480F", completionHandler: { item in
-                NSLog("getItem: with the keys and values:")
-                dao.logObject(item)
-            }, errorHandler: { error in
-                NSLog("<--- ERROR getItem")
             })
         
         // Get all records of a recordType
@@ -123,11 +122,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         
         // Get all users containing some words
-        //        dao.query(dao.recordType(Message()), tokens:"ik je", completionHandler: { results in
-        //                NSLog("query : result count = \(results.count)")
-        //            }, errorHandler: { error in
-        //                NSLog("<--- ERROR query Message for words")
-        //            })
+        //TODO: Since beta 3 this does not work anymore.
+//        dao.query(dao.recordType(Message()), tokens:"ik je", completionHandler: { results in
+//                NSLog("query : result count = \(results.count)")
+//            }, errorHandler: { error in
+//                NSLog("<--- ERROR query Message for words")
+//            })
         
         // Unsubscribe for update notifications
         dao.unsubscribe(dao.recordType(Message()), errorHandler: { error in
