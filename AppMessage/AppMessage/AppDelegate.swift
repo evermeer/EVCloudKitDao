@@ -74,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var message = Message()
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userIdTo)
-        message.Text = "This is the message ext"
+        message.Text = "This is the message text"
         message.HasAttachments = true
         
         var asset = Asset()
@@ -120,14 +120,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         
         // Get all records of a recordType
-        dao.query(dao.recordType(Message()), completionHandler: { results in
+        dao.query(dao.swiftStringFromClass(Message()), completionHandler: { results in
                 NSLog("query recordType : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message")
             })
         
         // Get all user related record of a recordType
-        dao.query(dao.recordType(Message()) ,referenceRecordName:userId, referenceField:"To", completionHandler: { results in
+        dao.query(dao.swiftStringFromClass(Message()) ,referenceRecordName:userId, referenceField:"To", completionHandler: { results in
                 NSLog("query recordType reference : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message for user in To")
@@ -135,7 +135,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Get all records of a recordType that are created by me using a predicate
         var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
-        dao.query(dao.recordType(Message()), predicate: predicate, completionHandler: { results in
+        dao.query(dao.swiftStringFromClass(Message()), predicate: predicate, completionHandler: { results in
                 NSLog("query recordType created by: result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message created by user")
@@ -150,22 +150,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            })
         
         // Unsubscribe for update notifications
-        dao.unsubscribe(dao.recordType(Message()), errorHandler: { error in
+        dao.unsubscribe(dao.swiftStringFromClass(Message()), errorHandler: { error in
                 NSLog("<--- ERROR unsubscribeForRecordType")
             })
         
         // Subscribe for update notifications
-        dao.subscribe(dao.recordType(Message()), errorHandler: { error in
+        dao.subscribe(dao.swiftStringFromClass(Message()), errorHandler: { error in
                 NSLog("<--- ERROR subscribeForRecordType")
             })
         
         // Unsubscribe for update notifications where you are in the To field
-        dao.unsubscribe(dao.recordType(Message()), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
+        dao.unsubscribe(dao.swiftStringFromClass(Message()), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
                 NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Subscribe for update notifications where you are in the To field
-        dao.subscribe(dao.recordType(Message()), referenceRecordName:userId, referenceField:"To", errorHandler: { error in
+        dao.subscribe(dao.swiftStringFromClass(Message()), referenceRecordName:userId, referenceField:"To", errorHandler: { error in
                 NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
@@ -212,7 +212,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             var dao: EVCloudKitDao = EVCloudKitDao.instance
             dao.getItem(recordID.recordName, completionHandler: { item in
-                    NSLog("getItem: recordType = \(dao.recordType(item)), with the keys and values:")
+                    NSLog("getItem: recordType = \(dao.swiftStringFromClass(item)), with the keys and values:")
                     dao.logObject(item)
                 }, errorHandler: { error in
                     NSLog("<--- ERROR getItem")

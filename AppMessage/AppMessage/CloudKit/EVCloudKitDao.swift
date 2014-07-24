@@ -267,32 +267,25 @@ class EVCloudKitDao {
     
     // Convert a CloudKit record to an object
     func fromCKRecord(record: CKRecord) -> AnyObject {
-        var anyobjectype : AnyObject.Type = NSClassFromString("_" + record.recordType)
+        return fromDictionary(toDictionary(record), anyobjectTypeString: record.recordType)
+    }
+    
+    func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> AnyObject {
+        var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString)
         var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
         var nsobject: NSObject = nsobjectype()
         var myobject: AnyObject = nsobject as AnyObject
-        var fromDict = toDictionary(myobject)
-        for (key: String, value: AnyObject?) in fromDict {
-            if record.valueForKey(key) {
-                nsobject.setValue(record.valueForKey(key), forKey: key)
+        for (key: String, value: AnyObject?) in dictionary {
+            if dictionary[key] {
+                nsobject.setValue(dictionary[key]!, forKey: key)
             }
         }
         return myobject
     }
     
-    // The CloudKit recordtype for an object
-    func recordType(theObject: AnyObject) -> String {
-        return NSStringFromClass(theObject.dynamicType).stringByReplacingOccurrencesOfString("_", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
-    }
-    
-    // Helper method for getting a reference (with delete action)
-    func referenceForId(recordId:String) -> CKReference {
-        return CKReference(recordID: CKRecordID(recordName: recordId), action: CKReferenceAction.DeleteSelf)
-    }
-    
     // Convert an object to a CKRecord
     func toCKRecord(theObject: AnyObject) -> CKRecord {
-        var record = CKRecord(recordType: recordType(theObject))
+        var record = CKRecord(recordType: swiftStringFromClass(theObject))
         var fromDict = toDictionary(theObject)
         for (key: String, value: AnyObject?) in fromDict {
             record.setValue(value, forKey: key)
@@ -314,11 +307,40 @@ class EVCloudKitDao {
         return propertiesDictionary
     }
     
+    // Helper method for getting a reference (with delete action)
+    func referenceForId(recordId:String) -> CKReference {
+        return CKReference(recordID: CKRecordID(recordName: recordId), action: CKReferenceAction.DeleteSelf)
+    }
+    
     // Dump the content of this object
     func logObject(theObject: AnyObject) {
         for (key: String, value: AnyObject?) in toDictionary(theObject) {
             NSLog("key = \(key), value = \(value)")
         }
+    }
+    
+    func swiftClassFromString(className: String) -> AnyClass! {
+        if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
+            let classStringName = "_TtC\(appName.utf16Count)\(appName)\(countElements(className))\(className)"
+            return NSClassFromString(classStringName)
+        }
+        return nil;
+    }
+
+    func swiftStringFromClass(theObject: AnyObject) -> String! {
+        if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
+            let classStringName = NSStringFromClass(theObject.dynamicType)
+            let prefix = "_TtC\(appName.utf16Count)\(appName)"
+            let classStringNameWithoutApp = classStringName.stringByReplacingOccurrencesOfString(prefix, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
+            if classStringNameWithoutApp.utf16Count < 10 {
+                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(1,classStringNameWithoutApp.utf16Count - 1))
+            }
+            else if classStringNameWithoutApp.utf16Count < 101 {
+                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(2,classStringNameWithoutApp.utf16Count - 2))
+            }
+            return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(3,classStringNameWithoutApp.utf16Count - 3))
+        }
+        return nil;
     }
     
     // Helper function to convert an Any to AnyObject
