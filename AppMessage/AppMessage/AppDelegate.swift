@@ -122,6 +122,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Get all records of a recordType
         dao.query(dao.swiftStringFromClass(Message()), completionHandler: { results in
                 NSLog("query recordType : result count = \(results.count)")
+            if results.count > 0 {
+//                view.addSubview(results[0].image())
+            }
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message")
             })

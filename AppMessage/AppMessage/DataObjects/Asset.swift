@@ -7,6 +7,7 @@
 //
 
 import CloudKit
+import UIKit
 
 //TODO: valueForAny does not work yet for nulable types.
 class Asset : NSObject {
@@ -14,4 +15,8 @@ class Asset : NSObject {
     var File : CKAsset = CKAsset(fileURL: NSURL(fileURLWithPath: "/"))
     var FileName : String = ""
     var FileType : String = ""
+    
+    func image() -> UIImage {
+        return UIImage(contentsOfFile: File.fileURL.absoluteString)
+    }
 }
