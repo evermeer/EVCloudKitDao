@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.11" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
+    </dependencies>
+    <scenes>
+        <!--Root View Controller-->
+        <scene sceneID="DDW-in-3Rn">
+            <objects>
+                <viewController id="ljn-E3-VY4" userLabel="Root View Controller" customClass="RootViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="l0o-xj-vZk"/>
+                        <viewControllerLayoutGuide type="bottom" id="EPy-vZ-49j"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bg9-g2-Pzr">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4oF-Wp-Iym" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-82" y="68"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="lv8-3B-Eig">
+            <objects>
+                <navigationController storyboardIdentifier="contentViewController" definesPresentationContext="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="J0P-CJ-WCc" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Eem-se-Uc0"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="upz-eS-9Ud">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Vv2-PH-vzG">
+                        <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="ehf-XS-QDs" kind="relationship" relationship="rootViewController" id="PY5-w1-6ug"/>
+                        <segue destination="hE7-GG-b0k" kind="push" identifier="Second" id="H4q-cQ-a0s"/>
+                        <segue destination="ezV-0U-QD4" kind="push" id="KhY-az-Qop"/>
+                        <segue destination="4Rk-cN-xIN" kind="push" id="xCc-DT-5tk"/>
+                        <segue destination="3HD-e9-ogD" kind="push" id="T5H-wl-wup"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zTP-Op-3pJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="515" y="30"/>
+        </scene>
+        <!--Home-->
+        <scene sceneID="ghA-Fs-G6a">
+            <objects>
+                <viewController restorationIdentifier="homeViewController" storyboardIdentifier="homeViewController" id="ehf-XS-QDs" customClass="HomeViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="cKl-X0-V3Q"/>
+                        <viewControllerLayoutGuide type="bottom" id="109-Gb-E7f"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UFy-I3-zGo">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="HPZ-gM-do3">
+                                <rect key="frame" x="20" y="82" width="280" height="131"/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">Welcome to the AppMessage CloudKit demo. Open the left menu, go to Contacts and start a conversation. Invite an other contact and the chat will be a group chat. </string>
+                                        <attributes>
+                                            <color key="NSColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Home" id="LJF-xa-pKE">
+                        <barButtonItem key="leftBarButtonItem" title="Left" id="js5-Up-KfH">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="ehf-XS-QDs" id="jOr-5i-2Wd"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Right" id="Kcc-OM-C2W">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="ehf-XS-QDs" id="MPq-8V-nIo"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IyL-cy-EXl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1475" y="-700"/>
+        </scene>
+        <!--Left Menu View Controller-->
+        <scene sceneID="iwT-eL-9wM">
+            <objects>
+                <viewController restorationIdentifier="leftMenuViewController" storyboardIdentifier="leftMenuViewController" id="qkM-jD-GHI" customClass="LeftMenuViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="FQz-eG-2er"/>
+                        <viewControllerLayoutGuide type="bottom" id="ksN-ux-Cdn"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6TN-Ns-ruy">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="w26-7e-ZtO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="515" y="807"/>
+        </scene>
+        <!--Right Menu View Controller-->
+        <scene sceneID="RaE-yJ-qUf">
+            <objects>
+                <viewController restorationIdentifier="rightMenuViewController" storyboardIdentifier="rightMenuViewController" id="O9h-Te-m6I" customClass="RightMenuViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qlC-Zz-sKX"/>
+                        <viewControllerLayoutGuide type="bottom" id="88j-wb-vb9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2lm-uC-tIc">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Eue-pT-b6E" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="515" y="1525"/>
+        </scene>
+        <!--Tests-->
+        <scene sceneID="7pv-pU-YWg">
+            <objects>
+                <viewController restorationIdentifier="testsViewController" storyboardIdentifier="testsViewController" id="hE7-GG-b0k" userLabel="Tests" customClass="TestsViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9Xs-Eh-Mwl"/>
+                        <viewControllerLayoutGuide type="bottom" id="9xW-MF-eCu"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="RIZ-hd-LUk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="ZgW-VW-9PW">
+                                <rect key="frame" x="20" y="76" width="280" height="80"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Press the button below and look at the output window in X-Code to see all activities. ">
+                                        <attributes>
+                                            <color key="NSColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hJe-hl-uan">
+                                <rect key="frame" x="79" y="189" width="162" height="30"/>
+                                <state key="normal" title="Start tests">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="runTest:" destination="hE7-GG-b0k" eventType="touchUpInside" id="P2X-BQ-Uj7"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Tests" id="EV5-6t-S64">
+                        <barButtonItem key="leftBarButtonItem" title="Left" id="L0Q-QT-5G3">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="hE7-GG-b0k" id="M7l-Yi-WbO"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Right" id="MyS-N7-yfK">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="hE7-GG-b0k" id="XFg-Ps-6Iw"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eal-Q4-llx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1467" y="1966"/>
+        </scene>
+        <!--Contacts-->
+        <scene sceneID="kOW-eb-eFQ">
+            <objects>
+                <viewController restorationIdentifier="contactsViewController" storyboardIdentifier="contactsViewController" id="ezV-0U-QD4" userLabel="Contacts" customClass="ContactsViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="e30-wQ-Dbc"/>
+                        <viewControllerLayoutGuide type="bottom" id="BU6-ok-lgN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="pK2-7p-bA8">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Contacts" id="0Wy-of-kJv">
+                        <barButtonItem key="leftBarButtonItem" title="Left" id="r2W-Tc-dEP">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="ezV-0U-QD4" id="0mE-de-EgJ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Right" id="zMU-mM-9nF">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="ezV-0U-QD4" id="XfT-j4-wsg"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lun-VU-NaT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1475" y="-50"/>
+        </scene>
+        <!--Groups-->
+        <scene sceneID="aP6-Qn-S5L">
+            <objects>
+                <viewController restorationIdentifier="groupsViewController" storyboardIdentifier="groupsViewController" id="4Rk-cN-xIN" customClass="GroupsViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="elm-r4-i73"/>
+                        <viewControllerLayoutGuide type="bottom" id="WkW-iu-XER"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="V6h-BU-oNL">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Groups" id="GQT-qe-v8i">
+                        <barButtonItem key="leftBarButtonItem" title="Left" id="yvD-Y1-yia">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="4Rk-cN-xIN" id="yNy-vH-jGI"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Right" id="yQM-A9-OIM">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="4Rk-cN-xIN" id="6Vk-8P-mU9"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2lc-P8-del" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1475" y="609"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="7dQ-Ad-fBP">
+            <objects>
+                <viewController restorationIdentifier="settingsViewController" storyboardIdentifier="settingsViewController" id="3HD-e9-ogD" customClass="SettingsViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OVi-8H-eFK"/>
+                        <viewControllerLayoutGuide type="bottom" id="q6t-bb-g2m"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="UEd-pa-ayJ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="There are no settings yet" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Zb-me-1rx">
+                                <rect key="frame" x="20" y="81" width="280" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Settings" id="1g3-5x-4mG">
+                        <barButtonItem key="leftBarButtonItem" title="Left" id="ln9-Iu-Cqo">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="3HD-e9-ogD" id="lqr-oY-Z6x"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Right" id="9Ca-wD-HWv">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="3HD-e9-ogD" id="zOi-ep-Rhj"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uvD-7c-1cA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1467" y="1285"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4">
+            <size key="portraitSize" width="320" height="568"/>
+            <size key="landscapeSize" width="568" height="320"/>
+        </simulatedScreenMetrics>
+    </simulatedMetricsContainer>
+</document>

@@ -3,7 +3,7 @@
 //  AppMessage
 //
 //  Created by Edwin Vermeer on 01-07-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014. All rights reserved.
 //
 
 import UIKit
@@ -24,160 +24,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Registering for iCloud availability change notifications (log in as different user, clear all user related data)
         var localeChangeObserver = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: NSOperationQueue.mainQueue()) { _ in
             println("The user’s iCloud login changed: should refresh all user data.")
-            
-            self.runTests() //TODO: why are we still loged out? Do we need a delay?
         }
         
-        runTests()
+        var dao = EVCloudKitDao.instance
+        
+        // Only call this line once, ever. It will make sure the recordType are there in iCloud.
+        // This call is here to help you play around with this code.
+        //dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
+        // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
+        
+        EVCloudData.instance.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
+                // If news view is loaded, then refresh the data
+                NSLog("There are \(results.count) existing news items")
+            }, onError: {error in
+                NSLog("<-- ERROR connect")
+            }, onInserted: {item in
+                NSLog("New News item received")
+                // New item was inserted, if news view is loaded, then refresh the data
+            }, onDeleted: {recordId in
+                NSLog("News item removed")
+                // New item was removed, if news view is loaded, then refresh the data
+            })
+        
+        // Call this to handle notifications that were not handled yet.
+        // Only already setup CloudKit connect's will receive these notifications (like the News above)
+        EVCloudData.instance.fetchChangeNotifications()
         
         return true
     }
     
-    func runTests() {
-        var dao: EVCloudKitDao = EVCloudKitDao.instance
-        
-        // retrieve our CloudKit user id. (made syncronous for this demo)
-        var sema = dispatch_semaphore_create(0)
-        var userId: String = ""
-        dao.getUserInfo({user in
-                userId = user.userRecordID.recordName
-                NSLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
-                dispatch_semaphore_signal(sema);
-            }, errorHandler: { error in
-                NSLog("<--- ERROR in getUserInfo");
-                dispatch_semaphore_signal(sema);
-            })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        
-        if userId.isEmpty {
-            NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account")
-            return
-        }
-        
-        // Look who of our contact is also using this app, the To for the test message will be for the last contact in the list
-        sema = dispatch_semaphore_create(0)
-        var userIdTo: String = userId
-        dao.allContactsUserInfo({ users in
-                NSLog("AllContactUserInfo count = \(users.count)");
-                for user: AnyObject in users {
-                    userIdTo = user.userRecordID!.recordName
-                    NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
-                }
-                dispatch_semaphore_signal(sema);
-            }, errorHandler: { error in
-                NSLog("<-- ERROR in allContactsUserInfo : \(error.description)")
-                dispatch_semaphore_signal(sema);
-            })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        
-        // New message (to self)
-        var message = Message()
-        message.From = dao.referenceForId(userId)
-        message.To = dao.referenceForId(userIdTo)
-        message.Text = "This is the message text"
-        message.HasAttachments = true
-        
-        var asset = Asset()
-        asset.File = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("test", ofType: "png")))
-        asset.FileName = "test"
-        asset.FileType = "png"
-        
-        // Save the message
-        dao.saveItem(message, completionHandler: {record in
-                NSLog("saveItem Message: \(record.recordID.recordName)");
-                // Save the attached image
-                asset.Message = CKReference(recordID: record.recordID, action: .DeleteSelf)
-                dao.saveItem(asset, completionHandler: {record in
-                        NSLog("saveItem Asset: \(record.recordID.recordName)");
-                    }, errorHandler: {error in
-                        NSLog("<--- ERROR saveItem asset");
-                    })
-            
-            }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem message");
-            })
-
-        // Save an other instance without the file, make the action synchronous so we can use the id for query and deletion
-        sema = dispatch_semaphore_create(0);
-        var createdId = "";
-        message.HasAttachments = false
-        dao.saveItem(message, completionHandler: {record in
-                createdId = record.recordID.recordName;
-                NSLog("saveItem Message: \(createdId)");
-                dispatch_semaphore_signal(sema);
-            }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem message");
-                dispatch_semaphore_signal(sema);
-            })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        
-        // Get the just created data item
-        dao.getItem(createdId, completionHandler: { item in
-            NSLog("getItem: with the keys and values:")
-            dao.logObject(item)
-            }, errorHandler: { error in
-                NSLog("<--- ERROR getItem")
+    func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
+        NSLog("Push received")
+        EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
+            NSLog("Not a CloudKit Query notification.")            
             })
         
-        // Get all records of a recordType
-        dao.query(dao.swiftStringFromClass(Message()), completionHandler: { results in
-                NSLog("query recordType : result count = \(results.count)")
-            if results.count > 0 {
-//                view.addSubview(results[0].image())
-            }
-            }, errorHandler: { error in
-                NSLog("<--- ERROR query Message")
-            })
-        
-        // Get all user related record of a recordType
-        dao.query(dao.swiftStringFromClass(Message()) ,referenceRecordName:userId, referenceField:"To", completionHandler: { results in
-                NSLog("query recordType reference : result count = \(results.count)")
-            }, errorHandler: { error in
-                NSLog("<--- ERROR query Message for user in To")
-            })
-
-        // Get all records of a recordType that are created by me using a predicate
-        var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
-        dao.query(dao.swiftStringFromClass(Message()), predicate: predicate, completionHandler: { results in
-                NSLog("query recordType created by: result count = \(results.count)")
-            }, errorHandler: { error in
-                NSLog("<--- ERROR query Message created by user")
-            })
-        
-        // Get all users containing some words
-        //TODO: Since beta 3 this does not work anymore.
-//        dao.query(dao.recordType(Message()), tokens:"ik je", completionHandler: { results in
-//                NSLog("query : result count = \(results.count)")
-//            }, errorHandler: { error in
-//                NSLog("<--- ERROR query Message for words")
-//            })
-        
-        // Unsubscribe for update notifications
-        dao.unsubscribe(dao.swiftStringFromClass(Message()), errorHandler: { error in
-                NSLog("<--- ERROR unsubscribeForRecordType")
-            })
-        
-        // Subscribe for update notifications
-        dao.subscribe(dao.swiftStringFromClass(Message()), errorHandler: { error in
-                NSLog("<--- ERROR subscribeForRecordType")
-            })
-        
-        // Unsubscribe for update notifications where you are in the To field
-        dao.unsubscribe(dao.swiftStringFromClass(Message()), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
-                NSLog("<--- ERROR subscribeForRecordType reference")
-            })
-        
-        // Subscribe for update notifications where you are in the To field
-        dao.subscribe(dao.swiftStringFromClass(Message()), referenceRecordName:userId, referenceField:"To", errorHandler: { error in
-                NSLog("<--- ERROR subscribeForRecordType reference")
-            })
-        
-        // Delete the just created data item
-        dao.deleteItem(createdId, completionHandler: { recordId in
-            NSLog("deleteItem : \(recordId)")
-            }, errorHandler: {error in
-                NSLog("<--- ERROR deleteItem");
-            })
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -203,25 +84,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     
-    func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
-        NSLog("Push received")
-        var cloudNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
-        var alertBody = cloudNotification.alertBody
-        NSLog("alert body : \(alertBody)")
-        if cloudNotification.notificationType == CKNotificationType.Query {
-            var queryNotification = cloudNotification as CKQueryNotification
-            var recordID = queryNotification.recordID
-            NSLog("recordID = \(recordID)")
-
-            var dao: EVCloudKitDao = EVCloudKitDao.instance
-            dao.getItem(recordID.recordName, completionHandler: { item in
-                    NSLog("getItem: recordType = \(dao.swiftStringFromClass(item)), with the keys and values:")
-                    dao.logObject(item)
-                }, errorHandler: { error in
-                    NSLog("<--- ERROR getItem")
-                })
-        }
-    }
     
 }
 
