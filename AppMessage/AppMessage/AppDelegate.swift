@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
-        //dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
+        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
         // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         
         EVCloudData.instance.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in

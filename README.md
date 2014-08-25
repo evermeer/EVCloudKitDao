@@ -61,31 +61,31 @@ sudo gem update
 ## How to use the EVCloudKitData
 ```swift
 class News : NSObject {
-var Subject : String = ""
-var Text : String = ""
+    var Subject : String = ""
+    var Text : String = ""
 }
 
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-var dao = EVCloudKitDao.instance
-EVCloudData.instance.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
-// If news view is loaded, then refresh the data
-NSLog("There are \(results.count) existing news items")
-}, onError: {error in
-NSLog("<-- ERROR connect")
-}, onInserted: {item in
-NSLog("New News item received")
-// New item was inserted, if news view is loaded, then refresh the data
-}, onDeleted: {recordId in
-NSLog("News item removed")
-// New item was removed, if news view is loaded, then refresh the data
-})
+    var dao = EVCloudKitDao.instance
+    EVCloudData.instance.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
+        // If news view is loaded, then refresh the data
+        NSLog("There are \(results.count) existing news items")
+    }, onError: {error in
+        NSLog("<-- ERROR connect")
+    }, onInserted: {item in
+        NSLog("New News item received")
+        // New item was inserted, if news view is loaded, then refresh the data
+    }, onDeleted: {recordId in
+        NSLog("News item removed")
+        // New item was removed, if news view is loaded, then refresh the data
+    })
 }
 
 func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
-NSLog("Push received")
-EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
-NSLog("Not a CloudKit Query notification.")            
-})
+    NSLog("Push received")
+    EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
+        NSLog("Not a CloudKit Query notification.")            
+    })
 }
 ```
 
@@ -121,21 +121,7 @@ dao.query(dao.recordType(Message()), completionHandler: { results in
 ```
 
 
-## Credits : Art & Design
 
-Compliments of Apple
-
-* [`MessageBubble@2x.png`][1] is a derivation of [`bubble@2x.png`][2].
-* [`MessageIncoming.aiff`][3] is a copy of [`SIMToolkitSMS.aiff`][4].
-* [`MessageOutgoing.aiff`][5] is a copy of [`message-sent.aiff`][6].
-
-Command to find files: `find /Applications/Xcode.app/ -name *.png`
-
-## Credits : Code
-
-Compliments of Chats by Acani https://github.com/acani/Chats
-
-* Chat and contact window layout (ChatCell.swift, MessageSendDateCell.swift and MessageBubbleCell.swift)
 
 ## License
 
