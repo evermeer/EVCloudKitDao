@@ -9,7 +9,7 @@ The EVCloudKitData.swift class will let you handle CloudKit data as easy as poss
 See TestsViewController.swift for a complete overview of the functionality
 The AppMessage sample is a complete functional messaging sample based on CloudKit.
 
-This is a work in progress. Both Shift and CloudKit are in beta (this is tested with beta 4)
+This is a work in progress. Both Shift and CloudKit are in beta (this is tested with beta 7)
 
 ## Main features of EVCloudKitDao:
 - simple singleton access to your default database
