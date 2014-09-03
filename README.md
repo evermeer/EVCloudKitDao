@@ -67,17 +67,25 @@ class News : NSObject {
 
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
     var dao = EVCloudKitDao.instance
-    EVCloudData.instance.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
-        // If news view is loaded, then refresh the data
+    var data = EVCloudData.instance
+
+    func refreshNewsVieuw() {
+        NSOperationQueue.mainQueue().addOperationWithBlock({
+            // If news view is loaded, then refresh the data (on the main queue)
+        })
+    }
+
+    data.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
         NSLog("There are \(results.count) existing news items")
+        refreshNewsVieuw()
     }, onError: {error in
         NSLog("<-- ERROR connect")
     }, onInserted: {item in
         NSLog("New News item received")
-        // New item was inserted, if news view is loaded, then refresh the data
+        refreshNewsVieuw()
     }, onDeleted: {recordId in
         NSLog("News item removed")
-        // New item was removed, if news view is loaded, then refresh the data
+        refreshNewsVieuw()
     })
 }
 
@@ -119,8 +127,6 @@ dao.query(dao.recordType(Message()), completionHandler: { results in
         NSLog("<--- ERROR query Message")
     })
 ```
-
-
 
 
 ## License

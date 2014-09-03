@@ -27,23 +27,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         var dao = EVCloudKitDao.instance
+        var data = EVCloudData.instance
         
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
-        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
+//        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
         // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         
-        EVCloudData.instance.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
-                // If news view is loaded, then refresh the data
+        func refreshNewsVieuw() {
+            NSOperationQueue.mainQueue().addOperationWithBlock({
+                // If news view is loaded, then refresh the data (on the main queue)
+            })
+        }
+        
+        data.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
                 NSLog("There are \(results.count) existing news items")
+                refreshNewsVieuw()
             }, onError: {error in
                 NSLog("<-- ERROR connect")
             }, onInserted: {item in
                 NSLog("New News item received")
-                // New item was inserted, if news view is loaded, then refresh the data
+                refreshNewsVieuw()
             }, onDeleted: {recordId in
                 NSLog("News item removed")
-                // New item was removed, if news view is loaded, then refresh the data
+                refreshNewsVieuw()
             })
         
         // Call this to handle notifications that were not handled yet.

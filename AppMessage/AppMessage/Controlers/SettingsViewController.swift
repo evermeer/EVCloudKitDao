@@ -10,6 +10,6 @@ class SettingsViewController : UIViewController {
         var viewController = UIViewController()
         viewController.title = "Pushed Controller"
         viewController.view.backgroundColor = UIColor.whiteColor()
-        self.navigationController.pushViewController(viewController, animated: true)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

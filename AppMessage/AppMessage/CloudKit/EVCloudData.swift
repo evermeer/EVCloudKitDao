@@ -12,7 +12,7 @@ import CloudKit
 class EVCloudData {
     
     // ------------------------------------------------------------------------
-    // - Initialisation
+    // MARK: - Initialisation
     // ------------------------------------------------------------------------
     
     // Singleton
@@ -32,7 +32,7 @@ class EVCloudData {
     var onDeleted = Dictionary<String, (recordId: String) -> Void>()
 
     // ------------------------------------------------------------------------
-    // - Modify local data
+    // MARK: - Modify local data
     // ------------------------------------------------------------------------
     
     // Add the inserted object to every data collection where it confirms to it's predicate
@@ -50,7 +50,7 @@ class EVCloudData {
     // Delete an object from every data collection where it's part of
     private func deleteObject(recordId :String) {
         for (filter, table) in data {
-            if table[recordId] {
+            if (table[recordId] != nil) {
                 var table2 = table // hack to make it mutable?
                 table2.removeValueForKey(recordId)
                 (onDeleted[filter]!)(recordId: recordId)
@@ -59,7 +59,7 @@ class EVCloudData {
     }
     
     // ------------------------------------------------------------------------
-    // - Data methods - CRUD
+    // MARK: - Data methods - CRUD
     // ------------------------------------------------------------------------
     
     // Get an Item for a recordId
@@ -85,7 +85,7 @@ class EVCloudData {
     }
     
     // ------------------------------------------------------------------------
-    // - Query and subscribe
+    // MARK: - Query and subscribe
     // ------------------------------------------------------------------------
 
     func connect(recordType:String, predicate: NSPredicate, filterId: String,
@@ -108,7 +108,7 @@ class EVCloudData {
 
     
     // ------------------------------------------------------------------------
-    // - Handling remote notifications
+    // MARK: - Handling remote notifications
     // ------------------------------------------------------------------------
     
     // call this from the AppDelegate didReceiveRemoteNotification

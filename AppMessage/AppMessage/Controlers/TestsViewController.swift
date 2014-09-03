@@ -59,7 +59,7 @@ class TestsViewController : UIViewController {
         
         // The attachment
         var asset = Asset()
-        asset.File = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("test", ofType: "png")))
+        asset.File = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("test", ofType: "png")!))
         asset.FileName = "test"
         asset.FileType = "png"
         

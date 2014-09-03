@@ -10,7 +10,7 @@ import CloudKit
 class EVCloudKitDao {
     
     // ------------------------------------------------------------------------
-    // - Initialisation
+    // MARK: - Initialisation
     // ------------------------------------------------------------------------
     
     // Singleton
@@ -30,22 +30,21 @@ class EVCloudKitDao {
     init() {
         container = CKContainer.defaultContainer()
         container.accountStatusWithCompletionHandler({status, error in
-            if error { NSLog("Error = \(error.description)")}
+            if (error != nil) { NSLog("Error = \(error.description)")}
             NSLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
         })
         NSLog("Container identifier = \(container.containerIdentifier)")
         database = container.publicCloudDatabase
-        
     }
 
     // ------------------------------------------------------------------------
-    // - Helper methods
+    // MARK: - Helper methods
     // ------------------------------------------------------------------------
 
     // Generic CloudKit callback handling
     func handleCallback(error: NSError?, errorHandler: () -> Void, completionHandler: () -> Void) {
         //NSOperationQueue.mainQueue().addOperationWithBlock {
-            if error {
+            if (error != nil) {
                 NSLog("CloudKit Error : \(error?.code) = \(error?.description) \n\(error?.userInfo)")
                 errorHandler()
             } else {
@@ -57,7 +56,7 @@ class EVCloudKitDao {
     // Generic query handling
     func queryRecords(query: CKQuery, completionHandler: (results: Dictionary<String, AnyObject>) -> Void, errorHandler:(error: NSError) -> Void) {
         // Not sortable anymore!?
-        if !query.sortDescriptors {
+        if !(query.sortDescriptors != nil) {
             query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
         var operation = CKQueryOperation(query: query)
@@ -75,7 +74,7 @@ class EVCloudKitDao {
     }
 
     // ------------------------------------------------------------------------
-    // - Data methods - initialize record types
+    // MARK: - Data methods - initialize record types
     // ------------------------------------------------------------------------
 
     // This is a helper method that inserts and removes records in order to create the recordtypes in the iCloud
@@ -104,7 +103,7 @@ class EVCloudKitDao {
 
     
     // ------------------------------------------------------------------------
-    // - Data methods - rights and contacts
+    // MARK: - Data methods - rights and contacts
     // ------------------------------------------------------------------------
     
     // Are we allowed to call the discoverUserInfo function?
@@ -159,7 +158,7 @@ class EVCloudKitDao {
     }
 
     // ------------------------------------------------------------------------
-    // - Data methods - CRUD
+    // MARK: - Data methods - CRUD
     // ------------------------------------------------------------------------
     
     // Get an Item for a recordId
@@ -191,7 +190,7 @@ class EVCloudKitDao {
     }
 
     // ------------------------------------------------------------------------
-    // - Data methods - Query
+    // MARK: - Data methods - Query
     // ------------------------------------------------------------------------
     
     // Query a recordType
@@ -222,7 +221,7 @@ class EVCloudKitDao {
     }
 
     // ------------------------------------------------------------------------
-    // - Data methods - Subscriptions
+    // MARK: - Data methods - Subscriptions
     // ------------------------------------------------------------------------
 
     // subscribe for modifications to a recordType and predicate (and register it under filterId)
@@ -257,7 +256,7 @@ class EVCloudKitDao {
         
         var modifyOperation = CKModifySubscriptionsOperation()
         var subscriptionID : String? = defaults.objectForKey("subscriptionIDFor\(recordType)") as? String
-        if subscriptionID {
+        if (subscriptionID != nil) {
             modifyOperation.subscriptionIDsToDelete = [subscriptionID!]
             modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
                 self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
@@ -293,7 +292,7 @@ class EVCloudKitDao {
 
 
     // ------------------------------------------------------------------------
-    // - Handling remote notifications
+    // MARK: - Handling remote notifications
     // ------------------------------------------------------------------------
     
     // call this from the AppDelegate didReceiveRemoteNotification
@@ -364,6 +363,7 @@ class EVCloudKitDao {
             op.start()
             NSLog("changetoken = \(changetoken)")
             self.previousChangeToken = changetoken
+            
             if(operation.moreComing) {
                 self.fetchChangeNotifications(inserted, updated, deleted)
             }
@@ -375,20 +375,20 @@ class EVCloudKitDao {
     var previousChangeToken:CKServerChangeToken? {
         get {
             let encodedObjectData = NSUserDefaults.standardUserDefaults().objectForKey("lastFetchNotificationId") as? NSData
-            if (encodedObjectData) {
-                return NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData) as? CKServerChangeToken
+            if ((encodedObjectData) != nil) {
+                return NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData!) as? CKServerChangeToken
             }
             return nil
         }
         set(newToken) {
-            if (newToken) {
-                NSUserDefaults.standardUserDefaults().setObject(NSKeyedArchiver.archivedDataWithRootObject(newToken), forKey:"lastFetchNotificationId")
+            if ((newToken) != nil) {
+                NSUserDefaults.standardUserDefaults().setObject(NSKeyedArchiver.archivedDataWithRootObject(newToken!), forKey:"lastFetchNotificationId")
             }
         }
     }
     
     // ------------------------------------------------------------------------
-    // - Reflection methods
+    // MARK: - Reflection methods
     // ------------------------------------------------------------------------
     
     // Convert a CloudKit record to an object
@@ -403,7 +403,7 @@ class EVCloudKitDao {
         var nsobject: NSObject = nsobjectype()
         var myobject: AnyObject = nsobject as AnyObject
         for (key: String, value: AnyObject?) in dictionary {
-            if dictionary[key] {
+            if (dictionary[key] != nil) {
                 nsobject.setValue(dictionary[key]!, forKey: key)
             }
         }
@@ -458,16 +458,18 @@ class EVCloudKitDao {
     // Get the class name as a string from a swift class
     func swiftStringFromClass(theObject: AnyObject) -> String! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
-            let classStringName = NSStringFromClass(theObject.dynamicType)
-            let prefix = "_TtC\(appName.utf16Count)\(appName)"
-            let classStringNameWithoutApp = classStringName.stringByReplacingOccurrencesOfString(prefix, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
-            if classStringNameWithoutApp.utf16Count < 10 {
-                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(1,classStringNameWithoutApp.utf16Count - 1))
-            }
-            else if classStringNameWithoutApp.utf16Count < 101 {
-                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(2,classStringNameWithoutApp.utf16Count - 2))
-            }
-            return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(3,classStringNameWithoutApp.utf16Count - 3))
+            let classStringName: String = NSStringFromClass(theObject.dynamicType)
+            return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
+            
+//            let prefix: String = "_TtC\(appName.utf16Count)\(appName)"
+//            let classStringNameWithoutApp: String = classStringName.stringByReplacingOccurrencesOfString(prefix, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
+//            if classStringNameWithoutApp.utf16Count < 10 {
+//                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(1,classStringNameWithoutApp.utf16Count - 1))
+//            }
+//            else if classStringNameWithoutApp.utf16Count < 101 {
+//                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(2,classStringNameWithoutApp.utf16Count - 2))
+//            }
+//            return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(3,classStringNameWithoutApp.utf16Count - 3))
         }
         return nil;
     }

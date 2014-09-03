@@ -34,28 +34,28 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         return 1
     }
 
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int{
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }
     
     var cellIdentifier = "LeftMenuCell";
-    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell!{
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
         
-        if !cell {
+        if cell == nil {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
             cell.backgroundColor = UIColor.clearColor()
-            cell.textLabel.font = UIFont(name: "HelveticaNeue", size: 21)
-            cell.textLabel.textColor = UIColor.whiteColor()
-            cell.textLabel.highlightedTextColor = UIColor.lightGrayColor()
+            cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 21)
+            cell.textLabel?.textColor = UIColor.whiteColor()
+            cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
             cell.selectedBackgroundView = UIView()
         }
         
         var titles = ["Home", "Contacts", "Group", "Settings", "Tests"]
         var images = ["IconHome", "IconProfile", "IconGroup", "IconSettings", "IconEmpty"]
-        cell.textLabel.text = titles[indexPath.row]
-        cell.imageView.image = UIImage(named: images[indexPath.row])
+        cell.textLabel?.text = titles[indexPath.row]
+        cell.imageView?.image = UIImage(named: images[indexPath.row])
         
         return cell;
     }
@@ -63,12 +63,18 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         var controllers = ["homeViewController", "contactsViewController", "groupsViewController", "settingsViewController", "testsViewController"]
         if indexPath.row < controllers.count {
-            var controller = self.storyboard.instantiateViewControllerWithIdentifier(controllers[indexPath.row]) as? UIViewController
-            self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: controller), animated: true)
+            var controller = self.storyboard?.instantiateViewControllerWithIdentifier(controllers[indexPath.row]) as? UIViewController
+            if controller != nil {
+                self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: controller!), animated: true)
+            }
         }
         self.sideMenuViewController.hideMenuViewController()
     }
 
+    
+    
+    
+    
     
     
 }

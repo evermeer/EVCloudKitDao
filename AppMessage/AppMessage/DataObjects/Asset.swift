@@ -17,6 +17,6 @@ class Asset : NSObject {
     var FileType : String = ""
     
     func image() -> UIImage {
-        return UIImage(contentsOfFile: File.fileURL.absoluteString)
+        return UIImage(contentsOfFile: File.fileURL.absoluteString!)
     }
 }

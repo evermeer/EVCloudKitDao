@@ -10,29 +10,29 @@
 	<string>AppMessage</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>871097C6-00CE-496E-883D-F66C24921CF7</key>
+		<key>CFA6DED724379400FDB1C0AC745C4EA674D03A3C</key>
 		<string>https://github.com/evermeer/EVCloudKitDao.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>AppMessage/AppMessage.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>871097C6-00CE-496E-883D-F66C24921CF7</key>
+		<key>CFA6DED724379400FDB1C0AC745C4EA674D03A3C</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/evermeer/EVCloudKitDao.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>871097C6-00CE-496E-883D-F66C24921CF7</string>
+	<string>CFA6DED724379400FDB1C0AC745C4EA674D03A3C</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>871097C6-00CE-496E-883D-F66C24921CF7</string>
+			<string>CFA6DED724379400FDB1C0AC745C4EA674D03A3C</string>
 			<key>IDESourceControlWCCName</key>
 			<string>EVCloudKitDao</string>
 		</dict>
