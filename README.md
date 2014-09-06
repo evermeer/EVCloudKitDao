@@ -75,21 +75,24 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
         })
     }
 
-    data.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
-        NSLog("There are \(results.count) existing news items")
-        refreshNewsVieuw()
-    }, onError: {error in
-        NSLog("<-- ERROR connect")
-    }, onInserted: {item in
-        NSLog("New News item received")
-        refreshNewsVieuw()
-    }, onUpdated: {item in
-        NSLog("Updated News item received")
-        refreshNewsVieuw()
-    }, onDeleted: {recordId in
-        NSLog("News item removed")
-        refreshNewsVieuw()
-    })
+    data.connect(News()
+        , predicate: NSPredicate(value: true)
+        , filterId: "News_All"
+        , onCompletion: { results in
+            NSLog("There are \(results.count) existing news items")
+            refreshNewsVieuw()
+        }, onError: {error in
+            NSLog("<-- ERROR connect")
+        }, onInserted: {item in
+            NSLog("New News item received with subject '\(item.Subject)'")
+            refreshNewsVieuw()
+        }, onUpdated: {item in
+            NSLog("Updated News item received with subject '\(item.Subject)'")
+            refreshNewsVieuw()
+        }, onDeleted: {recordId in
+            NSLog("News item removed")
+            refreshNewsVieuw()
+        })
 }
 
 func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
@@ -124,7 +127,8 @@ dao.saveItem(message, completionHandler: {record in
         NSLog("<--- ERROR saveItem");
     })
 
-dao.query(dao.recordType(Message()), completionHandler: { results in
+dao.query(Message()
+    , completionHandler: { results in
         NSLog("query : result count = \(results.count)")
     }, errorHandler: { error in
         NSLog("<--- ERROR query Message")

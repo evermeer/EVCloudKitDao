@@ -93,22 +93,23 @@ class TestsViewController : UIViewController {
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         
         // Get the just created data item
-        dao.getItem(createdId, completionHandler: { item in
-            NSLog("getItem: with the keys and values:")
-            dao.logObject(item)
+        dao.getItem(createdId
+            , completionHandler: { item in
+                NSLog("getItem: with the keys and values:")
+                dao.logObject(item)
             }, errorHandler: { error in
                 NSLog("<--- ERROR getItem")
             })
-        
+                
         // Get all records of a recordType
-        dao.query(dao.swiftStringFromClass(Message()), completionHandler: { results in
+        dao.query(Message(), completionHandler: { results in
             NSLog("query recordType : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message")
             })
         
         // Get all user related record of a recordType
-        dao.query(dao.swiftStringFromClass(Message()) ,referenceRecordName:userId, referenceField:"To", completionHandler: { results in
+        dao.query(Message(), referenceRecordName: userId, referenceField:"To", completionHandler: { results in
             NSLog("query recordType reference : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message for user in To")
@@ -116,7 +117,7 @@ class TestsViewController : UIViewController {
         
         // Get all records of a recordType that are created by me using a predicate
         var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
-        dao.query(dao.swiftStringFromClass(Message()), predicate: predicate, completionHandler: { results in
+        dao.query(Message(), predicate:predicate, completionHandler: { results in
             NSLog("query recordType created by: result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message created by user")
@@ -124,29 +125,29 @@ class TestsViewController : UIViewController {
         
         // Get all users containing some words
         //TODO: Since beta 3 this does not work anymore.
-        //        dao.query(dao.recordType(Message()), tokens:"this the", completionHandler: { results in
+        //        dao.query<Message>("this the", completionHandler: { results in
         //                NSLog("query : result count = \(results.count)")
         //            }, errorHandler: { error in
         //                NSLog("<--- ERROR query Message for words")
         //            })
         
         // Unsubscribe for update notifications
-        dao.unsubscribe(dao.swiftStringFromClass(Message()), errorHandler: { error in
+        dao.unsubscribe(Message(), errorHandler:{ error in
             NSLog("<--- ERROR unsubscribeForRecordType")
             })
         
         // Subscribe for update notifications
-        dao.subscribe(dao.swiftStringFromClass(Message()), errorHandler: { error in
+        dao.subscribe(Message(), errorHandler:{ error in
             NSLog("<--- ERROR subscribeForRecordType")
             })
         
         // Unsubscribe for update notifications where you are in the To field
-        dao.unsubscribe(dao.swiftStringFromClass(Message()), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
+        dao.unsubscribe(Message(), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
             NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Subscribe for update notifications where you are in the To field
-        dao.subscribe(dao.swiftStringFromClass(Message()), referenceRecordName:userId, referenceField:"To", errorHandler: { error in
+        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", errorHandler: { error in
             NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
@@ -157,18 +158,20 @@ class TestsViewController : UIViewController {
                 NSLog("<--- ERROR deleteItem")
             })
         
-        EVCloudData.instance.connect(dao.swiftStringFromClass(Message()), predicate: NSPredicate(value: true), filterId: "Message_all"
-        , onCompletion: { results in
-            NSLog("results = \(results.count)")
-        }, onError: { error in
-            NSLog("<--- ERROR connect")
-        }, onInserted: { item in
-            NSLog("inserted \(item)")
-        }, onUpdated: { item in
-            NSLog("updated \(item)")
-        }, onDeleted: { recordId in
-            NSLog("deleted : \(recordId)")
-        })
+        EVCloudData.instance.connect(Message()
+            , predicate: NSPredicate(value: true)
+            , filterId: "Message_all"
+            , onCompletion: { results in
+                NSLog("results = \(results.count)")
+            }, onError: { error in
+                NSLog("<--- ERROR connect")
+            }, onInserted: { item in
+                NSLog("inserted \(item)")
+            }, onUpdated: { item in
+                NSLog("updated \(item)")
+            }, onDeleted: { recordId in
+                NSLog("deleted : \(recordId)")
+            })
     }
     
 }

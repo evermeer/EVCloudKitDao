@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
-        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
+//        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
         // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         
         func refreshNewsVieuw() {
@@ -40,16 +40,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         }
         
-        data.connect(dao.swiftStringFromClass(News()), predicate: NSPredicate(value: true), filterId: "News_All", onCompletion: { results in
+        data.connect(News()
+            , predicate: NSPredicate(value: true)
+            , filterId: "News_All"
+            , onCompletion: { results in
                 NSLog("There are \(results.count) existing news items")
                 refreshNewsVieuw()
             }, onError: {error in
                 NSLog("<-- ERROR connect")
             }, onInserted: {item in
-                NSLog("New News item received")
+                NSLog("New News item received with subject '\(item.Subject)'")
                 refreshNewsVieuw()
             }, onUpdated: {item in
-                NSLog("Updated News item received")
+                NSLog("Updated News item received with subject '\(item.Subject)'")
                 refreshNewsVieuw()
             }, onDeleted: {recordId in
                 NSLog("News item removed")
@@ -63,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
+    func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {
         NSLog("Push received")
         EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
             NSLog("Not a CloudKit Query notification.")            
