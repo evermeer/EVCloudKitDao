@@ -449,7 +449,7 @@ class EVCloudKitDao {
     // Get the swift Class from a string
     func swiftClassFromString(className: String) -> AnyClass! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
-            let classStringName = "_TtC\(appName.utf16Count)\(appName)\(countElements(className))\(className)"
+            let classStringName = "\(appName).\(className)"
             return NSClassFromString(classStringName)
         }
         return nil;
@@ -460,16 +460,6 @@ class EVCloudKitDao {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
             let classStringName: String = NSStringFromClass(theObject.dynamicType)
             return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
-            
-//            let prefix: String = "_TtC\(appName.utf16Count)\(appName)"
-//            let classStringNameWithoutApp: String = classStringName.stringByReplacingOccurrencesOfString(prefix, withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
-//            if classStringNameWithoutApp.utf16Count < 10 {
-//                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(1,classStringNameWithoutApp.utf16Count - 1))
-//            }
-//            else if classStringNameWithoutApp.utf16Count < 101 {
-//                return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(2,classStringNameWithoutApp.utf16Count - 2))
-//            }
-//            return (classStringNameWithoutApp as NSString).substringWithRange(NSMakeRange(3,classStringNameWithoutApp.utf16Count - 3))
         }
         return nil;
     }

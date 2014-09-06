@@ -83,6 +83,9 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
     }, onInserted: {item in
         NSLog("New News item received")
         refreshNewsVieuw()
+    }, onUpdated: {item in
+        NSLog("Updated News item received")
+        refreshNewsVieuw()
     }, onDeleted: {recordId in
         NSLog("News item removed")
         refreshNewsVieuw()

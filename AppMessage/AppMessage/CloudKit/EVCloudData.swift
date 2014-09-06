@@ -29,6 +29,7 @@ class EVCloudData {
     var data = Dictionary<String, Dictionary<String, AnyObject>>()
     var predicates = Dictionary<String, NSPredicate>()
     var onInserted = Dictionary<String, (item: AnyObject) -> Void>()
+    var onUpdated = Dictionary<String, (item: AnyObject) -> Void>()
     var onDeleted = Dictionary<String, (recordId: String) -> Void>()
 
     // ------------------------------------------------------------------------
@@ -36,13 +37,18 @@ class EVCloudData {
     // ------------------------------------------------------------------------
     
     // Add the inserted object to every data collection where it confirms to it's predicate
-    private func insertObject(recordId:String, item :AnyObject) {
+    private func upsertObject(recordId:String, item :AnyObject) {
         var test = [item]
         for (filter, predicate) in predicates {
             if predicate.evaluateWithObject(item) {
                 var table : Dictionary<String, AnyObject> = data[filter]!
-                table[recordId] = item
-                (onInserted[filter]!)(item: item)
+                if table[recordId] != nil  {
+                    table[recordId] = item
+                    (onUpdated[filter]!)(item: item)
+                } else {
+                    table[recordId] = item
+                    (onInserted[filter]!)(item: item)
+                }
             }
         }
     }
@@ -71,7 +77,7 @@ class EVCloudData {
     func saveItem(item: AnyObject, completionHandler: (record: CKRecord) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.saveItem(item, completionHandler: { record in
             var item : AnyObject = self.dao.fromCKRecord(record)
-            self.insertObject(record.recordID.recordName, item: item)
+            self.upsertObject(record.recordID.recordName, item: item)
             completionHandler(record: record)
             }, errorHandler: errorHandler)
     }
@@ -92,10 +98,12 @@ class EVCloudData {
         onCompletion: (results: Dictionary<String, AnyObject>) -> Void,
         onError:(error: NSError) -> Void,
         onInserted:(item: AnyObject) -> Void,
+        onUpdated:(item: AnyObject) -> Void,
         onDeleted:(recordId: String) -> Void
         ) -> Void {
             self.data[filterId] = nil
             self.onInserted[filterId] = onInserted
+            self.onUpdated[filterId] = onUpdated
             self.onDeleted[filterId] = onDeleted
             self.predicates[filterId] = predicate
             dao.subscribe(recordType, predicate: predicate, filterId: filterId, errorHandler: onError)
@@ -115,9 +123,9 @@ class EVCloudData {
     func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject]!, executeIfNonQuery:() -> Void) {
         var dao: EVCloudKitDao = EVCloudKitDao.instance
         dao.didReceiveRemoteNotification(userInfo, executeIfNonQuery: executeIfNonQuery, inserted: {recordId, item in
-                self.insertObject(recordId, item: item)
+                self.upsertObject(recordId, item: item)
             }, updated: {recordId, item in
-                self.insertObject(recordId, item: item)
+                self.upsertObject(recordId, item: item)
             }, deleted: {recordId in
                 self.deleteObject(recordId)
             })
@@ -127,9 +135,9 @@ class EVCloudData {
     func fetchChangeNotifications() {
         var dao: EVCloudKitDao = EVCloudKitDao.instance
         dao.fetchChangeNotifications({recordId, item in
-                self.insertObject(recordId, item: item)
+                self.upsertObject(recordId, item: item)
             }, updated : {recordId, item in
-                self.insertObject(recordId, item: item)
+                self.upsertObject(recordId, item: item)
             }, deleted : {recordId in
                 self.deleteObject(recordId)
             })

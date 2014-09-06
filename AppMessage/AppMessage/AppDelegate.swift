@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
-//        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
+        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
         // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         
         func refreshNewsVieuw() {
@@ -47,6 +47,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 NSLog("<-- ERROR connect")
             }, onInserted: {item in
                 NSLog("New News item received")
+                refreshNewsVieuw()
+            }, onUpdated: {item in
+                NSLog("Updated News item received")
                 refreshNewsVieuw()
             }, onDeleted: {recordId in
                 NSLog("News item removed")

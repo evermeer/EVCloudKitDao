@@ -164,6 +164,8 @@ class TestsViewController : UIViewController {
             NSLog("<--- ERROR connect")
         }, onInserted: { item in
             NSLog("inserted \(item)")
+        }, onUpdated: { item in
+            NSLog("updated \(item)")
         }, onDeleted: { recordId in
             NSLog("deleted : \(recordId)")
         })
