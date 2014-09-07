@@ -400,7 +400,7 @@ class EVCloudKitDao {
     
     // Convert a CloudKit record to an object
     func fromCKRecord(record: CKRecord) -> NSObject {
-        return fromDictionary(toDictionary(record), anyobjectTypeString: record.recordType)
+        return fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType)
     }
     
     // Create an object from a dictionary
@@ -424,6 +424,15 @@ class EVCloudKitDao {
             record.setValue(value, forKey: key)
         }
         return record
+    }
+    
+    // Convert CKRecord to dictionary
+    func CKRecordToDictionary(ckRecord:CKRecord) -> Dictionary<String, AnyObject?> {
+        var dictionary = Dictionary<String, AnyObject>()
+        for field in ckRecord.allKeys() {
+            dictionary[field as NSString] = ckRecord.objectForKey(field as NSString)
+        }
+        return dictionary
     }
     
     // Convert an object to a dictionary

@@ -34,29 +34,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
         // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         
-        func refreshNewsVieuw() {
-            NSOperationQueue.mainQueue().addOperationWithBlock({
-                // If news view is loaded, then refresh the data (on the main queue)
-            })
-        }
         
         data.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
             , onCompletion: { results in
                 NSLog("There are \(results.count) existing news items")
-                refreshNewsVieuw()
+                self.refreshNewsVieuw()
             }, onError: {error in
                 NSLog("<-- ERROR connect")
             }, onInserted: {item in
                 NSLog("New News item received with subject '\((item as News).Subject)'")
-                refreshNewsVieuw()
+                self.refreshNewsVieuw()
             }, onUpdated: {item in
                 NSLog("Updated News item received with subject '\((item as News).Subject)'")
-                refreshNewsVieuw()
+                self.refreshNewsVieuw()
             }, onDeleted: {recordId in
                 NSLog("News item removed")
-                refreshNewsVieuw()
+                self.refreshNewsVieuw()
             })
         
         // Call this to handle notifications that were not handled yet.
@@ -64,6 +59,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EVCloudData.instance.fetchChangeNotifications()
         
         return true
+    }
+    
+    func refreshNewsVieuw() {
+        NSOperationQueue.mainQueue().addOperationWithBlock({
+            // If news view is loaded, then refresh the data (on the main queue)
+            var news:Dictionary<String, NSObject> = EVCloudData.instance.data["News_All"]!
+            for (key, value) in news {
+                NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
+            }
+            
+        })
     }
     
     func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {

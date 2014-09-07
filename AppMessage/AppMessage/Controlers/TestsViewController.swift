@@ -103,7 +103,7 @@ class TestsViewController : UIViewController {
                 
         // Get all records of a recordType
         dao.query(Message(), completionHandler: { results in
-            NSLog("query recordType : result count = \(results.count)")
+                NSLog("query recordType : result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message")
             })
