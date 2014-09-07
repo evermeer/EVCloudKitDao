@@ -99,13 +99,13 @@ class EVCloudData {
         filterId: String,
         onCompletion: (results: Dictionary<String, T>) -> Void,
         onError:(error: NSError) -> Void,
-        onInserted:(item: T) -> Void,
-        onUpdated:(item: T) -> Void,
+        onInserted:(item: NSObject) -> Void,
+        onUpdated:(item: NSObject) -> Void,
         onDeleted:(recordId: String) -> Void
         ) -> Void {
             self.data[filterId] = nil
-            self.onInserted[filterId] = onInserted as? (item:NSObject) -> Void
-            self.onUpdated[filterId] = onUpdated as? (item:NSObject) -> Void
+            self.onInserted[filterId] = onInserted
+            self.onUpdated[filterId] = onUpdated
             self.onDeleted[filterId] = onDeleted
             self.predicates[filterId] = predicate
             dao.subscribe(type, predicate:predicate, filterId: filterId, errorHandler: onError)

@@ -39,16 +39,16 @@ This is a work in progress. Both Shift and CloudKit are in beta (this is tested 
 
 2) [CocoaPods](http://cocoapods.org) is used to manage dependencies. Pods are setup easily and are distributed via a ruby gem. Follow the simple instructions on the website to setup. After setup, run the following command from the toplevel directory of AppMessage to download the dependencies for AppMessage:
 
-```
+```sh
 pod install
 ```
 If you are having build issues, first make sure your pods are up to date
-```
+```sh
 pod update
 pod install
 ```
 occasionally, CocoaPods itself will need to be updated. Do this with
-```
+```sh
 sudo gem update
 ```
 
@@ -84,10 +84,10 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
         }, onError: {error in
             NSLog("<-- ERROR connect")
         }, onInserted: {item in
-            NSLog("New News item received with subject '\(item.Subject)'")
+            NSLog("New News item received with subject '\((item as News).Subject)'")
             refreshNewsVieuw()
         }, onUpdated: {item in
-            NSLog("Updated News item received with subject '\(item.Subject)'")
+            NSLog("Updated News item received with subject '\((item as News).Subject)'")
             refreshNewsVieuw()
         }, onDeleted: {recordId in
             NSLog("News item removed")

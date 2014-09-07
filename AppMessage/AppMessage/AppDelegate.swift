@@ -49,10 +49,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }, onError: {error in
                 NSLog("<-- ERROR connect")
             }, onInserted: {item in
-                NSLog("New News item received with subject '\(item.Subject)'")
+                NSLog("New News item received with subject '\((item as News).Subject)'")
                 refreshNewsVieuw()
             }, onUpdated: {item in
-                NSLog("Updated News item received with subject '\(item.Subject)'")
+                NSLog("Updated News item received with subject '\((item as News).Subject)'")
                 refreshNewsVieuw()
             }, onDeleted: {recordId in
                 NSLog("News item removed")
