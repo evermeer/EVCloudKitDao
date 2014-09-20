@@ -2,7 +2,7 @@
 //  TestsViewController.swift
 //
 //  Created by Edwin Vermeer on 25-07-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 import CloudKit
@@ -67,7 +67,7 @@ class TestsViewController : UIViewController {
         dao.saveItem(message, completionHandler: {record in
             NSLog("saveItem Message: \(record.recordID.recordName)");
             // Save the attached image
-            asset.Message = CKReference(recordID: record.recordID, action: .DeleteSelf)
+            asset.AttachedTo = CKReference(recordID: record.recordID, action: .DeleteSelf)
             dao.saveItem(asset, completionHandler: {record in
                 NSLog("saveItem Asset: \(record.recordID.recordName)");
                 }, errorHandler: {error in
@@ -125,11 +125,11 @@ class TestsViewController : UIViewController {
         
         // Get all users containing some words
         //TODO: Since beta 3 this does not work anymore.
-        //        dao.query<Message>("this the", completionHandler: { results in
-        //                NSLog("query : result count = \(results.count)")
-        //            }, errorHandler: { error in
-        //                NSLog("<--- ERROR query Message for words")
-        //            })
+//        dao.query(Message(), tokens: "this the", completionHandler: { results in
+//                NSLog("query : result count = \(results.count)")
+//            }, errorHandler: { error in
+//                NSLog("<--- ERROR query Message for words")
+//            })
         
         // Unsubscribe for update notifications
         dao.unsubscribe(Message(), errorHandler:{ error in

@@ -29,6 +29,8 @@ class RootViewController: RESideMenu, RESideMenuDelegate {
         
         super.viewDidLoad()
         
+        //TODO: Why need to reload in order to show the navigationbar?
+        self.setContentViewController(UINavigationController(rootViewController: self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController), animated: true)
     }
     
     

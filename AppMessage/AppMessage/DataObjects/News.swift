@@ -2,7 +2,7 @@
 //  News.swift
 //
 //  Created by Edwin Vermeer on 23-08-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 import CloudKit

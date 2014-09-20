@@ -2,7 +2,7 @@
 //  EVCloudData.swift
 //
 //  Created by Edwin Vermeer on 09-08-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 import Foundation
@@ -92,6 +92,7 @@ class EVCloudData {
     
     // ------------------------------------------------------------------------
     // MARK: - Query and subscribe
+    // To see how to create a predicate, see: https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKQuery_class/index.html
     // ------------------------------------------------------------------------
 
     func connect<T:NSObject>(type:T,

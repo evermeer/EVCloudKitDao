@@ -15,8 +15,7 @@
 		7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
 		7F434A4C1962AE780081F35C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4B1962AE780081F35C /* Message.swift */; };
 		7F434A4F1962B95D0081F35C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F434A4E1962B95D0081F35C /* CloudKit.framework */; };
-		7F61CA3419829B6A005EF254 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F61CA3319829B6A005EF254 /* Group.swift */; };
-		7F61CA3619829C25005EF254 /* GroupParticipant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F61CA3519829C25005EF254 /* GroupParticipant.swift */; };
+		7F61CA3619829C25005EF254 /* Participant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F61CA3519829C25005EF254 /* Participant.swift */; };
 		7F61CA3A19829CC7005EF254 /* MessageBubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3719829CC7005EF254 /* MessageBubble@2x.png */; };
 		7F61CA3B19829CC7005EF254 /* MessageIncoming.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3819829CC7005EF254 /* MessageIncoming.aiff */; };
 		7F61CA3C19829CC7005EF254 /* MessageOutgoing.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3919829CC7005EF254 /* MessageOutgoing.aiff */; };
@@ -34,6 +33,9 @@
 		7FC46F981982805A000A875F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC46F971982805A000A875F /* SettingsViewController.swift */; };
 		7FC46F9A19828082000A875F /* TestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FC46F9919828082000A875F /* TestsViewController.swift */; };
 		7FCB04A419A8E14F00A257FE /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB04A319A8E14F00A257FE /* News.swift */; };
+		7FD051C119C591B2009B7FEE /* image-not-available.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FD051C019C591B2009B7FEE /* image-not-available.jpg */; };
+		7FD051C319C5920B009B7FEE /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD051C219C5920B009B7FEE /* Channel.swift */; };
+		7FD051C519C6B423009B7FEE /* Folowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD051C419C6B423009B7FEE /* Folowing.swift */; };
 		7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
 		B7149DC27D9A4EEFAC271E35 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 551833E22DBE457F8D311100 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -64,8 +66,7 @@
 		7F434A4D1962B94E0081F35C /* AppMessage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppMessage.entitlements; sourceTree = "<group>"; };
 		7F434A4E1962B95D0081F35C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		7F51F15B197E6BA300A9E5B2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		7F61CA3319829B6A005EF254 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
-		7F61CA3519829C25005EF254 /* GroupParticipant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupParticipant.swift; sourceTree = "<group>"; };
+		7F61CA3519829C25005EF254 /* Participant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Participant.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7F61CA3719829CC7005EF254 /* MessageBubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MessageBubble@2x.png"; sourceTree = "<group>"; };
 		7F61CA3819829CC7005EF254 /* MessageIncoming.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageIncoming.aiff; sourceTree = "<group>"; };
 		7F61CA3919829CC7005EF254 /* MessageOutgoing.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageOutgoing.aiff; sourceTree = "<group>"; };
@@ -75,16 +76,19 @@
 		7FC46F6A198134C8000A875F /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		7FC46F8519813D77000A875F /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		7FC46F8A1981415B000A875F /* AppMessage-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppMessage-Bridging-Header.h"; sourceTree = "<group>"; };
-		7FC46F8B19814C17000A875F /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuViewController.swift; sourceTree = "<group>"; };
+		7FC46F8B19814C17000A875F /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LeftMenuViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7FC46F8D19824121000A875F /* RightMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RightMenuViewController.swift; sourceTree = "<group>"; };
 		7FC46F8F19824285000A875F /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7FC46F91198242A5000A875F /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		7FC46F9319825B33000A875F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		7FC46F9519827FB3000A875F /* GroupsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupsViewController.swift; sourceTree = "<group>"; };
-		7FC46F971982805A000A875F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		7FC46F9919828082000A875F /* TestsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestsViewController.swift; sourceTree = "<group>"; };
-		7FCB04A319A8E14F00A257FE /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
-		7FD41610199666F3003C2CE9 /* EVCloudData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudData.swift; sourceTree = "<group>"; };
+		7FC46F971982805A000A875F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SettingsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7FC46F9919828082000A875F /* TestsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TestsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7FCB04A319A8E14F00A257FE /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = News.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7FD051C019C591B2009B7FEE /* image-not-available.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "image-not-available.jpg"; sourceTree = "<group>"; };
+		7FD051C219C5920B009B7FEE /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Channel.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7FD051C419C6B423009B7FEE /* Folowing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Folowing.swift; sourceTree = "<group>"; };
+		7FD41610199666F3003C2CE9 /* EVCloudData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudData.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		969EBB2E4EA4488994B25F6C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -185,11 +189,12 @@
 		7F434A4A1962AE360081F35C /* DataObjects */ = {
 			isa = PBXGroup;
 			children = (
+				7FD051C219C5920B009B7FEE /* Channel.swift */,
 				7F434A4B1962AE780081F35C /* Message.swift */,
 				7F76554B197FF0FE008AD0D5 /* Asset.swift */,
-				7F61CA3319829B6A005EF254 /* Group.swift */,
-				7F61CA3519829C25005EF254 /* GroupParticipant.swift */,
+				7F61CA3519829C25005EF254 /* Participant.swift */,
 				7FCB04A319A8E14F00A257FE /* News.swift */,
+				7FD051C419C6B423009B7FEE /* Folowing.swift */,
 			);
 			path = DataObjects;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 		7FC46F6819813282000A875F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7FD051C019C591B2009B7FEE /* image-not-available.jpg */,
 				7FC46F9319825B33000A875F /* Default-568h@2x.png */,
 				7FC46F641981259A000A875F /* test.png */,
 				7F61CA3719829CC7005EF254 /* MessageBubble@2x.png */,
@@ -331,6 +337,7 @@
 				7FC46F651981259A000A875F /* test.png in Resources */,
 				7FC46F7B198134C8000A875F /* Storyboard.storyboard in Resources */,
 				7FC46F9419825B33000A875F /* Default-568h@2x.png in Resources */,
+				7FD051C119C591B2009B7FEE /* image-not-available.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,13 +393,14 @@
 				7F434A2B19628D490081F35C /* ViewController.swift in Sources */,
 				7FC46F9619827FB3000A875F /* GroupsViewController.swift in Sources */,
 				7F434A4C1962AE780081F35C /* Message.swift in Sources */,
-				7F61CA3619829C25005EF254 /* GroupParticipant.swift in Sources */,
+				7F61CA3619829C25005EF254 /* Participant.swift in Sources */,
 				7FC46F9A19828082000A875F /* TestsViewController.swift in Sources */,
 				7FC46F8619813D77000A875F /* RootViewController.swift in Sources */,
 				7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */,
-				7F61CA3419829B6A005EF254 /* Group.swift in Sources */,
 				7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */,
 				7F434A2919628D490081F35C /* AppDelegate.swift in Sources */,
+				7FD051C319C5920B009B7FEE /* Channel.swift in Sources */,
+				7FD051C519C6B423009B7FEE /* Folowing.swift in Sources */,
 				7FC46F8C19814C17000A875F /* LeftMenuViewController.swift in Sources */,
 				7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */,
 				7FC46F9019824285000A875F /* HomeViewController.swift in Sources */,

@@ -7,6 +7,27 @@
 
 import CloudKit
 
+@objc protocol SetCell {
+    func setcell()
+}
+
+class BaseUITableViewCell : UITableViewCell, SetCell {
+    func setcell() {}
+}
+
+class MyCell : BaseUITableViewCell {
+    override func setcell() {}
+}
+
+
+let cellClass: AnyClass! = NSClassFromString("MyCell")
+var objectType : NSObject.Type! = cellClass as NSObject.Type!
+var theObject: NSObject! = objectType() as NSObject
+var myCell:BaseUITableViewCell = theObject as BaseUITableViewCell
+
+var myCell2:protocol<SetCell> = objectType() as protocol<SetCell>
+
+
 class EVCloudKitDao {
     
     // ------------------------------------------------------------------------
@@ -98,7 +119,7 @@ class EVCloudKitDao {
                 })
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         }
-        NSException(name: "RunOnlyOnce", reason: "Call this method only once. Only here for easy debugging reasons for fast generation of the iCloud recordTypes. Sorry for the hard crash. Now disable the call to this method!  Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!", userInfo: nil).raise()
+        NSException(name: "RunOnlyOnce", reason: "Call this method only once. Only here for easy debugging reasons for fast generation of the iCloud recordTypes. Sorry for the hard crash. Now disable the call to this method in the AppDelegat!  Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!", userInfo: nil).raise()
     }
 
     
@@ -216,11 +237,11 @@ class EVCloudKitDao {
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
-    // TODO: Was in the 208 lab, since beta 3 it does not work anymore.
+    // TODO: Was in the 208 lab, since beta 3 it does not work anymore. also tried the "self contains '\(tokens)'"
     // Query a recordType for some tokens
     func query<T:NSObject>(type:T, tokens:String ,completionHandler: (results: Dictionary<String, T>) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = swiftStringFromClass(T())
-        var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "ALL tokenize(&@, 'Cdl') IN allTokens", tokens))
+        var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "ALL tokenize('\(tokens)', ‘Cdl') IN allTokens"))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 

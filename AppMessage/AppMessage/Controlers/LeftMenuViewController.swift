@@ -2,7 +2,7 @@
 //  LeftMenuViewController.swift
 //
 //  Created by Edwin Vermeer on 24-07-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 import UIKit

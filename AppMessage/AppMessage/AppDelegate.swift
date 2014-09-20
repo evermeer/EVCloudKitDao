@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
-//        dao.createRecordTypes([Message(), Asset(), Group(), GroupParticipant(), News()])
+        dao.createRecordTypes([Message(), Asset(), Channel(), Folowing(), Participant(), News()])
         // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         
         
@@ -63,12 +63,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func refreshNewsVieuw() {
         NSOperationQueue.mainQueue().addOperationWithBlock({
-            // If news view is loaded, then refresh the data (on the main queue)
+            // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
             var news:Dictionary<String, NSObject> = EVCloudData.instance.data["News_All"]!
             for (key, value) in news {
                 NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
             }
-            
         })
     }
     
@@ -77,7 +76,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
             NSLog("Not a CloudKit Query notification.")            
             })
-        
     }
     
     func applicationWillResignActive(application: UIApplication) {

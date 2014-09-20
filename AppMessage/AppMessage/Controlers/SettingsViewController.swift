@@ -2,7 +2,7 @@
 //  SettingsViewController.swift
 //
 //  Created by Edwin Vermeer on 25-07-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 class SettingsViewController : UIViewController {
