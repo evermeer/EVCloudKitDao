@@ -33,6 +33,13 @@ class TestsViewController : UIViewController {
             return
         }
         
+        // Remove all subscriptions
+        dao.unsubscribeAll({ subscriptionCount in
+                NSLog("unsubscribeAll removed \(subscriptionCount) subscriptions");
+            }, errorHandler: { error in
+                NSLog("<--- ERROR in unsubscribeAll");
+        })
+        
         // Look who of our contact is also using this app.
         // the To for the test message will be the last contact in the list
         sema = dispatch_semaphore_create(0)

@@ -318,7 +318,22 @@ class EVCloudKitDao {
         unsubscribe(type, filterId:"all", errorHandler:errorHandler)
     }
 
-
+    func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void , errorHandler:(error: NSError) -> Void) {
+        database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
+            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+                for subscriptionObject in subscriptions {
+                    var subscription: CKSubscription = subscriptionObject as CKSubscription
+                    self.database.deleteSubscriptionWithID(subscription.subscriptionID, completionHandler: {subscriptionId, error in
+                        self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+                            NSLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
+                        })
+                    })
+                }
+                completionHandler(subscriptionCount: subscriptions.count)
+            })
+        })
+    }
+    
     // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications
     // ------------------------------------------------------------------------

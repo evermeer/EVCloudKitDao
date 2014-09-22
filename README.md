@@ -70,17 +70,14 @@ func refreshNewsVieuw() {
         // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
         var news:Dictionary<String, NSObject> = EVCloudData.instance.data["News_All"]!
         for (key, value) in news {
-        NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
+            NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
         }
     })
 }
 
 
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-    var dao = EVCloudKitDao.instance
-    var data = EVCloudData.instance
-
-    data.connect(News()
+    EVCloudData.instance.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
         , onCompletion: { results in
