@@ -144,8 +144,11 @@ class TestsViewController : UIViewController {
             })
         
         // Subscribe for update notifications
-        dao.subscribe(Message(), errorHandler:{ error in
-            NSLog("<--- ERROR subscribeForRecordType")
+        dao.subscribe(Message(), subscriptionHandler:{ subscription in
+                subscription.notificationInfo.alertBody = "New Message record"
+                subscription.notificationInfo.shouldSendContentAvailable = true
+            }, errorHandler:{ error in
+                NSLog("<--- ERROR subscribeForRecordType")
             })
         
         // Unsubscribe for update notifications where you are in the To field
@@ -154,7 +157,10 @@ class TestsViewController : UIViewController {
             })
         
         // Subscribe for update notifications where you are in the To field
-        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", errorHandler: { error in
+        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", subscriptionHandler:{ subscription in
+                subscription.notificationInfo.alertBody = "New Message record where To = \(userId)"
+                subscription.notificationInfo.shouldSendContentAvailable = true
+            }, errorHandler: { error in
             NSLog("<--- ERROR subscribeForRecordType reference")
             })
         
@@ -168,15 +174,18 @@ class TestsViewController : UIViewController {
         EVCloudData.instance.connect(Message()
             , predicate: NSPredicate(value: true)
             , filterId: "Message_all"
-            , onCompletion: { results in
+            , subscriptionHandler:{ subscription in
+                subscription.notificationInfo.alertBody = "New Message record"
+                subscription.notificationInfo.shouldSendContentAvailable = true
+            }, completionHandler: { results in
                 NSLog("results = \(results.count)")
-            }, onError: { error in
+            }, errorHandler: { error in
                 NSLog("<--- ERROR connect")
-            }, onInserted: { item in
+            }, insertedHandler: { item in
                 NSLog("inserted \(item)")
-            }, onUpdated: { item in
+            }, updatedHandler: { item in
                 NSLog("updated \(item)")
-            }, onDeleted: { recordId in
+            }, deletedHandler: { recordId in
                 NSLog("deleted : \(recordId)")
             })
     }

@@ -28,9 +28,9 @@ class EVCloudData {
     var dao = EVCloudKitDao.instance;
     var data = Dictionary<String, Dictionary<String, NSObject>>()
     var predicates = Dictionary<String, NSPredicate>()
-    var onInserted = Dictionary<String, (item: NSObject) -> Void>()
-    var onUpdated = Dictionary<String, (item: NSObject) -> Void>()
-    var onDeleted = Dictionary<String, (recordId: String) -> Void>()
+    var insertedHandlers = Dictionary<String, (item: NSObject) -> Void>()
+    var updateHandlers = Dictionary<String, (item: NSObject) -> Void>()
+    var deletedHandlers = Dictionary<String, (recordId: String) -> Void>()
 
     // ------------------------------------------------------------------------
     // MARK: - Modify local data
@@ -44,10 +44,10 @@ class EVCloudData {
                 var table : Dictionary<String, NSObject> = data[filter]!
                 if table[recordId] != nil  {
                     table[recordId] = item
-                    (onUpdated[filter]!)(item: item)
+                    (updateHandlers[filter]!)(item: item)
                 } else {
                     table[recordId] = item
-                    (onInserted[filter]!)(item: item)
+                    (insertedHandlers[filter]!)(item: item)
                 }
             }
         }
@@ -59,7 +59,7 @@ class EVCloudData {
             if (table[recordId] != nil) {
                 var table2 = table // hack to make it mutable?
                 table2.removeValueForKey(recordId)
-                (onDeleted[filter]!)(recordId: recordId)
+                (deletedHandlers[filter]!)(recordId: recordId)
             }
         }
     }
@@ -73,7 +73,7 @@ class EVCloudData {
         dao.getItem(recordId, completionHandler: completionHandler, errorHandler: errorHandler)
     }
     
-    // Save an item and update the connected collections and call the onInserted events for those
+    // Save an item and update the connected collections and call the insertedHandlers events for those
     func saveItem(item: NSObject, completionHandler: (record: CKRecord) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.saveItem(item, completionHandler: { record in
             var item : NSObject = self.dao.fromCKRecord(record)
@@ -82,7 +82,7 @@ class EVCloudData {
             }, errorHandler: errorHandler)
     }
     
-    // Delete an Item for a recordId and update the connected collections and call the onDeleted events for those
+    // Delete an Item for a recordId and update the connected collections and call the deletedHandlers events for those
     func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
@@ -98,24 +98,25 @@ class EVCloudData {
     func connect<T:NSObject>(type:T,
         predicate: NSPredicate,
         filterId: String,
-        onCompletion: (results: Dictionary<String, T>) -> Void,
-        onError:(error: NSError) -> Void,
-        onInserted:(item: NSObject) -> Void,
-        onUpdated:(item: NSObject) -> Void,
-        onDeleted:(recordId: String) -> Void
+        subscriptionHandler:(subscription:CKSubscription ) -> Void,
+        completionHandler: (results: Dictionary<String, T>) -> Void,
+        errorHandler:(error: NSError) -> Void,
+        insertedHandler:(item: NSObject) -> Void,
+        updatedHandler:(item: NSObject) -> Void,
+        deletedHandler:(recordId: String) -> Void
         ) -> Void {
             self.data[filterId] = nil
-            self.onInserted[filterId] = onInserted
-            self.onUpdated[filterId] = onUpdated
-            self.onDeleted[filterId] = onDeleted
+            self.insertedHandlers[filterId] = insertedHandler
+            self.updateHandlers[filterId] = updatedHandler
+            self.deletedHandlers[filterId] = deletedHandler
             self.predicates[filterId] = predicate
-            dao.subscribe(type, predicate:predicate, filterId: filterId, errorHandler: onError)
+            dao.subscribe(type, predicate:predicate, filterId: filterId, subscriptionHandler:subscriptionHandler ,errorHandler: errorHandler)
             var recordType = dao.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in
                 self.data[filterId] = results
-                onCompletion(results: results)
-                }, errorHandler: onError)
+                completionHandler(results: results)
+                }, errorHandler: errorHandler)
     }
 
     

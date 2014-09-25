@@ -250,22 +250,13 @@ class EVCloudKitDao {
     // ------------------------------------------------------------------------
 
     // subscribe for modifications to a recordType and predicate (and register it under filterId)
-    func subscribe(type:NSObject, predicate:NSPredicate, filterId:String ,errorHandler:(error: NSError) -> Void) {
+    func subscribe(type:NSObject, predicate:NSPredicate, filterId:String, subscriptionHandler:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         if defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
         
         var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
         subscription.notificationInfo = CKNotificationInfo()
-        subscription.notificationInfo.alertBody = "New item added to \(recordType), \(filterId)"
-        //TODO: extra code block so you can set these from code?
-        // subscription.notificationInfo.alertLocalizationKey = "subscriptionMessage"
-        // subscription.notificationInfo.alertLocalizationArgs = [recordType, filterId]
-        // subscription.notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
-        // subscription.notificationInfo.alertLaunchImage = "alertImage"
-        // subscription.notificationInfo.soundName = "alertSound"
-        // subscription.notificationInfo.shouldBadge = true
-        // subscription.notificationInfo.desiredKeys = [""]
         subscription.notificationInfo.shouldSendContentAvailable = true
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
@@ -295,12 +286,12 @@ class EVCloudKitDao {
     }
     
     // subscribe for modifications to a recordType with a reference to the user
-    func subscribe(type:NSObject, referenceRecordName:String, referenceField:String, errorHandler:(error: NSError) -> Void) {
+    func subscribe(type:NSObject, referenceRecordName:String, referenceField:String, subscriptionHandler:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
         var predicate = NSPredicate(format: "%K == %@", referenceField ,parent)
-        subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)", errorHandler: errorHandler)
+        subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)",subscriptionHandler:subscriptionHandler ,errorHandler: errorHandler)
     }
     
     // unsubscribe for modifications to a recordType with a reference to the user
@@ -309,8 +300,8 @@ class EVCloudKitDao {
     }
 
     // subscribe for modifications to a recordType
-    func subscribe(type:NSObject, errorHandler:(error: NSError) -> Void) {
-        subscribe(type, predicate:NSPredicate(value: true), filterId: "all", errorHandler: errorHandler)
+    func subscribe(type:NSObject, subscriptionHandler:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
+        subscribe(type, predicate:NSPredicate(value: true), filterId: "all",subscriptionHandler: subscriptionHandler ,errorHandler: errorHandler)
     }
 
     // unsubscribe for modifications to a recordType

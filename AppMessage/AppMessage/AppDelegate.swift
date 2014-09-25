@@ -38,18 +38,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         data.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
-            , onCompletion: { results in
+            , subscriptionHandler: { subscription in
+                subscription.notificationInfo.alertBody = "New news item"
+                subscription.notificationInfo.shouldSendContentAvailable = true
+                // subscription.notificationInfo.alertLocalizationKey = "subscriptionMessage"
+                // subscription.notificationInfo.alertLocalizationArgs = [recordType, filterId]
+                // subscription.notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
+                // subscription.notificationInfo.alertLaunchImage = "alertImage"
+                // subscription.notificationInfo.soundName = "alertSound"
+                // subscription.notificationInfo.shouldBadge = true
+                // subscription.notificationInfo.desiredKeys = [""]
+            }
+            , completionHandler: { results in
                 NSLog("There are \(results.count) existing news items")
                 self.refreshNewsVieuw()
-            }, onError: {error in
+            }, errorHandler: {error in
                 NSLog("<-- ERROR connect")
-            }, onInserted: {item in
+            }, insertedHandler: {item in
                 NSLog("New News item received with subject '\((item as News).Subject)'")
                 self.refreshNewsVieuw()
-            }, onUpdated: {item in
+            }, updatedHandler: {item in
                 NSLog("Updated News item received with subject '\((item as News).Subject)'")
                 self.refreshNewsVieuw()
-            }, onDeleted: {recordId in
+            }, deletedHandler: {recordId in
                 NSLog("News item removed")
                 self.refreshNewsVieuw()
             })

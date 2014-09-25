@@ -77,24 +77,28 @@ func refreshNewsVieuw() {
 
 
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-    EVCloudData.instance.connect(News()
+    data.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
-        , onCompletion: { results in
+        , subscriptionHandler: { subscription in
+            subscription.notificationInfo.alertBody = "New news item"
+            subscription.notificationInfo.shouldBadge = true
+        }
+        , completionHandler: { results in
             NSLog("There are \(results.count) existing news items")
-            refreshNewsVieuw()
-        }, onError: {error in
+            self.refreshNewsVieuw()
+        }, errorHandler: {error in
             NSLog("<-- ERROR connect")
-        }, onInserted: {item in
+        }, insertedHandler: {item in
             NSLog("New News item received with subject '\((item as News).Subject)'")
-            refreshNewsVieuw()
-        }, onUpdated: {item in
+            self.refreshNewsVieuw()
+        }, updatedHandler: {item in
             NSLog("Updated News item received with subject '\((item as News).Subject)'")
-            refreshNewsVieuw()
-        }, onDeleted: {recordId in
+            self.refreshNewsVieuw()
+        }, deletedHandler: {recordId in
             NSLog("News item removed")
-            refreshNewsVieuw()
-        })
+            self.refreshNewsVieuw()
+    })
 }
 
 func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
