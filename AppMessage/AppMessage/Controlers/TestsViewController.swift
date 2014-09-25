@@ -144,9 +144,9 @@ class TestsViewController : UIViewController {
             })
         
         // Subscribe for update notifications
-        dao.subscribe(Message(), configureSubscription:{ subscription in
-                subscription.notificationInfo.alertBody = "New Message record"
-                subscription.notificationInfo.shouldSendContentAvailable = true
+        dao.subscribe(Message(), configureNotificationInfo:{ notificationInfo in
+                notificationInfo.alertBody = "New Message record"
+                notificationInfo.shouldSendContentAvailable = true
             }, errorHandler:{ error in
                 NSLog("<--- ERROR subscribeForRecordType")
             })
@@ -157,9 +157,9 @@ class TestsViewController : UIViewController {
             })
         
         // Subscribe for update notifications where you are in the To field
-        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", configureSubscription:{ subscription in
-                subscription.notificationInfo.alertBody = "New Message record where To = \(userId)"
-                subscription.notificationInfo.shouldSendContentAvailable = true
+        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", configureNotificationInfo:{ notificationInfo in
+                notificationInfo.alertBody = "New Message record where To = \(userId)"
+                notificationInfo.shouldSendContentAvailable = true
             }, errorHandler: { error in
             NSLog("<--- ERROR subscribeForRecordType reference")
             })
@@ -174,9 +174,9 @@ class TestsViewController : UIViewController {
         EVCloudData.instance.connect(Message()
             , predicate: NSPredicate(value: true)
             , filterId: "Message_all"
-            , configureSubscription:{ subscription in
-                subscription.notificationInfo.alertBody = "New Message record"
-                subscription.notificationInfo.shouldSendContentAvailable = true
+            , configureNotificationInfo:{ notificationInfo in
+                notificationInfo.alertBody = "New Message record"
+                notificationInfo.shouldSendContentAvailable = true
             }, completionHandler: { results in
                 NSLog("results = \(results.count)")
             }, insertedHandler: { item in

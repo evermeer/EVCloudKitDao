@@ -80,9 +80,9 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
     data.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
-        , configureSubscription: { subscription in
-            subscription.notificationInfo.alertBody = "New news item"
-            subscription.notificationInfo.shouldBadge = true
+        , configureNotificationInfo: { notificationInfo in
+            notificationInfo.alertBody = "New news item"
+            notificationInfo.shouldBadge = true
         }, completionHandler: { results in
             NSLog("There are \(results.count) existing news items")
             self.refreshNewsVieuw()

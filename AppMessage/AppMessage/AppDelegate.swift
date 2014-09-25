@@ -38,16 +38,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         data.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
-            , configureSubscription: { subscription in
-                subscription.notificationInfo.alertBody = "New news item"
-                subscription.notificationInfo.shouldSendContentAvailable = true
-                // subscription.notificationInfo.alertLocalizationKey = "subscriptionMessage"
-                // subscription.notificationInfo.alertLocalizationArgs = [recordType, filterId]
-                // subscription.notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
-                // subscription.notificationInfo.alertLaunchImage = "alertImage"
-                // subscription.notificationInfo.soundName = "alertSound"
-                // subscription.notificationInfo.shouldBadge = true
-                // subscription.notificationInfo.desiredKeys = [""]
+            , configureNotificationInfo: { notificationInfo in
+                notificationInfo.alertBody = "New news item"
+                notificationInfo.shouldSendContentAvailable = true
+                // notificationInfo.alertLocalizationKey = "subscriptionMessage"
+                // notificationInfo.alertLocalizationArgs = [recordType, filterId]
+                // notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
+                // notificationInfo.alertLaunchImage = "alertImage"
+                // notificationInfo.soundName = "alertSound"
+                // notificationInfo.shouldBadge = true
+                // notificationInfo.desiredKeys = [""]
             }
             , completionHandler: { results in
                 NSLog("There are \(results.count) existing news items")
