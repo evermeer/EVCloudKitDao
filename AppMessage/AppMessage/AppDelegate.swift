@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         data.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
-            , subscriptionHandler: { subscription in
+            , configureSubscription: { subscription in
                 subscription.notificationInfo.alertBody = "New news item"
                 subscription.notificationInfo.shouldSendContentAvailable = true
                 // subscription.notificationInfo.alertLocalizationKey = "subscriptionMessage"
@@ -52,8 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             , completionHandler: { results in
                 NSLog("There are \(results.count) existing news items")
                 self.refreshNewsVieuw()
-            }, errorHandler: {error in
-                NSLog("<-- ERROR connect")
             }, insertedHandler: {item in
                 NSLog("New News item received with subject '\((item as News).Subject)'")
                 self.refreshNewsVieuw()
@@ -63,6 +61,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }, deletedHandler: {recordId in
                 NSLog("News item removed")
                 self.refreshNewsVieuw()
+            }, errorHandler: {error in
+                NSLog("<-- ERROR connect")
             })
         
         // Call this to handle notifications that were not handled yet.

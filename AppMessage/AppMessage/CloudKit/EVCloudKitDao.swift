@@ -250,7 +250,7 @@ class EVCloudKitDao {
     // ------------------------------------------------------------------------
 
     // subscribe for modifications to a recordType and predicate (and register it under filterId)
-    func subscribe(type:NSObject, predicate:NSPredicate, filterId:String, subscriptionHandler:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
+    func subscribe(type:NSObject, predicate:NSPredicate, filterId:String, configureSubscription:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         if defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
@@ -286,12 +286,12 @@ class EVCloudKitDao {
     }
     
     // subscribe for modifications to a recordType with a reference to the user
-    func subscribe(type:NSObject, referenceRecordName:String, referenceField:String, subscriptionHandler:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
+    func subscribe(type:NSObject, referenceRecordName:String, referenceField:String, configureSubscription:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
         var predicate = NSPredicate(format: "%K == %@", referenceField ,parent)
-        subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)",subscriptionHandler:subscriptionHandler ,errorHandler: errorHandler)
+        subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)",configureSubscription: configureSubscription ,errorHandler: errorHandler)
     }
     
     // unsubscribe for modifications to a recordType with a reference to the user
@@ -300,8 +300,8 @@ class EVCloudKitDao {
     }
 
     // subscribe for modifications to a recordType
-    func subscribe(type:NSObject, subscriptionHandler:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
-        subscribe(type, predicate:NSPredicate(value: true), filterId: "all",subscriptionHandler: subscriptionHandler ,errorHandler: errorHandler)
+    func subscribe(type:NSObject, configureSubscription:(subscription:CKSubscription ) -> Void, errorHandler:(error: NSError) -> Void) {
+        subscribe(type, predicate:NSPredicate(value: true), filterId: "all", configureSubscription: configureSubscription ,errorHandler: errorHandler)
     }
 
     // unsubscribe for modifications to a recordType

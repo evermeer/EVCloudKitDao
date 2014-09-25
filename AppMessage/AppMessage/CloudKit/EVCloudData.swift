@@ -98,19 +98,19 @@ class EVCloudData {
     func connect<T:NSObject>(type:T,
         predicate: NSPredicate,
         filterId: String,
-        subscriptionHandler:(subscription:CKSubscription ) -> Void,
+        configureSubscription:(subscription:CKSubscription ) -> Void,
         completionHandler: (results: Dictionary<String, T>) -> Void,
-        errorHandler:(error: NSError) -> Void,
         insertedHandler:(item: NSObject) -> Void,
         updatedHandler:(item: NSObject) -> Void,
-        deletedHandler:(recordId: String) -> Void
+        deletedHandler:(recordId: String) -> Void,
+        errorHandler:(error: NSError) -> Void
         ) -> Void {
             self.data[filterId] = nil
             self.insertedHandlers[filterId] = insertedHandler
             self.updateHandlers[filterId] = updatedHandler
             self.deletedHandlers[filterId] = deletedHandler
             self.predicates[filterId] = predicate
-            dao.subscribe(type, predicate:predicate, filterId: filterId, subscriptionHandler:subscriptionHandler ,errorHandler: errorHandler)
+            dao.subscribe(type, predicate:predicate, filterId: filterId, configureSubscription:configureSubscription ,errorHandler: errorHandler)
             var recordType = dao.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in

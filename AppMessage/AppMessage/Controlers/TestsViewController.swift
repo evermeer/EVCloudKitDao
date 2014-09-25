@@ -144,7 +144,7 @@ class TestsViewController : UIViewController {
             })
         
         // Subscribe for update notifications
-        dao.subscribe(Message(), subscriptionHandler:{ subscription in
+        dao.subscribe(Message(), configureSubscription:{ subscription in
                 subscription.notificationInfo.alertBody = "New Message record"
                 subscription.notificationInfo.shouldSendContentAvailable = true
             }, errorHandler:{ error in
@@ -157,7 +157,7 @@ class TestsViewController : UIViewController {
             })
         
         // Subscribe for update notifications where you are in the To field
-        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", subscriptionHandler:{ subscription in
+        dao.subscribe(Message(), referenceRecordName: userId, referenceField:"To", configureSubscription:{ subscription in
                 subscription.notificationInfo.alertBody = "New Message record where To = \(userId)"
                 subscription.notificationInfo.shouldSendContentAvailable = true
             }, errorHandler: { error in
@@ -174,19 +174,19 @@ class TestsViewController : UIViewController {
         EVCloudData.instance.connect(Message()
             , predicate: NSPredicate(value: true)
             , filterId: "Message_all"
-            , subscriptionHandler:{ subscription in
+            , configureSubscription:{ subscription in
                 subscription.notificationInfo.alertBody = "New Message record"
                 subscription.notificationInfo.shouldSendContentAvailable = true
             }, completionHandler: { results in
                 NSLog("results = \(results.count)")
-            }, errorHandler: { error in
-                NSLog("<--- ERROR connect")
             }, insertedHandler: { item in
                 NSLog("inserted \(item)")
             }, updatedHandler: { item in
                 NSLog("updated \(item)")
             }, deletedHandler: { recordId in
                 NSLog("deleted : \(recordId)")
+            }, errorHandler: { error in
+                NSLog("<--- ERROR connect")
             })
     }
     
