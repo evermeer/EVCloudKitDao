@@ -80,15 +80,12 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
     data.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
-        , subscriptionHandler: { subscription in
+        , configureSubscription: { subscription in
             subscription.notificationInfo.alertBody = "New news item"
             subscription.notificationInfo.shouldBadge = true
-        }
-        , completionHandler: { results in
+        }, completionHandler: { results in
             NSLog("There are \(results.count) existing news items")
             self.refreshNewsVieuw()
-        }, errorHandler: {error in
-            NSLog("<-- ERROR connect")
         }, insertedHandler: {item in
             NSLog("New News item received with subject '\((item as News).Subject)'")
             self.refreshNewsVieuw()
@@ -98,6 +95,8 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
         }, deletedHandler: {recordId in
             NSLog("News item removed")
             self.refreshNewsVieuw()
+        }, errorHandler: {error in
+            NSLog("<-- ERROR connect")
     })
 }
 
