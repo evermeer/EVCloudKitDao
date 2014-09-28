@@ -103,7 +103,7 @@ class TestsViewController : UIViewController {
         dao.getItem(createdId
             , completionHandler: { item in
                 NSLog("getItem: with the keys and values:")
-                dao.logObject(item)
+                EVReflection.logObject(item)
             }, errorHandler: { error in
                 NSLog("<--- ERROR getItem")
             })

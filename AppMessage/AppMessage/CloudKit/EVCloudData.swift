@@ -191,7 +191,7 @@ class EVCloudData {
             self.deletedHandlers[filterId] = deletedHandler
             self.predicates[filterId] = predicate
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
-            var recordType = dao.swiftStringFromClass(type)
+            var recordType = EVReflection.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in
                 self.data[filterId] = results
