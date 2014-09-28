@@ -8,8 +8,6 @@
 import UIKit
 
 class RootViewController: RESideMenu, RESideMenuDelegate {
-    internal var x:String?
-    private var y:String?
     
     override func viewDidLoad() {
 

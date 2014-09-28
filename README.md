@@ -9,7 +9,7 @@ The EVCloudKitData.swift class will let you handle CloudKit data as easy as poss
 See TestsViewController.swift for a complete overview of the functionality
 The AppMessage sample is a complete functional messaging sample based on CloudKit.
 
-This is a work in progress. Both Shift and CloudKit are in beta (this is tested with beta 7)
+This is still a work in progress. The Dao and Data classes are complete, the demo is not.
 
 ## Main features of EVCloudKitDao:
 - simple singleton access to your default database
@@ -23,13 +23,14 @@ This is a work in progress. Both Shift and CloudKit are in beta (this is tested 
 
 ## Main features of EVCloudKitData:
 - Use just one predicate for a query, subscription and processing incomming notifications.
-- int's only one method call with a couple of callback events
+- it's only one method call with a couple of callback events
 - it will store the fetched data collection in memory.
 - notificatons will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
 
 ## Todo's'
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
+- Completing the demo
 - Lots of testing
 - No support for zone's yet. Do you think we need it? Just let me know.
 
@@ -77,7 +78,7 @@ func refreshNewsVieuw() {
 
 
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-    data.connect(News()
+    EVCloudData.instance.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
         , configureNotificationInfo: { notificationInfo in

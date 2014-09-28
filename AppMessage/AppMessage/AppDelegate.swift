@@ -26,16 +26,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             println("The user’s iCloud login changed: should refresh all user data.")
         }
         
-        var dao = EVCloudKitDao.instance
-        var data = EVCloudData.instance
-        
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
-        dao.createRecordTypes([Message(), Asset(), Channel(), Folowing(), Participant(), News()])
-        // Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
+        // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
+        EVCloudKitDao.instance.createRecordTypes([Message(), Asset(), Channel(), Folowing(), Participant(), News()])
         
         
-        data.connect(News()
+        EVCloudData.instance.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in
