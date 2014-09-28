@@ -2,14 +2,11 @@ EVCloudKitDao
 =============
 
 ## What is this
-This is a library for simplified access to  Apple's CloudKit data
-You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications
-The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible
+This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. You can use the EVReflection.swift class if you want easy to use reflection methods.
 
-See TestsViewController.swift for a complete overview of the functionality
-The AppMessage sample is a complete functional messaging sample based on CloudKit.
+See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage sample will be a complete functional messaging sample based on CloudKit.
 
-This is still a work in progress. The Dao and Data classes are complete, the demo is not.
+This is still a work in progress. The Dao, Data and Reflection classes are complete, the demo is not.
 
 ## Main features of EVCloudKitDao:
 - simple singleton access to your default database
@@ -30,7 +27,7 @@ This is still a work in progress. The Dao and Data classes are complete, the dem
 
 ## Todo's'
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
-- Completing the demo
+- Completing the AppMessage demo
 - Lots of testing
 - No support for zone's yet. Do you think we need it? Just let me know.
 
