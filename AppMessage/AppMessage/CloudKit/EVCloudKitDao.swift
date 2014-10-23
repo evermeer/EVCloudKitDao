@@ -2,7 +2,7 @@
 //  EVCloudKitDao.swift
 //
 //  Created by Edwin Vermeer on 04-06-14.
-//  Copyright (c) 2014 Evict. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 import CloudKit
@@ -50,6 +50,7 @@ class EVCloudKitDao {
     */
     private var database : CKDatabase
     
+    internal var activeUser : CKDiscoveredUserInfo?
     
     /**
     On init set a quick refrence to the container and database
@@ -212,6 +213,7 @@ class EVCloudKitDao {
         self.requestDiscoverabilityPermission({ discoverable in
             if discoverable {
                 self.discoverUserInfo({user in
+                        self.activeUser = user
                         completionHandler(user: user)
                     }, errorHandler: { error in
                         errorHandler(error: error)
@@ -330,6 +332,7 @@ class EVCloudKitDao {
         var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", referenceField ,parent))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
+
     
     /**
     Query a recordType with a predicate
@@ -383,6 +386,7 @@ class EVCloudKitDao {
         var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
         subscription.notificationInfo = CKNotificationInfo()
         subscription.notificationInfo.shouldSendContentAvailable = true
+        subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
         configureNotificationInfo(notificationInfo: subscription.notificationInfo)
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
@@ -433,7 +437,7 @@ class EVCloudKitDao {
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
         var predicate = NSPredicate(format: "%K == %@", referenceField ,parent)
-        subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)_\(referenceRecordName)",configureNotificationInfo: configureNotificationInfo ,errorHandler: errorHandler)
+        subscribe(type, predicate:predicate!, filterId: "reference_\(referenceField)_\(referenceRecordName)",configureNotificationInfo: configureNotificationInfo ,errorHandler: errorHandler)
     }
     
     /**

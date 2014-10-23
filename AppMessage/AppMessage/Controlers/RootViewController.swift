@@ -7,42 +7,47 @@
 
 import UIKit
 
-class RootViewController: RESideMenu, RESideMenuDelegate {
+class RootViewController: UIViewController {
+
+    @IBOutlet weak var loginLabel: UILabel!
     
     override func viewDidLoad() {
-
-        self.animationDuration = 0.2
-        self.menuPreferredStatusBarStyle = .LightContent
-        self.contentViewShadowColor = .blackColor()
-        self.contentViewShadowOffset = CGSizeMake(0, 0)
-        self.contentViewShadowOpacity = 0.6
-        self.contentViewShadowRadius = 12
-        self.contentViewShadowEnabled = true
-
-        self.contentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController
-        self.leftMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as UIViewController
-        self.rightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController") as UIViewController
-        self.backgroundImage = UIImage(named:"Default-568h")
-        self.delegate = self
-        
+        reactToiCloudloginChanges()
+        getUser()
         super.viewDidLoad()
-        
-        //TODO: Why need to reload in order to show the navigationbar?
-        self.setContentViewController(UINavigationController(rootViewController: self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController), animated: true)
     }
     
+    /**
+    Registering for iCloud availability change notifications (log in as different user, clear all user related data)
+    */
+    func reactToiCloudloginChanges() {
+        var ubiquityIdentityDidChangeNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
+            NSLog("The user’s iCloud login changed: should refresh all user data.")
+            NSOperationQueue.mainQueue().addOperationWithBlock() {
+                self.getUser()
+            }
+            return
+        }
+    }
     
-    func sideMenu(sideMenu:RESideMenu, willShowMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(willShowMenuViewController)")
+    /**
+    As what user are we loged in to iCloud. Then open the main app.
+    */
+    func getUser() {
+        self.loginLabel.hidden = true
+        EVCloudKitDao.instance.getUserInfo({user in
+                NSLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)");
+                        
+                NSOperationQueue.mainQueue().addOperationWithBlock(){
+                    let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
+                    let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as UIViewController;
+                    self.presentViewController(viewController, animated: false, completion: nil);
+                }
+            }, errorHandler: { error in
+                NSLog("<--- ERROR in getUserInfo");
+                NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account")
+                self.loginLabel.hidden = false
+
+        })
     }
-    func sideMenu(sideMenu:RESideMenu, didShowMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(didShowMenuViewController)")
-    }
-    func sideMenu(sideMenu:RESideMenu, willHideMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(willHideMenuViewController)")
-    }
-    func sideMenu(sideMenu:RESideMenu, didHideMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(didHideMenuViewController)")
-    }
-    
 }

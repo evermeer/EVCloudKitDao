@@ -15,75 +15,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-        
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {        
         // Make sure we receive subscription notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
         application.registerForRemoteNotifications()
-
-        // Registering for iCloud availability change notifications (log in as different user, clear all user related data)
-        var localeChangeObserver = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: NSOperationQueue.mainQueue()) { _ in
-            println("The user’s iCloud login changed: should refresh all user data.")
-        }
-        
+                
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
-//           EVCloudKitDao.instance.createRecordTypes([Message(), Asset(), Channel(), Folowing(), Participant(), News()])
-        
-        
-        EVCloudData.instance.connect(News()
-            , predicate: NSPredicate(value: true)
-            , filterId: "News_All"
-            , configureNotificationInfo: { notificationInfo in
-                notificationInfo.alertBody = "New news item"
-                notificationInfo.shouldSendContentAvailable = true
-                // notificationInfo.alertLocalizationKey = "subscriptionMessage"
-                // notificationInfo.alertLocalizationArgs = [recordType, filterId]
-                // notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
-                // notificationInfo.alertLaunchImage = "alertImage"
-                // notificationInfo.soundName = "alertSound"
-                // notificationInfo.shouldBadge = true
-                // notificationInfo.desiredKeys = [""]
-            }
-            , completionHandler: { results in
-                NSLog("There are \(results.count) existing news items")
-                self.refreshNewsVieuw()
-            }, insertedHandler: {item in
-                NSLog("New News item received with subject '\((item as News).Subject)'")
-                self.refreshNewsVieuw()
-            }, updatedHandler: {item in
-                NSLog("Updated News item received with subject '\((item as News).Subject)'")
-                self.refreshNewsVieuw()
-            }, deletedHandler: {recordId in
-                NSLog("News item removed")
-                self.refreshNewsVieuw()
-            }, errorHandler: {error in
-                NSLog("<-- ERROR connect")
-            })
-        
-        // Call this to handle notifications that were not handled yet.
-        // Only already setup CloudKit connect's will receive these notifications (like the News above)
-        EVCloudData.instance.fetchChangeNotifications()
+        EVCloudKitDao.instance.createRecordTypes([Message(), Asset(), Channel(), Folowing(), Participant(), News()])
         
         return true
     }
-    
-    func refreshNewsVieuw() {
-        NSOperationQueue.mainQueue().addOperationWithBlock({
-            // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
-            var news:Dictionary<String, NSObject> = EVCloudData.instance.data["News_All"]!
-            for (key, value) in news {
-                NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
-            }
-        })
-    }
+
     
     func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {
         NSLog("Push received")
         EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
             NSLog("Not a CloudKit Query notification.")            
-            })
+        })
     }
     
     func applicationWillResignActive(application: UIApplication) {

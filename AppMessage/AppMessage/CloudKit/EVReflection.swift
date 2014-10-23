@@ -1,9 +1,8 @@
 //
 //  EVReflection.swift
-//  AppMessage
 //
 //  Created by Edwin Vermeer on 28-09-14.
-//  Copyright (c) 2014 mirabeau. All rights reserved.
+//  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
 import Foundation

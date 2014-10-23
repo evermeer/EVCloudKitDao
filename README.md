@@ -2,7 +2,7 @@ EVCloudKitDao
 =============
 
 ## What is this
-This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. You can use the EVReflection.swift class if you want easy to use reflection methods.
+This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
 
 See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage sample will be a complete functional messaging sample based on CloudKit.
 
@@ -31,6 +31,12 @@ This is still a work in progress. The Dao, Data and Reflection classes are compl
 - Lots of testing
 - No support for zone's yet. Do you think we need it? Just let me know.
 
+## External components
+The AppMessage demo us using the folowing components which can be installed using CocoaPods. See instructions below.
+- [ExSwift](https://github.com/pNre/ExSwift/tree/iOS) - A set of Swift extensions for standard types and classes.
+- [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
+- [PHFComposerBarView](https://github.com/fphilipe/PHFComposeBarView)
+
 ## Building the AppMessage demo
 
 1) Clone the repo to a working directory
@@ -57,7 +63,7 @@ sudo gem update
 5) Build and Run and you are ready to go!
 
 ## How to use the EVCloudKitData
-```swift
+```
 class News : NSObject {
     var Subject : String = ""
     var Text : String = ""
@@ -109,7 +115,7 @@ func application(application: UIApplication!, didReceiveRemoteNotification userI
 
 
 ## How to use the EVCloudKitDao
-```swift
+```
 class Message : NSObject {
     var From : String = ""
     var To : String = ""

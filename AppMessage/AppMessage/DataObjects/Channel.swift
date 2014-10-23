@@ -19,7 +19,7 @@ enum ChannelType: String {
 class Channel : NSObject {
     //iCloud user reference
     var User : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
-    var Type : String = ChannelType.User.toRaw()
+    var Type : String = ChannelType.User.rawValue
     var Name : String = ""
     var About : String = ""
     var HasAttachments : Bool = false

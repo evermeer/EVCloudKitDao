@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -15,12 +15,50 @@
                     <view key="view" contentMode="scaleToFill" id="bg9-g2-Pzr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SaP-VV-g21">
+                                <rect key="frame" x="16" y="20" width="288" height="160"/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">For using this app you need to be loged in to iCloud. Open the settings app, go to iCloud and log in. Your iCloud id will be used to identify you.</string>
+                                        <attributes>
+                                            <color key="NSColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="loginLabel" destination="SaP-VV-g21" id="D8i-YA-k3Q"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4oF-Wp-Iym" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-82" y="68"/>
+            <point key="canvasLocation" x="-692" y="60"/>
+        </scene>
+        <!--Menu View Controller-->
+        <scene sceneID="Ean-3s-vFh">
+            <objects>
+                <viewController restorationIdentifier="menuViewController" storyboardIdentifier="menuViewController" id="222-L3-Pnx" customClass="MenuViewController" customModule="AppMessage" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4Ch-lA-JWT"/>
+                        <viewControllerLayoutGuide type="bottom" id="9WJ-If-S3i"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="IGB-JQ-iFG">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="765-CP-PRT"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BgV-Bt-zmQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-28" y="30"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="lv8-3B-Eig">

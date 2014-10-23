@@ -124,7 +124,7 @@ class TestsViewController : UIViewController {
         
         // Get all records of a recordType that are created by me using a predicate
         var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
-        dao.query(Message(), predicate:predicate, completionHandler: { results in
+        dao.query(Message(), predicate:predicate!, completionHandler: { results in
             NSLog("query recordType created by: result count = \(results.count)")
             }, errorHandler: { error in
                 NSLog("<--- ERROR query Message created by user")
