@@ -33,9 +33,10 @@ This is still a work in progress. The Dao, Data and Reflection classes are compl
 
 ## External components
 The AppMessage demo us using the folowing components which can be installed using CocoaPods. See instructions below.
-- [ExSwift](https://github.com/pNre/ExSwift/tree/iOS) - A set of Swift extensions for standard types and classes.
 - [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
-- [PHFComposerBarView](https://github.com/fphilipe/PHFComposeBarView)
+- [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
+- [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
+
 
 ## Building the AppMessage demo
 
@@ -72,9 +73,9 @@ class News : NSObject {
 func refreshNewsVieuw() {
     NSOperationQueue.mainQueue().addOperationWithBlock({
         // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
-        var news:Dictionary<String, NSObject> = EVCloudData.instance.data["News_All"]!
+        var news:Dictionary<String, News> = EVCloudData.instance.data["News_All"]! as Dictionary<String, News>
         for (key, value) in news {
-            NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
+            NSLog("key = \(key), Subject = \(value.Subject), Body = \(value.Body), ActionUrl = \(value.ActionUrl)")
         }
     })
 }

@@ -10,12 +10,20 @@ import UIKit
 class MenuViewController: RESideMenu, RESideMenuDelegate {
     
     override func viewDidLoad() {
-        
-        self.connectToNews()
+        connectToNews()
         
         // Only already setup CloudKit connect's will receive these notifications (like the News above)
         EVCloudData.instance.fetchChangeNotifications()
         
+        setupMenu()
+
+        super.viewDidLoad()
+        
+        //TODO: Why need to reload in order to show the navigationbar?
+        self.setContentViewController(UINavigationController(rootViewController: self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController), animated: true)
+    }
+    
+    func setupMenu() {
         // Setting menu properties
         self.delegate = self
         self.animationDuration = 0.2
@@ -31,28 +39,21 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
         self.contentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController
         self.leftMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as UIViewController
         self.rightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController") as UIViewController
-        
-        super.viewDidLoad()
-        
-        //TODO: Why need to reload in order to show the navigationbar?
-        self.setContentViewController(UINavigationController(rootViewController: self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController), animated: true)
-        
     }
     
     
     func sideMenu(sideMenu:RESideMenu, willShowMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(willShowMenuViewController)")
+        //NSLog("willShowMenuViewController: \(willShowMenuViewController)")
     }
     func sideMenu(sideMenu:RESideMenu, didShowMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(didShowMenuViewController)")
+        //NSLog("willShowMenuViewController: \(didShowMenuViewController)")
     }
     func sideMenu(sideMenu:RESideMenu, willHideMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(willHideMenuViewController)")
+        //NSLog("willShowMenuViewController: \(willHideMenuViewController)")
     }
     func sideMenu(sideMenu:RESideMenu, didHideMenuViewController:UIViewController) {
-        NSLog("willShowMenuViewController: \(didHideMenuViewController)")
+        //NSLog("willShowMenuViewController: \(didHideMenuViewController)")
     }
-    
     
     
     func connectToNews() {
@@ -90,9 +91,9 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
     func refreshNewsVieuw() {
         NSOperationQueue.mainQueue().addOperationWithBlock({
             // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
-            var news:Dictionary<String, NSObject> = EVCloudData.instance.data["News_All"]!
+            var news:Dictionary<String, News> = EVCloudData.instance.data["News_All"]! as Dictionary<String, News>
             for (key, value) in news {
-                NSLog("key = \(key), Subject = \((value as News).Subject), Body = \((value as News).Body), ActionUrl = \((value as News).ActionUrl)")
+                NSLog("key = \(key), Subject = \(value.Subject), Body = \(value.Body), ActionUrl = \(value.ActionUrl)")
             }
         })
     }

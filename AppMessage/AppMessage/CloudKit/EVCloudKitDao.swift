@@ -527,8 +527,7 @@ class EVCloudKitDao {
             if(queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated) {
                 deleted(recordId: recordID.recordName)
             } else {
-                var dao: EVCloudKitDao = EVCloudKitDao.instance
-                dao.getItem(recordID.recordName, completionHandler: { item in
+                EVCloudKitDao.instance.getItem(recordID.recordName, completionHandler: { item in
                     NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                     EVReflection.logObject(item)
                     if (queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated ) {
@@ -569,8 +568,7 @@ class EVCloudKitDao {
                 if (queryNotification.queryNotificationReason == .RecordDeleted) {
                     deleted(recordId: queryNotification.recordID.recordName)
                 } else {
-                    var dao: EVCloudKitDao = EVCloudKitDao.instance
-                    dao.getItem(queryNotification.recordID.recordName, completionHandler: { item in
+                    EVCloudKitDao.instance.getItem(queryNotification.recordID.recordName, completionHandler: { item in
                         NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                         EVReflection.logObject(item)
                         if (queryNotification.queryNotificationReason == .RecordCreated) {

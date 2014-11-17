@@ -10,6 +10,7 @@ import UIKit
 class RootViewController: UIViewController {
 
     @IBOutlet weak var loginLabel: UILabel!
+    @IBOutlet weak var contacting: UILabel!
     
     override func viewDidLoad() {
         reactToiCloudloginChanges()
@@ -44,9 +45,10 @@ class RootViewController: UIViewController {
                     self.presentViewController(viewController, animated: false, completion: nil);
                 }
             }, errorHandler: { error in
-                NSLog("<--- ERROR in getUserInfo");
-                NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account")
+                NSLog("<--- ERROR in getUserInfo"); 
+                NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account. (It could also be that your project iCloud entitlements are wrong)")
                 self.loginLabel.hidden = false
+                self.contacting.hidden = true
 
         })
     }

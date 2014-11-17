@@ -11,7 +11,6 @@ class TestsViewController : UIViewController {
     
     @IBAction func runTest(sender: AnyObject) {
         // See AppDelegate.swift to see how to handle subscriptions
-        
         var dao: EVCloudKitDao = EVCloudKitDao.instance
         
         // retrieve our CloudKit user id. (made syncronous for this demo)

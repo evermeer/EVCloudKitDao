@@ -1,6 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
 pod 'RESideMenu'
-pod 'AsyncDisplayKit'
-#pod 'JSQMessagesViewController'
+pod 'JSQMessagesViewController'
+#pod 'AsyncDisplayKit'
 #pod 'ExSwift', :git => 'https://github.com/pNre/ExSwift.git', :branch => 'iOS'

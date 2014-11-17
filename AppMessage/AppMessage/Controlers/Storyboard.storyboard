@@ -30,10 +30,24 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vi0-Zx-g9F">
+                                <rect key="frame" x="16" y="20" width="288" height="160"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Contacting iCloud">
+                                        <attributes>
+                                            <color key="NSColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <font key="NSFont" size="17" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="contacting" destination="vi0-Zx-g9F" id="tev-rL-mbw"/>
                         <outlet property="loginLabel" destination="SaP-VV-g21" id="D8i-YA-k3Q"/>
                     </connections>
                 </viewController>
@@ -74,10 +88,11 @@
                     </toolbar>
                     <connections>
                         <segue destination="ehf-XS-QDs" kind="relationship" relationship="rootViewController" id="PY5-w1-6ug"/>
-                        <segue destination="hE7-GG-b0k" kind="push" identifier="Second" id="H4q-cQ-a0s"/>
-                        <segue destination="ezV-0U-QD4" kind="push" id="KhY-az-Qop"/>
-                        <segue destination="4Rk-cN-xIN" kind="push" id="xCc-DT-5tk"/>
+                        <segue destination="hE7-GG-b0k" kind="push" identifier="ToHome" id="H4q-cQ-a0s"/>
+                        <segue destination="ezV-0U-QD4" kind="push" identifier="ToContacts" id="KhY-az-Qop"/>
+                        <segue destination="4Rk-cN-xIN" kind="push" identifier="ToGroups" id="xCc-DT-5tk"/>
                         <segue destination="3HD-e9-ogD" kind="push" id="T5H-wl-wup"/>
+                        <segue destination="z4X-fz-IBd" kind="push" id="p9q-Ww-jMp"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zTP-Op-3pJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -114,12 +129,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="LJF-xa-pKE">
-                        <barButtonItem key="leftBarButtonItem" title="Left" id="js5-Up-KfH">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="js5-Up-KfH">
                             <connections>
                                 <action selector="presentLeftMenuViewController:" destination="ehf-XS-QDs" id="jOr-5i-2Wd"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Right" id="Kcc-OM-C2W">
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="Kcc-OM-C2W">
                             <connections>
                                 <action selector="presentRightMenuViewController:" destination="ehf-XS-QDs" id="MPq-8V-nIo"/>
                             </connections>
@@ -204,12 +219,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Tests" id="EV5-6t-S64">
-                        <barButtonItem key="leftBarButtonItem" title="Left" id="L0Q-QT-5G3">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="L0Q-QT-5G3">
                             <connections>
                                 <action selector="presentLeftMenuViewController:" destination="hE7-GG-b0k" id="M7l-Yi-WbO"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Right" id="MyS-N7-yfK">
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="MyS-N7-yfK">
                             <connections>
                                 <action selector="presentRightMenuViewController:" destination="hE7-GG-b0k" id="XFg-Ps-6Iw"/>
                             </connections>
@@ -234,12 +249,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Contacts" id="0Wy-of-kJv">
-                        <barButtonItem key="leftBarButtonItem" title="Left" id="r2W-Tc-dEP">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="r2W-Tc-dEP">
                             <connections>
                                 <action selector="presentLeftMenuViewController:" destination="ezV-0U-QD4" id="0mE-de-EgJ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Right" id="zMU-mM-9nF">
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="zMU-mM-9nF">
                             <connections>
                                 <action selector="presentRightMenuViewController:" destination="ezV-0U-QD4" id="XfT-j4-wsg"/>
                             </connections>
@@ -264,12 +279,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Groups" id="GQT-qe-v8i">
-                        <barButtonItem key="leftBarButtonItem" title="Left" id="yvD-Y1-yia">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="yvD-Y1-yia">
                             <connections>
                                 <action selector="presentLeftMenuViewController:" destination="4Rk-cN-xIN" id="yNy-vH-jGI"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Right" id="yQM-A9-OIM">
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="yQM-A9-OIM">
                             <connections>
                                 <action selector="presentRightMenuViewController:" destination="4Rk-cN-xIN" id="6Vk-8P-mU9"/>
                             </connections>
@@ -279,6 +294,36 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2lc-P8-del" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1475" y="609"/>
+        </scene>
+        <!--Chat-->
+        <scene sceneID="PfR-0Y-9KK">
+            <objects>
+                <viewController restorationIdentifier="chatViewController" storyboardIdentifier="chatViewController" id="z4X-fz-IBd" userLabel="Chat" customClass="ChatViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="d8F-gQ-A4y"/>
+                        <viewControllerLayoutGuide type="bottom" id="FGI-DV-7XW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="L0S-J0-wXL">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Groups" id="Gol-lF-OoH">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="mhX-cg-w9I">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="z4X-fz-IBd" id="KTJ-6P-gVn"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="1kN-7O-nfX">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="z4X-fz-IBd" id="agn-eE-eFY"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="43X-rY-gap" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1467" y="2661"/>
         </scene>
         <!--Settings-->
         <scene sceneID="7dQ-Ad-fBP">
@@ -302,12 +347,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="1g3-5x-4mG">
-                        <barButtonItem key="leftBarButtonItem" title="Left" id="ln9-Iu-Cqo">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="ln9-Iu-Cqo">
                             <connections>
                                 <action selector="presentLeftMenuViewController:" destination="3HD-e9-ogD" id="lqr-oY-Z6x"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Right" id="9Ca-wD-HWv">
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="9Ca-wD-HWv">
                             <connections>
                                 <action selector="presentRightMenuViewController:" destination="3HD-e9-ogD" id="zOi-ep-Rhj"/>
                             </connections>

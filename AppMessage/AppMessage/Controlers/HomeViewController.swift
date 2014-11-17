@@ -6,5 +6,5 @@
 //
 
 class HomeViewController : UIViewController {
-    
+
 }
