@@ -10,11 +10,6 @@ import UIKit
 class MenuViewController: RESideMenu, RESideMenuDelegate {
     
     override func viewDidLoad() {
-        connectToNews()
-        
-        // Only already setup CloudKit connect's will receive these notifications (like the News above)
-        EVCloudData.instance.fetchChangeNotifications()
-        
         setupMenu()
 
         super.viewDidLoad()
@@ -55,47 +50,5 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
         //NSLog("willShowMenuViewController: \(didHideMenuViewController)")
     }
     
-    
-    func connectToNews() {
-        EVCloudData.instance.connect(News()
-            , predicate: NSPredicate(value: true)
-            , filterId: "News_All"
-            , configureNotificationInfo: { notificationInfo in
-                notificationInfo.alertBody = "New news item"
-                notificationInfo.shouldSendContentAvailable = true
-                // notificationInfo.alertLocalizationKey = "subscriptionMessage"
-                // notificationInfo.alertLocalizationArgs = [recordType, filterId]
-                // notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
-                // notificationInfo.alertLaunchImage = "alertImage"
-                // notificationInfo.soundName = "alertSound"
-                // notificationInfo.shouldBadge = true
-                // notificationInfo.desiredKeys = [""]
-            }
-            , completionHandler: { results in
-                NSLog("There are \(results.count) existing news items")
-                self.refreshNewsVieuw()
-            }, insertedHandler: {item in
-                NSLog("New News item received with subject '\((item as News).Subject)'")
-                self.refreshNewsVieuw()
-            }, updatedHandler: {item in
-                NSLog("Updated News item received with subject '\((item as News).Subject)'")
-                self.refreshNewsVieuw()
-            }, deletedHandler: {recordId in
-                NSLog("News item removed")
-                self.refreshNewsVieuw()
-            }, errorHandler: {error in
-                NSLog("<-- ERROR connect")
-        })
-    }
-    
-    func refreshNewsVieuw() {
-        NSOperationQueue.mainQueue().addOperationWithBlock({
-            // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
-            var news:Dictionary<String, News> = EVCloudData.instance.data["News_All"]! as Dictionary<String, News>
-            for (key, value) in news {
-                NSLog("key = \(key), Subject = \(value.Subject), Body = \(value.Body), ActionUrl = \(value.ActionUrl)")
-            }
-        })
-    }
-    
+        
 }

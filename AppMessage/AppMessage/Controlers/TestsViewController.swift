@@ -45,7 +45,7 @@ class TestsViewController : UIViewController {
         var userIdTo: String = userId
         dao.allContactsUserInfo({ users in
             NSLog("AllContactUserInfo count = \(users.count)");
-            for user: AnyObject in users {
+            for user in users {
                 userIdTo = user.userRecordID!.recordName
                 NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
             }

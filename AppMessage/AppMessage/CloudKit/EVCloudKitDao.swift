@@ -50,7 +50,7 @@ class EVCloudKitDao {
     */
     private var database : CKDatabase
     
-    internal var activeUser : CKDiscoveredUserInfo?
+    internal var activeUser : CKDiscoveredUserInfo!
     
     /**
     On init set a quick refrence to the container and database
@@ -160,7 +160,7 @@ class EVCloudKitDao {
                 })
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         }
-        NSException(name: "RunOnlyOnce", reason: "Call this method only once. Only here for easy debugging reasons for fast generation of the iCloud recordTypes. Sorry for the hard crash. Now disable the call to this method in the AppDelegat!  Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!", userInfo: nil).raise()
+        NSException(name: "RunOnlyOnce", reason: "Call this method only once. Only here for easy debugging reasons for fast generation of the iCloud recordTypes. Sorry for the hard crash. Now disable the call to this method in the AppDelegate!  Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!", userInfo: nil).raise()
     }
 
     
@@ -236,10 +236,10 @@ class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func allContactsUserInfo(completionHandler: (users: [AnyObject]!) -> Void, errorHandler:(error:NSError) -> Void) {
+    func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:(error:NSError) -> Void) {
         container.discoverAllContactUserInfosWithCompletionHandler({users, error in
             self.handleCallback(error, errorHandler:{errorHandler(error: error)}, completionHandler: {
-                completionHandler(users:users)
+                completionHandler(users:users as [CKDiscoveredUserInfo])
             })
         })
     }
@@ -654,5 +654,29 @@ class EVCloudKitDao {
             dictionary[field as NSString] = record.objectForKey(field as NSString)
         }
         return dictionary
+    }
+}
+
+
+/**
+Extending the Dictionary
+*/
+extension Dictionary {
+    /**
+    Make a Dictionary subscriptable by an index so that you can return the value for an index instead of its key
+    
+    :param: index The index of the object to return
+    */
+    subscript(index: Int) -> Value? {
+        get {
+            var i:Int = 0
+            for (key, item) in self {
+                if i == index {
+                    return item
+                }
+                i++
+            }
+            return nil
+        }
     }
 }

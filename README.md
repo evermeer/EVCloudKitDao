@@ -29,14 +29,13 @@ This is still a work in progress. The Dao, Data and Reflection classes are compl
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
 - Completing the AppMessage demo
 - Lots of testing
-- No support for zone's yet. Do you think we need it? Just let me know.
 
 ## External components
 The AppMessage demo us using the folowing components which can be installed using CocoaPods. See instructions below.
 - [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
-
+- [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
 
 ## Building the AppMessage demo
 

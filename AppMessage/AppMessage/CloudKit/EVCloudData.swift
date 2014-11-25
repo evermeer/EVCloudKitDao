@@ -199,6 +199,18 @@ class EVCloudData {
                 }, errorHandler: errorHandler)
     }
 
+    /**
+    Disconnect an existing connection. When a connect is made, then at least in the deinit you must do a disconnect for that same filterId.
+    
+    :param: filterId The filterId
+    */
+    func disconnect(filterId: String) {
+        insertedHandlers.removeValueForKey(filterId)
+        updateHandlers.removeValueForKey(filterId)
+        deletedHandlers.removeValueForKey(filterId)
+        predicates.removeValueForKey(filterId)
+        data.removeValueForKey(filterId)
+    }
     
     // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications

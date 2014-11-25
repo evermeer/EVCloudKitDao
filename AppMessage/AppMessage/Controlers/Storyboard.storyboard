@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6221" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6213"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -90,7 +90,6 @@
                         <segue destination="ehf-XS-QDs" kind="relationship" relationship="rootViewController" id="PY5-w1-6ug"/>
                         <segue destination="hE7-GG-b0k" kind="push" identifier="ToHome" id="H4q-cQ-a0s"/>
                         <segue destination="ezV-0U-QD4" kind="push" identifier="ToContacts" id="KhY-az-Qop"/>
-                        <segue destination="4Rk-cN-xIN" kind="push" identifier="ToGroups" id="xCc-DT-5tk"/>
                         <segue destination="3HD-e9-ogD" kind="push" id="T5H-wl-wup"/>
                         <segue destination="z4X-fz-IBd" kind="push" id="p9q-Ww-jMp"/>
                     </connections>
@@ -233,12 +232,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eal-Q4-llx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1467" y="1966"/>
+            <point key="canvasLocation" x="1475" y="1398"/>
         </scene>
         <!--Contacts-->
         <scene sceneID="kOW-eb-eFQ">
             <objects>
-                <viewController restorationIdentifier="contactsViewController" storyboardIdentifier="contactsViewController" id="ezV-0U-QD4" userLabel="Contacts" customClass="ContactsViewController" customModule="AppMessage" sceneMemberID="viewController">
+                <viewController restorationIdentifier="newsViewController" storyboardIdentifier="newsViewController" id="ezV-0U-QD4" userLabel="Contacts" customClass="NewsViewController" customModule="AppMessage" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="e30-wQ-Dbc"/>
                         <viewControllerLayoutGuide type="bottom" id="BU6-ok-lgN"/>
@@ -248,7 +247,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Contacts" id="0Wy-of-kJv">
+                    <navigationItem key="navigationItem" title="News" id="0Wy-of-kJv">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="r2W-Tc-dEP">
                             <connections>
                                 <action selector="presentLeftMenuViewController:" destination="ezV-0U-QD4" id="0mE-de-EgJ"/>
@@ -264,36 +263,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lun-VU-NaT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1475" y="-50"/>
-        </scene>
-        <!--Groups-->
-        <scene sceneID="aP6-Qn-S5L">
-            <objects>
-                <viewController restorationIdentifier="groupsViewController" storyboardIdentifier="groupsViewController" id="4Rk-cN-xIN" customClass="GroupsViewController" customModule="AppMessage" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="elm-r4-i73"/>
-                        <viewControllerLayoutGuide type="bottom" id="WkW-iu-XER"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="V6h-BU-oNL">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Groups" id="GQT-qe-v8i">
-                        <barButtonItem key="leftBarButtonItem" title="Menu" id="yvD-Y1-yia">
-                            <connections>
-                                <action selector="presentLeftMenuViewController:" destination="4Rk-cN-xIN" id="yNy-vH-jGI"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="yQM-A9-OIM">
-                            <connections>
-                                <action selector="presentRightMenuViewController:" destination="4Rk-cN-xIN" id="6Vk-8P-mU9"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="2lc-P8-del" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1475" y="609"/>
         </scene>
         <!--Chat-->
         <scene sceneID="PfR-0Y-9KK">
@@ -361,7 +330,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uvD-7c-1cA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1467" y="1285"/>
+            <point key="canvasLocation" x="1475" y="651"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

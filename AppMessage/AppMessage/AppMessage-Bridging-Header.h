@@ -7,4 +7,5 @@
 
 #import "RESideMenu.h"
 #import <JSQMessagesViewController/JSQMessages.h>
+#import "CRToast.h"
 //#import <AsyncDisplayKit/AsyncDisplayKit.h>
