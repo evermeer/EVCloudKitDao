@@ -45,6 +45,10 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         
     }
     
+    deinit {
+        EVCloudData.instance.disconnect("News_All")
+    }
+
     // ------------------------------------------------------------------------
     // MARK: - tableView - menu items
     // ------------------------------------------------------------------------

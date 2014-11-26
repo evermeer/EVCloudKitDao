@@ -4,9 +4,9 @@ EVCloudKitDao
 ## What is this
 This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
 
-See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage sample will be a complete functional messaging sample based on CloudKit.
+See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage demo will be a complete functional messaging app based on CloudKit.
 
-This is still a work in progress. The Dao, Data and Reflection classes are complete, the demo is not.
+This is still a work in progress. The Dao, Data and Reflection classes are complete, the demo is progressing. The news items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. Also the contact list is functional. I'm now working on the chat window.
 
 ## Main features of EVCloudKitDao:
 - simple singleton access to your default database
@@ -28,9 +28,8 @@ This is still a work in progress. The Dao, Data and Reflection classes are compl
 ## Todo's'
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
 - Completing the AppMessage demo
-- Lots of testing
 
-## External components
+## External components for the demo
 The AppMessage demo us using the folowing components which can be installed using CocoaPods. See instructions below.
 - [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library

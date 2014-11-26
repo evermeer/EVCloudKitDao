@@ -20,7 +20,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func setupMenuTableViewLayout() {
-        var rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
+        var rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
         tableView = UITableView(frame: rect)
         tableView.autoresizingMask = .FlexibleTopMargin | .FlexibleBottomMargin | .FlexibleWidth
         tableView.delegate = self
@@ -29,8 +29,8 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
         tableView.backgroundColor = UIColor.clearColor()
         tableView.backgroundView = nil
         tableView.separatorStyle = .None
-        tableView.bounces = false
-        tableView.scrollsToTop = false
+        tableView.bounces = true
+        tableView.scrollsToTop = true
         self.view.addSubview(self.tableView)
     }
     
