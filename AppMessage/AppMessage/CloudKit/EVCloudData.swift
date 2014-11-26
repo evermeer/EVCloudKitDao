@@ -80,19 +80,21 @@ class EVCloudData {
     private func upsertObject(recordId:String, item :NSObject) {
         var test = [item]
         for (filter, predicate) in self.predicates {
-            var table : Dictionary<String, NSObject> = data[filter]!
             if predicate.evaluateWithObject(item) {
-                if table[recordId] != nil  {
-                    table[recordId] = item
+                if data[filter]![recordId] != nil  {
+                    data[filter]![recordId] = item
                     (updateHandlers[filter]!)(item: item)
                 } else {
-                    table[recordId] = item
+                    data[filter]![recordId] = item
                     (insertedHandlers[filter]!)(item: item)
+
+                    for (filter, table) in self.data {
+                        NSLog("Filter \(filter) count \(table.count)")
+                    }
                 }
             } else { // An update of a field that is used int the predicate could trigger a delete from that set.
-                if (table[recordId] != nil) {
-                    var table2 = table // hack to make it mutable?
-                    table2.removeValueForKey(recordId)
+                if (data[filter]![recordId] != nil) {
+                    data[filter]!.removeValueForKey(recordId)
                     (deletedHandlers[filter]!)(recordId: recordId)
                 }
             }
@@ -108,8 +110,7 @@ class EVCloudData {
     private func deleteObject(recordId :String) {
         for (filter, table) in self.data {
             if (table[recordId] != nil) {
-                var table2 = table // hack to make it mutable?
-                table2.removeValueForKey(recordId)
+                data[filter]!.removeValueForKey(recordId)
                 (deletedHandlers[filter]!)(recordId: recordId)
             }
         }
