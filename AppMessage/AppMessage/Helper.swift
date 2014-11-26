@@ -23,7 +23,9 @@ class Helper {
             kCRToastAnimationInDirectionKey : CRToastAnimationDirection.Top.rawValue,
             kCRToastAnimationOutDirectionKey : CRToastAnimationDirection.Bottom.rawValue,
         ]
-        CRToastManager.showNotificationWithOptions(options, completionBlock: { })
+        NSOperationQueue.mainQueue().addOperationWithBlock({
+            CRToastManager.showNotificationWithOptions(options, completionBlock: { })
+        })
     }
     class func showError(message:String) {
         NSLog("ERROR: \(message)")

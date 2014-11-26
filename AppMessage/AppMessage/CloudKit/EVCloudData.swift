@@ -79,15 +79,21 @@ class EVCloudData {
     */
     private func upsertObject(recordId:String, item :NSObject) {
         var test = [item]
-        for (filter, predicate) in predicates {
+        for (filter, predicate) in self.predicates {
+            var table : Dictionary<String, NSObject> = data[filter]!
             if predicate.evaluateWithObject(item) {
-                var table : Dictionary<String, NSObject> = data[filter]!
                 if table[recordId] != nil  {
                     table[recordId] = item
                     (updateHandlers[filter]!)(item: item)
                 } else {
                     table[recordId] = item
                     (insertedHandlers[filter]!)(item: item)
+                }
+            } else { // An update of a field that is used int the predicate could trigger a delete from that set.
+                if (table[recordId] != nil) {
+                    var table2 = table // hack to make it mutable?
+                    table2.removeValueForKey(recordId)
+                    (deletedHandlers[filter]!)(recordId: recordId)
                 }
             }
         }
@@ -100,7 +106,7 @@ class EVCloudData {
     :return: No return value
     */
     private func deleteObject(recordId :String) {
-        for (filter, table) in data {
+        for (filter, table) in self.data {
             if (table[recordId] != nil) {
                 var table2 = table // hack to make it mutable?
                 table2.removeValueForKey(recordId)
@@ -241,7 +247,7 @@ class EVCloudData {
     */
     func fetchChangeNotifications() {
         var dao: EVCloudKitDao = EVCloudKitDao.instance
-        dao.fetchChangeNotifications({recordId, item in
+        dao.fetchChangeNotifications(nil, {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated : {recordId, item in
                 self.upsertObject(recordId, item: item)

@@ -21,7 +21,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
     
     func setupMenuTableViewLayout() {
         var rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
-        self.tableView = UITableView(frame: rect)
+        tableView = UITableView(frame: rect)
         tableView.autoresizingMask = .FlexibleTopMargin | .FlexibleBottomMargin | .FlexibleWidth
         tableView.delegate = self
         tableView.dataSource = self

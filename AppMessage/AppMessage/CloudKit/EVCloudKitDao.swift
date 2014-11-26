@@ -520,30 +520,30 @@ class EVCloudKitDao {
         NSLog("Notification alert body : \(alertBody)")
         
         // Handle CloudKit subscription notifications
+        var recordID:CKRecordID?
         if cloudNotification.notificationType == CKNotificationType.Query {
             var queryNotification: CKQueryNotification = cloudNotification as CKQueryNotification
-            var recordID = queryNotification.recordID
+            recordID = queryNotification.recordID
             NSLog("recordID = \(recordID)")
-            if(queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated) {
-                deleted(recordId: recordID.recordName)
+            if(queryNotification.queryNotificationReason == .RecordDeleted) {
+                deleted(recordId: recordID!.recordName)
             } else {
-                EVCloudKitDao.instance.getItem(recordID.recordName, completionHandler: { item in
+                EVCloudKitDao.instance.getItem(recordID!.recordName, completionHandler: { item in
                     NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                     EVReflection.logObject(item)
                     if (queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated ) {
-                        inserted(recordID: recordID.recordName, item: item)
+                        inserted(recordID: recordID!.recordName, item: item)
                     } else if(queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordUpdated){
-                        updated(recordID: recordID.recordName, item: item)
+                        updated(recordID: recordID!.recordName, item: item)
                     }
                     }, errorHandler: { error in
                         NSLog("<--- ERROR getItem")
                     })
             }
-            
         } else {
             executeIfNonQuery()
         }
-        fetchChangeNotifications(inserted , updated: updated, deleted: deleted)
+        fetchChangeNotifications(recordID, inserted , updated: updated, deleted: deleted)
     }
     
     /**
@@ -556,7 +556,7 @@ class EVCloudKitDao {
     :param: deleted Executed if the notification was for an deleted object
     :return: No return value
     */
-    func fetchChangeNotifications(inserted:(recordID:String, item: NSObject) -> Void, updated:(recordID:String, item: NSObject) -> Void, deleted:(recordId: String) -> Void) {
+    func fetchChangeNotifications(skipRecordID:CKRecordID?, inserted:(recordID:String, item: NSObject) -> Void, updated:(recordID:String, item: NSObject) -> Void, deleted:(recordId: String) -> Void) {
         var defaults = NSUserDefaults.standardUserDefaults()
         var array: [NSObject] = [NSObject]()
         var operation = CKFetchNotificationChangesOperation(previousServerChangeToken: self.previousChangeToken)
@@ -564,21 +564,22 @@ class EVCloudKitDao {
             if(notification.notificationType == .Query) {
                 var queryNotification:CKQueryNotification = notification as CKQueryNotification
                 array.append(notification.notificationID)
-                
-                if (queryNotification.queryNotificationReason == .RecordDeleted) {
-                    deleted(recordId: queryNotification.recordID.recordName)
-                } else {
-                    EVCloudKitDao.instance.getItem(queryNotification.recordID.recordName, completionHandler: { item in
-                        NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
-                        EVReflection.logObject(item)
-                        if (queryNotification.queryNotificationReason == .RecordCreated) {
-                            inserted(recordID: queryNotification.recordID.recordName, item: item)
-                        } else if (queryNotification.queryNotificationReason == .RecordUpdated) {
-                            updated(recordID: queryNotification.recordID.recordName, item: item)
-                        }
-                        }, errorHandler: { error in
-                            NSLog("<--- ERROR getItem")
-                        })
+                if(skipRecordID != nil && skipRecordID?.recordName != queryNotification.recordID.recordName) {
+                    if (queryNotification.queryNotificationReason == .RecordDeleted) {
+                        deleted(recordId: queryNotification.recordID.recordName)
+                    } else {
+                        EVCloudKitDao.instance.getItem(queryNotification.recordID.recordName, completionHandler: { item in
+                            NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
+                            EVReflection.logObject(item)
+                            if (queryNotification.queryNotificationReason == .RecordCreated) {
+                                inserted(recordID: queryNotification.recordID.recordName, item: item)
+                            } else if (queryNotification.queryNotificationReason == .RecordUpdated) {
+                                updated(recordID: queryNotification.recordID.recordName, item: item)
+                            }
+                            }, errorHandler: { error in
+                                NSLog("<--- ERROR getItem")
+                            })
+                    }
                 }
             }
         }
@@ -589,7 +590,7 @@ class EVCloudKitDao {
             self.previousChangeToken = changetoken
             
             if(operation.moreComing) {
-                self.fetchChangeNotifications(inserted, updated, deleted)
+                self.fetchChangeNotifications(skipRecordID, inserted, updated, deleted)
             }
         }
         operation.start()
