@@ -128,13 +128,13 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 NSLog("There are \(results.count) existing news items")
                 self.refreshNewsVieuw()
             }, insertedHandler: {item in
-                NSLog("New News item received with subject '\((item as News).Subject)'")
+                Helper.showStatus("New News item: '\((item as News).Subject)'")
                 self.refreshNewsVieuw()
             }, updatedHandler: {item in
-                NSLog("Updated News item received with subject '\((item as News).Subject)'")
+                Helper.showStatus("Updated News item:'\((item as News).Subject)'")
                 self.refreshNewsVieuw()
             }, deletedHandler: {recordId in
-                NSLog("News item removed")
+                Helper.showStatus("News item was removed")
                 self.refreshNewsVieuw()
             }, errorHandler: {error in
                 Helper.showError("Could not load news: \(error.description)")

@@ -9,22 +9,30 @@
 import Foundation
 
 class Helper {
-    class func showError(message:String) {
+    
+    class func showMessage(message:String, color:UIColor) {
         var options: NSDictionary = [
             kCRToastTextKey : message,
             kCRToastNotificationTypeKey : CRToastType.NavigationBar.rawValue,
             kCRToastNotificationPresentationTypeKey : CRToastPresentationType.Cover.rawValue,
             kCRToastTimeIntervalKey: 5.0,
             kCRToastTextAlignmentKey : NSTextAlignment.Center.rawValue,
-            kCRToastBackgroundColorKey : UIColor.redColor(),
+            kCRToastBackgroundColorKey : color,
             kCRToastAnimationInTypeKey : CRToastAnimationType.Spring.rawValue,
             kCRToastAnimationOutTypeKey : CRToastAnimationType.Spring.rawValue,
             kCRToastAnimationInDirectionKey : CRToastAnimationDirection.Top.rawValue,
             kCRToastAnimationOutDirectionKey : CRToastAnimationDirection.Bottom.rawValue,
         ]
         CRToastManager.showNotificationWithOptions(options, completionBlock: { })
-        NSLog("Error: \(message)")
+    }
+    class func showError(message:String) {
+        NSLog("ERROR: \(message)")
+        showMessage(message, color: UIColor.redColor())
+    }
 
+    class func showStatus(message:String) {
+        NSLog("STATUS: \(message)")
+        showMessage(message, color: UIColor.greenColor())
     }
 }
 
