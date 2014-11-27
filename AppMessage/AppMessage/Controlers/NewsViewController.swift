@@ -48,14 +48,12 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //To prevent copying the dictionary never assign it to a variable first.
         return EVCloudData.instance.data["News_All"]!.count
     }
     
     var cellIdentifier = "NewsCell";
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var allnews:Dictionary<String, News> = EVCloudData.instance.data["News_All"]! as Dictionary<String, News>
-        var news:News = allnews[indexPath.row]!
-        
         var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
         
         if cell == nil {
@@ -67,14 +65,19 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
             cell.selectedBackgroundView = UIView()
         }
         
+        //This line all you need to get the correct data for the cell
+        var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
+
         cell.textLabel?.text = news.Subject
         cell.detailTextLabel?.text = news.Body
+        
         return cell;
     }
     
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
-        var allnews:Dictionary<String, News> = EVCloudData.instance.data["News_All"]! as Dictionary<String, News>
-        var news:News = allnews[indexPath.row]!
+        //This line all you need to get the correct data for cell that is selected
+        var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
+
         let url:NSURL! = NSURL(string: news.ActionUrl)
         UIApplication.sharedApplication().openURL(url)
     }

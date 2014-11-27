@@ -36,6 +36,9 @@ The AppMessage demo us using the folowing components which can be installed usin
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
 
+## Using EVCloudKitDao or EVCloudKitData in your own App 
+Just copy the Cloudkit folder containgint the 3 classes EVCloudKitDao, EVCloudKitData and EVReflection to your app. Then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
+
 ## Building the AppMessage demo
 
 1) Clone the repo to a working directory
