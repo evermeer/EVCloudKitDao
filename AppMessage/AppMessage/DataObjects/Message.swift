@@ -10,8 +10,14 @@ import CloudKit
 class Message : NSObject {
     // From which Channel is this message
     var From : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
+    func setFrom(id:String) {
+        self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
+    }
     // To what Channel or Group is this message
     var To : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
+    func setTo(id:String) {
+        self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
+    }
     // Message text
     var Text : String = ""
     // is there a (media) attachment

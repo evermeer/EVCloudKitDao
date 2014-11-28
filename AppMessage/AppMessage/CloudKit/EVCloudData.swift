@@ -46,6 +46,10 @@ class EVCloudData {
     */
     var dao = EVCloudKitDao.instance;
     /**
+    Save the recordType of the connection.
+    */
+    var recordType = Dictionary<String, String>()
+    /**
     All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
     */
     var data = Dictionary<String, Dictionary<String, NSObject>>()
@@ -80,22 +84,24 @@ class EVCloudData {
     private func upsertObject(recordId:String, item :NSObject) {
         var test = [item]
         for (filter, predicate) in self.predicates {
-            if predicate.evaluateWithObject(item) {
-                if data[filter]![recordId] != nil  {
-                    data[filter]![recordId] = item
-                    (updateHandlers[filter]!)(item: item)
-                } else {
-                    data[filter]![recordId] = item
-                    (insertedHandlers[filter]!)(item: item)
+            if recordType[filter] == EVReflection.swiftStringFromClass(item) {
+                if predicate.evaluateWithObject(item) {
+                    if data[filter]![recordId] != nil  {
+                        data[filter]![recordId] = item
+                        (updateHandlers[filter]!)(item: item)
+                    } else {
+                        data[filter]![recordId] = item
+                        (insertedHandlers[filter]!)(item: item)
 
-                    for (filter, table) in self.data {
-                        NSLog("Filter \(filter) count \(table.count)")
+                        for (filter, table) in self.data {
+                            NSLog("Filter \(filter) count \(table.count)")
+                        }
                     }
-                }
-            } else { // An update of a field that is used int the predicate could trigger a delete from that set.
-                if (data[filter]![recordId] != nil) {
-                    data[filter]!.removeValueForKey(recordId)
-                    (deletedHandlers[filter]!)(recordId: recordId)
+                } else { // An update of a field that is used int the predicate could trigger a delete from that set.
+                    if (data[filter]![recordId] != nil) {
+                        data[filter]!.removeValueForKey(recordId)
+                        (deletedHandlers[filter]!)(recordId: recordId)
+                    }
                 }
             }
         }
@@ -193,6 +199,7 @@ class EVCloudData {
         errorHandler:(error: NSError) -> Void
         ) -> Void {
             self.data[filterId] = nil
+            self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
             self.insertedHandlers[filterId] = insertedHandler
             self.updateHandlers[filterId] = updatedHandler
             self.deletedHandlers[filterId] = deletedHandler

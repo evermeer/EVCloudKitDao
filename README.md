@@ -12,17 +12,17 @@ This is still a work in progress. The Dao, Data and Reflection classes are compl
 - simple singleton access to your default database
 - You do not have to parse from and to CKRecord (is based on reflection)
 - Generic and simplified query handling
-- Error handling (seperate completionHandler and errorHandler code blocs)
+- Error handling (separate completionHandler and errorHandler code blocs)
 - Storing CKReference objects
 - Storing CKAsset objects
 - Organising subscription
-- Handling incomming notifications
+- Handling incoming notifications
 
 ## Main features of EVCloudKitData:
-- Use just one predicate for a query, subscription and processing incomming notifications.
+- Use just one predicate for a query, subscription and processing incoming notifications.
 - it's only one method call with a couple of callback events
 - it will store the fetched data collection in memory.
-- notificatons will update the data collections and call the appropriate events.
+- notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
 
 ## Todo's'
@@ -30,7 +30,8 @@ This is still a work in progress. The Dao, Data and Reflection classes are compl
 - Completing the AppMessage demo
 
 ## External components for the demo
-The AppMessage demo us using the folowing components which can be installed using CocoaPods. See instructions below.
+The AppMessage demo us using the following components which can be installed using CocoaPods. See instructions below.
+
 - [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
@@ -48,12 +49,16 @@ Just copy the Cloudkit folder containgint the 3 classes EVCloudKitDao, EVCloudKi
 ```sh
 pod install
 ```
+
 If you are having build issues, first make sure your pods are up to date
+
 ```sh
 pod update
 pod install
 ```
+
 occasionally, CocoaPods itself will need to be updated. Do this with
+
 ```sh
 sudo gem update
 ```
@@ -65,53 +70,94 @@ sudo gem update
 5) Build and Run and you are ready to go!
 
 ## How to use the EVCloudKitData
+Below is all the code you need to setup a news feed including push notification handling for any changes.
+
+
 ```
 class News : NSObject {
     var Subject : String = ""
     var Text : String = ""
 }
 
-func refreshNewsVieuw() {
-    NSOperationQueue.mainQueue().addOperationWithBlock({
-        // If news view is loaded, then refresh the data (on the main queue) For this demo, just log it
-        var news:Dictionary<String, News> = EVCloudData.instance.data["News_All"]! as Dictionary<String, News>
-        for (key, value) in news {
-            NSLog("key = \(key), Subject = \(value.Subject), Body = \(value.Body), ActionUrl = \(value.ActionUrl)")
-        }
-    })
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
+        // Make sure we receive subscription notifications
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
+        application.registerForRemoteNotifications()
+        return true
+    }
+
+    func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {
+        NSLog("Push received")
+        EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
+            NSLog("Not a CloudKit Query notification.")            
+        })
+    }
 }
 
 
-func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-    EVCloudData.instance.connect(News()
+class LeftMenuViewController: UIViewController {
+    var newsController: NewsViewController!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        connectToNews()
+        // Only already setup CloudKit connect's will receive these notifications (like the News above)
+        EVCloudData.instance.fetchChangeNotifications()        
+    }
+
+    deinit {
+        EVCloudData.instance.disconnect("News_All")
+    }
+
+    func connectToNews() {
+        EVCloudData.instance.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
         , configureNotificationInfo: { notificationInfo in
             notificationInfo.alertBody = "New news item"
-            notificationInfo.shouldBadge = true
-        }, completionHandler: { results in
+            notificationInfo.shouldSendContentAvailable = true }
+        , completionHandler: { results in
             NSLog("There are \(results.count) existing news items")
             self.refreshNewsVieuw()
         }, insertedHandler: {item in
-            NSLog("New News item received with subject '\((item as News).Subject)'")
+            Helper.showStatus("New News item: '\((item as News).Subject)'")
             self.refreshNewsVieuw()
         }, updatedHandler: {item in
-            NSLog("Updated News item received with subject '\((item as News).Subject)'")
+            Helper.showStatus("Updated News item:'\((item as News).Subject)'")
             self.refreshNewsVieuw()
         }, deletedHandler: {recordId in
-            NSLog("News item removed")
+            Helper.showStatus("News item was removed")
             self.refreshNewsVieuw()
         }, errorHandler: {error in
-            NSLog("<-- ERROR connect")
-    })
+            Helper.showError("Could not load news: \(error.description)")
+        })
+    }
+
+    func refreshNewsVieuw() {
+        NSOperationQueue.mainQueue().addOperationWithBlock({
+            self.newsController.tableView.reloadData()
+        })
+    }
 }
 
-func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]!) {
-    NSLog("Push received")
-    EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
-        NSLog("Not a CloudKit Query notification.")            
-    })
+
+class NewsViewController : UIViewController, UITableViewDataSource, UITableViewDelegate, RESideMenuDelegate {
+	...
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+        ...
+        //This line all you need to get the correct data for the cell
+        var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
+
+        cell.textLabel?.text = news.Subject
+        cell.detailTextLabel?.text = news.Body
+        return cell;
+    }
 }
+
 ```
 
 
