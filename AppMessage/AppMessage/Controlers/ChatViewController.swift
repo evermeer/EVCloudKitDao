@@ -77,10 +77,15 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         message.setFrom(EVCloudKitDao.instance.activeUser.userRecordID.recordName)
         message.setTo(chatWith.userRecordID.recordName)
         EVCloudData.instance.saveItem(message, completionHandler: { message in
+            NSOperationQueue.mainQueue().addOperationWithBlock({
+                Helper.showStatus("Message was send...")
                 self.finishSendingMessage()
+                })
             }, errorHandler: { error in
-            Helper.showError("Could not send message!  \(error.description)")
-                self.finishSendingMessage()
+                NSOperationQueue.mainQueue().addOperationWithBlock({
+                    self.finishSendingMessage()
+                    Helper.showError("Could not send message!  \(error.description)")
+                })
         })
     }
     
