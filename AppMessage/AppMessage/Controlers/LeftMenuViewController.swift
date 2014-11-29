@@ -114,11 +114,12 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     func connectToNews() {
+        
         EVCloudData.instance.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in
-                notificationInfo.alertBody = "New news item"
+                notificationInfo.alertBody = "News update"
                 notificationInfo.shouldSendContentAvailable = true
                 // notificationInfo.alertLocalizationKey = "subscriptionMessage"
                 // notificationInfo.alertLocalizationArgs = [recordType, filterId]

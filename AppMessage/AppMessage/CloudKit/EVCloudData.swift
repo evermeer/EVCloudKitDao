@@ -82,7 +82,7 @@ class EVCloudData {
     :return: No return value
     */
     private func upsertObject(recordId:String, item :NSObject) {
-        var test = [item]
+        NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
                 if predicate.evaluateWithObject(item) {
@@ -92,12 +92,9 @@ class EVCloudData {
                     } else {
                         data[filter]![recordId] = item
                         (insertedHandlers[filter]!)(item: item)
-
-                        for (filter, table) in self.data {
-                            NSLog("Filter \(filter) count \(table.count)")
-                        }
                     }
                 } else { // An update of a field that is used int the predicate could trigger a delete from that set.
+                    NSLog("Object not for filter \(filter)")
                     if (data[filter]![recordId] != nil) {
                         data[filter]!.removeValueForKey(recordId)
                         (deletedHandlers[filter]!)(recordId: recordId)

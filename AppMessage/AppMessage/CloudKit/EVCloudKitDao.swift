@@ -80,14 +80,14 @@ class EVCloudKitDao {
     :return: No return value
     */
     func handleCallback(error: NSError?, errorHandler: () -> Void, completionHandler: () -> Void) {
-        //NSOperationQueue.mainQueue().addOperationWithBlock {
+        NSOperationQueue.mainQueue().addOperationWithBlock {
             if (error != nil) {
                 NSLog("CloudKit Error : \(error?.code) = \(error?.description) \n\(error?.userInfo)")
                 errorHandler()
             } else {
                 completionHandler()
             }
-        //}
+        }
     }
     
     
@@ -390,8 +390,10 @@ class EVCloudKitDao {
         configureNotificationInfo(notificationInfo: subscription.notificationInfo)
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
-                defaults.setBool(true, forKey: "subscriptionFor_\(recordType)_\(filterId)")
-                defaults.setObject(subscription.subscriptionID, forKey: "subscriptionIDFor_\(recordType)_\(filterId)")
+                var key = "subscriptionFor_\(recordType)_\(filterId)"
+                NSLog("Subscription created for key \(key)")
+                defaults.setBool(true, forKey: key)
+                defaults.setObject(subscription.subscriptionID, forKey: key)
                 })
             })
     }
@@ -484,6 +486,13 @@ class EVCloudKitDao {
     :return: No return value
     */
     func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void , errorHandler:(error: NSError) -> Void) {
+        
+        for (key, value) in NSUserDefaults.standardUserDefaults().dictionaryRepresentation() {
+            if key.description.hasPrefix("subscriptionFor_") {
+                NSUserDefaults.standardUserDefaults().removeObjectForKey(key as String)
+            }
+        }
+        
         database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
             self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
                 for subscriptionObject in subscriptions {

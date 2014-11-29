@@ -40,6 +40,9 @@ The AppMessage demo us using the following components which can be installed usi
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 Just copy the Cloudkit folder containgint the 3 classes EVCloudKitDao, EVCloudKitData and EVReflection to your app. Then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 
+## Developer notes
+When adding a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
+
 ## Building the AppMessage demo
 
 1) Clone the repo to a working directory

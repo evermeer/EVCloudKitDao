@@ -15,6 +15,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     func setContact(contact: CKDiscoveredUserInfo) {
         chatWith = contact
         dataID =  "Message_\(chatWith.userRecordID.recordName)"
+        initializeCommunication()
     }
     
     override func viewDidLoad() {
@@ -27,6 +28,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         self.showLoadEarlierMessagesHeader = true
+        
     }
         
     override func viewDidAppear(animated: Bool) {
@@ -36,22 +38,32 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
 
     
     func initializeCommunication() {
+        //NSPredicate(format: "(From == %@ AND To = %@) OR (From == %@ AND To = %@)", chatWith.userRecordID, EVCloudKitDao.instance.activeUser.userRecordID, EVCloudKitDao.instance.activeUser.userRecordID, chatWith.userRecordID)!
+        // NSPredicate(format: "(From_ID == %@ AND To_ID == %@) OR (From_ID == %@ AND To_ID == %@)", recordIdMe, recordIdOther, recordIdOther, recordIdMe)!
+        
+        var recordIdMe = EVCloudKitDao.instance.activeUser.userRecordID.recordName
+        var recordIdOther = chatWith.userRecordID.recordName
         EVCloudData.instance.connect(Message()
-            , predicate: NSPredicate(format: "(From == %@ AND To = %@) OR (From == %@ AND To = %@)", chatWith.userRecordID, EVCloudKitDao.instance.activeUser.userRecordID, EVCloudKitDao.instance.activeUser.userRecordID, chatWith.userRecordID)!
+            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMe, recordIdOther], [recordIdOther, recordIdMe])!
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
                 notificationInfo.alertBody = "New Message record"
                 notificationInfo.shouldSendContentAvailable = true
             }, completionHandler: { results in
                 NSLog("results = \(results.count)")
+                NSOperationQueue.mainQueue().addOperationWithBlock({
+                    self.collectionView.reloadData()
+                })
             }, insertedHandler: { item in
                 NSLog("inserted \(item)")
-                self.showTypingIndicator = true
-                self.scrollToBottomAnimated(true)
-                JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
-                var message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, displayName: self.chatWith.firstName + " " + self.chatWith.lastName , text: "Message")
-                //[self.demoData.messages addObject:newMessage];
-                self.finishReceivingMessage();
+                NSOperationQueue.mainQueue().addOperationWithBlock({
+                    self.showTypingIndicator = true
+                    self.scrollToBottomAnimated(true)
+                    JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
+                    var message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, displayName: self.chatWith.firstName + " " + self.chatWith.lastName , text: "Message")
+                    //[self.demoData.messages addObject:newMessage];
+                        self.finishReceivingMessage();
+                })
             }, updatedHandler: { item in
                 NSLog("updated \(item)")
             }, deletedHandler: { recordId in
@@ -76,16 +88,13 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         var message = Message()
         message.setFrom(EVCloudKitDao.instance.activeUser.userRecordID.recordName)
         message.setTo(chatWith.userRecordID.recordName)
+        message.Text = text
         EVCloudData.instance.saveItem(message, completionHandler: { message in
-            NSOperationQueue.mainQueue().addOperationWithBlock({
                 Helper.showStatus("Message was send...")
                 self.finishSendingMessage()
-                })
             }, errorHandler: { error in
-                NSOperationQueue.mainQueue().addOperationWithBlock({
-                    self.finishSendingMessage()
-                    Helper.showError("Could not send message!  \(error.description)")
-                })
+                self.finishSendingMessage()
+                Helper.showError("Could not send message!  \(error.description)")
         })
     }
     
@@ -115,6 +124,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     // MARK: - JSQMessages CollectionView handling
     // ------------------------------------------------------------------------
     
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+        return getMessageForId(indexPath.row)
+    }
+    
     //CellTopLabel
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         var message = getMessageForId(indexPath.row)
@@ -122,6 +135,16 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     }
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return kJSQMessagesCollectionViewCellLabelHeightDefault
+    }
+    
+    //messageBubbleImageDataForItemAtIndexPath
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
+        var message = getMessageForId(indexPath.row)
+        var bubbleFactory = JSQMessagesBubbleImageFactory()
+        if message.senderId == self.senderId {
+            return bubbleFactory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
+        }
+        return bubbleFactory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleGreenColor())
     }
     
     // MessageBubbleTopLabel
@@ -159,6 +182,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return 0
     }
+    
 
     // ------------------------------------------------------------------------
     // MARK: - Standard CollectionView handling
@@ -207,7 +231,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     }
     
     // ------------------------------------------------------------------------
-    // MARK: - Data parsing
+    // MARK: - Data parsing: Message to JSQMessage
     // ------------------------------------------------------------------------
     
     func getMessageForId(id:Int) -> JSQMessage {
