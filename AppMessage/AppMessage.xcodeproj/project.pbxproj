@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
 		7F434A2B19628D490081F35C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2A19628D490081F35C /* ViewController.swift */; };
 		7F434A3019628D490081F35C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F434A2F19628D490081F35C /* Images.xcassets */; };
@@ -52,6 +53,7 @@
 /* Begin PBXFileReference section */
 		551833E22DBE457F8D311100 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBFAD2C72A01401977EA5D7 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudKitDataObject.swift; sourceTree = "<group>"; };
 		7F434A2319628D490081F35C /* AppMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F434A2719628D490081F35C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F434A2819628D490081F35C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */,
 				7FD41610199666F3003C2CE9 /* EVCloudData.swift */,
 				7FC2CF4519D7F82500CF3549 /* EVReflection.swift */,
+				7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */,
 			);
 			path = CloudKit;
 			sourceTree = "<group>";
@@ -397,6 +400,7 @@
 				7FC46F92198242A5000A875F /* NewsViewController.swift in Sources */,
 				7FC46F8E19824121000A875F /* RightMenuViewController.swift in Sources */,
 				7F434A2B19628D490081F35C /* ViewController.swift in Sources */,
+				7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */,
 				7F434A4C1962AE780081F35C /* Message.swift in Sources */,
 				7FC2CF4619D7F82500CF3549 /* EVReflection.swift in Sources */,
 				7FC46F9A19828082000A875F /* TestsViewController.swift in Sources */,

@@ -77,7 +77,7 @@ Below is all the code you need to setup a news feed including push notification 
 
 
 ```
-class News : NSObject {
+class News : EVCloudKitDataObject {
     var Subject : String = ""
     var Text : String = ""
 }
@@ -167,7 +167,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
 
 ## How to use the EVCloudKitDao
 ```
-class Message : NSObject {
+class Message : EVCloudKitDataObject {
     var From : String = ""
     var To : String = ""
     var Text : String = ""

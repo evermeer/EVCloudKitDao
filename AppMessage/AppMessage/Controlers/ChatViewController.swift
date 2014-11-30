@@ -38,9 +38,6 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
 
     
     func initializeCommunication() {
-        //NSPredicate(format: "(From == %@ AND To = %@) OR (From == %@ AND To = %@)", chatWith.userRecordID, EVCloudKitDao.instance.activeUser.userRecordID, EVCloudKitDao.instance.activeUser.userRecordID, chatWith.userRecordID)!
-        // NSPredicate(format: "(From_ID == %@ AND To_ID == %@) OR (From_ID == %@ AND To_ID == %@)", recordIdMe, recordIdOther, recordIdOther, recordIdMe)!
-        
         var recordIdMe = EVCloudKitDao.instance.activeUser.userRecordID.recordName
         var recordIdOther = chatWith.userRecordID.recordName
         EVCloudData.instance.connect(Message()

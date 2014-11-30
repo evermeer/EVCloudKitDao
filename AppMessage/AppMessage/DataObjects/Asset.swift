@@ -9,7 +9,7 @@ import CloudKit
 import UIKit
 
 //TODO: valueForAny does not work yet for nulable types.
-class Asset : NSObject {
+class Asset : EVCloudKitDataObject {
     var AttachedTo : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var File : CKAsset = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!))
     var FileName : String = ""

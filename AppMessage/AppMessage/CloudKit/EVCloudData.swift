@@ -52,7 +52,7 @@ class EVCloudData {
     /**
     All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
     */
-    var data = Dictionary<String, Dictionary<String, NSObject>>()
+    var data = Dictionary<String, Dictionary<String, EVCloudKitDataObject>>()
     /**
     A dictionary of predicates. Each filterId is a dictionary entry containing a predicate
     */
@@ -60,11 +60,11 @@ class EVCloudData {
     /**
     A dictionary of insert event handlers. Each filterId is a dictionary entry containing a insert event handler
     */
-    var insertedHandlers = Dictionary<String, (item: NSObject) -> Void>()
+    var insertedHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
     /**
     A dictionary of update event handlers. Each filterId is a dictionary entry containing a update event handler
     */
-    var updateHandlers = Dictionary<String, (item: NSObject) -> Void>()
+    var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
     /**
     A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
     */
@@ -81,7 +81,7 @@ class EVCloudData {
     :param: item The object that will be processed
     :return: No return value
     */
-    private func upsertObject(recordId:String, item :NSObject) {
+    private func upsertObject(recordId:String, item :EVCloudKitDataObject) {
         NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
@@ -131,7 +131,7 @@ class EVCloudData {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func getItem(recordId: String, completionHandler: (result: NSObject) -> Void, errorHandler:(error: NSError) -> Void) {
+    func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.getItem(recordId, completionHandler: completionHandler, errorHandler: errorHandler)
     }
     
@@ -143,9 +143,9 @@ class EVCloudData {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func saveItem(item: NSObject, completionHandler: (record: CKRecord) -> Void, errorHandler:(error: NSError) -> Void) {
+    func saveItem(item: EVCloudKitDataObject, completionHandler: (record: CKRecord) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.saveItem(item, completionHandler: { record in
-            var item : NSObject = self.dao.fromCKRecord(record)
+            var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)
             self.upsertObject(record.recordID.recordName, item: item)
             completionHandler(record: record)
             }, errorHandler: errorHandler)
@@ -185,13 +185,13 @@ class EVCloudData {
     :return: No return value
     */
 
-    func connect<T:NSObject>(type:T,
+    func connect<T:EVCloudKitDataObject>(type:T,
         predicate: NSPredicate,
         filterId: String,
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
         completionHandler: (results: Dictionary<String, T>) -> Void,
-        insertedHandler:(item: NSObject) -> Void,
-        updatedHandler:(item: NSObject) -> Void,
+        insertedHandler:(item: EVCloudKitDataObject) -> Void,
+        updatedHandler:(item: EVCloudKitDataObject) -> Void,
         deletedHandler:(recordId: String) -> Void,
         errorHandler:(error: NSError) -> Void
         ) -> Void {

@@ -7,7 +7,7 @@
 
 import CloudKit
 
-class Message : NSObject {
+class Message : EVCloudKitDataObject {
     // From which Channel is this message
     var From : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var From_ID : String = ""

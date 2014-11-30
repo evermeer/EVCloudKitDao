@@ -7,7 +7,7 @@
 
 import CloudKit
 
-class News : NSObject {
+class News : EVCloudKitDataObject {
     var Subject : String = ""
     var Body : String = ""
     var ActionUrl : String = ""
