@@ -8,6 +8,10 @@ See TestsViewController.swift for a complete overview of the functionality. See 
 
 This is still a work in progress. The Dao, Data and Reflection classes are complete, the demo is progressing. The news items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. Also the contact list is functional. I'm now working on the chat window.
 
+## A picture says more than 1000 words
+Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do.
+![Screenshot0][img0]
+
 ## Main features of EVCloudKitDao:
 - simple singleton access to your default database
 - You do not have to parse from and to CKRecord (is based on reflection)
@@ -222,3 +226,6 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+[img0]:https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png

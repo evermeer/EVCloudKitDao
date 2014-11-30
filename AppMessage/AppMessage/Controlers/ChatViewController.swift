@@ -27,7 +27,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         // configure JSQMessagesViewController
         self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
-        self.showLoadEarlierMessagesHeader = true
+        self.showLoadEarlierMessagesHeader = false
         
     }
         
@@ -57,9 +57,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
                     self.showTypingIndicator = true
                     self.scrollToBottomAnimated(true)
                     JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
-                    var message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, displayName: self.chatWith.firstName + " " + self.chatWith.lastName , text: "Message")
-                    //[self.demoData.messages addObject:newMessage];
-                        self.finishReceivingMessage();
+                    self.finishReceivingMessage();
                 })
             }, updatedHandler: { item in
                 NSLog("updated \(item)")
@@ -87,7 +85,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         message.setTo(chatWith.userRecordID.recordName)
         message.Text = text
         EVCloudData.instance.saveItem(message, completionHandler: { message in
-                Helper.showStatus("Message was send...")
+                //Helper.showStatus("Message was send...")
                 self.finishSendingMessage()
             }, errorHandler: { error in
                 self.finishSendingMessage()
@@ -233,7 +231,13 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     
     func getMessageForId(id:Int) -> JSQMessage {
         var data:Message = EVCloudData.instance.data[dataID]![id] as Message
-        var message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, displayName: self.chatWith.firstName + " " + self.chatWith.lastName , text: data.Text)
+        var message: JSQMessage!
+        if data.From_ID == self.senderId {
+            message = JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName , text: data.Text)
+        } else {
+            message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, displayName: self.chatWith.firstName + " " + self.chatWith.lastName , text: data.Text)
+        }
+
         return message;
     }
 }
