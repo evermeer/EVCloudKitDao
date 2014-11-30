@@ -86,10 +86,10 @@ class EVCloudData {
         NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
-                var itemID:Int? = data[filter]!.indexOf {item in return item.recordID == recordId}
+                var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID == recordId}
                 if predicate.evaluateWithObject(item) {
                     
-                    if itemID != nil && data[filter]!.get(itemID!) != nil  {
+                    if itemID != nil && data[filter]!.EVget(itemID!) != nil  {
                         data[filter]!.removeAtIndex(itemID!)
                         data[filter]!.insert(item, atIndex: itemID!)
                         (updateHandlers[filter]!)(item: item)
@@ -116,7 +116,7 @@ class EVCloudData {
     */
     private func deleteObject(recordId :String) {
         for (filter, table) in self.data {
-            var itemID:Int? = data[filter]!.indexOf {item in return item.recordID == recordId}
+            var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID == recordId}
             if (itemID != nil) {
                 data[filter]!.removeAtIndex(itemID!)
                 (deletedHandlers[filter]!)(recordId: recordId)
@@ -265,5 +265,49 @@ class EVCloudData {
                 self.deleteObject(recordId)
             })
     }
+}
+
+/**
+These Array extensions are a copy from the ExSwift library. They ar copied here to limit dependencies.
+*/
+extension Array {
+    /**
+    Index of the first item that meets the condition.
     
+    :param: condition A function which returns a boolean if an element satisfies a given condition or not.
+    :returns: Index of the first matched item or nil
+    */
+    func EVindexOf (condition: Element -> Bool) -> Int? {
+        for (index, element) in enumerate(self) {
+            if condition(element) {
+                return index
+            }
+        }
+        
+        return nil
+    }
+    
+    
+    /**
+    Gets the object at the specified index, if it exists.
+    
+    :param: index
+    :returns: Object at index in self
+    */
+    func EVget (index: Int) -> Element? {
+        
+        //  If the index is out of bounds it's assumed relative
+        func relativeIndex (index: Int) -> Int {
+            var _index = (index % count)
+            
+            if _index < 0 {
+                _index = count + _index
+            }
+            
+            return _index
+        }
+        
+        let _index = relativeIndex(index)
+        return _index < count ? self[_index] : nil
+    }
 }
