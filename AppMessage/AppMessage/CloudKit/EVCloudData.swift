@@ -52,7 +52,8 @@ class EVCloudData {
     /**
     All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
     */
-    var data = Dictionary<String, Dictionary<String, EVCloudKitDataObject>>()
+    var data = Dictionary<String, [EVCloudKitDataObject]>()
+
     /**
     A dictionary of predicates. Each filterId is a dictionary entry containing a predicate
     */
@@ -85,18 +86,21 @@ class EVCloudData {
         NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
+                var itemID:Int? = data[filter]!.indexOf {item in return item.recordID == recordId}
                 if predicate.evaluateWithObject(item) {
-                    if data[filter]![recordId] != nil  {
-                        data[filter]![recordId] = item
+                    
+                    if itemID != nil && data[filter]!.get(itemID!) != nil  {
+                        data[filter]!.removeAtIndex(itemID!)
+                        data[filter]!.insert(item, atIndex: itemID!)
                         (updateHandlers[filter]!)(item: item)
                     } else {
-                        data[filter]![recordId] = item
+                        data[filter]!.append(item)
                         (insertedHandlers[filter]!)(item: item)
                     }
                 } else { // An update of a field that is used int the predicate could trigger a delete from that set.
                     NSLog("Object not for filter \(filter)")
-                    if (data[filter]![recordId] != nil) {
-                        data[filter]!.removeValueForKey(recordId)
+                    if (itemID != nil) {
+                        data[filter]!.removeAtIndex(itemID!)
                         (deletedHandlers[filter]!)(recordId: recordId)
                     }
                 }
@@ -112,8 +116,9 @@ class EVCloudData {
     */
     private func deleteObject(recordId :String) {
         for (filter, table) in self.data {
-            if (table[recordId] != nil) {
-                data[filter]!.removeValueForKey(recordId)
+            var itemID:Int? = data[filter]!.indexOf {item in return item.recordID == recordId}
+            if (itemID != nil) {
+                data[filter]!.removeAtIndex(itemID!)
                 (deletedHandlers[filter]!)(recordId: recordId)
             }
         }
@@ -189,7 +194,7 @@ class EVCloudData {
         predicate: NSPredicate,
         filterId: String,
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
-        completionHandler: (results: Dictionary<String, T>) -> Void,
+        completionHandler: (results: [T]) -> Void,
         insertedHandler:(item: EVCloudKitDataObject) -> Void,
         updatedHandler:(item: EVCloudKitDataObject) -> Void,
         deletedHandler:(recordId: String) -> Void,

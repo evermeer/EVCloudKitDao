@@ -100,15 +100,15 @@ class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func queryRecords<T:EVCloudKitDataObject>(type:T, query: CKQuery, completionHandler: (results: Dictionary<String, T>) -> Void, errorHandler:(error: NSError) -> Void) {
+    func queryRecords<T:EVCloudKitDataObject>(type:T, query: CKQuery, completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
         // Not sortable anymore!?
         if !(query.sortDescriptors != nil) {
             query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
         var operation = CKQueryOperation(query: query)
-        var results = Dictionary<String, T>()
+        var results = [T]()
         operation.recordFetchedBlock = { record in
-            results[record.recordID.recordName] = self.fromCKRecord(record) as? T
+            results.append(self.fromCKRecord(record) as T)
         }
         operation.queryCompletionBlock = { cursor, error in
             self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
@@ -305,11 +305,11 @@ class EVCloudKitDao {
     Query a record type
     
     :param: type An instance of the Object for what we want to query the record type
-    :param: completionHandler The function that will be called with a dictionary of the requested objects
+    :param: completionHandler The function that will be called with an array of the requested objects
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: Dictionary<String, T>) -> Void, errorHandler:(error: NSError) -> Void) {
+    func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -321,11 +321,11 @@ class EVCloudKitDao {
     :param: type An instance of the Object for what we want to query the record type
     :param: referenceRecordName The CloudKit record id that we are looking for
     :param: referenceField The name of the field that we will query for the referenceRecordName
-    :param: completionHandler The function that will be called with a dictionary of the requested objects
+    :param: completionHandler The function that will be called with an array of the requested objects
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func query<T:EVCloudKitDataObject>(type:T, referenceRecordName:String, referenceField:String ,completionHandler: (results: Dictionary<String, T>) -> Void, errorHandler:(error: NSError) -> Void) {
+    func query<T:EVCloudKitDataObject>(type:T, referenceRecordName:String, referenceField:String ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
@@ -339,11 +339,11 @@ class EVCloudKitDao {
     
     :param: type An instance of the Object for what we want to query the record type
     :param: predicate The predicate with the filter for our query
-    :param: completionHandler The function that will be called with a dictionary of the requested objects
+    :param: completionHandler The function that will be called with an array of the requested objects
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: Dictionary<String, T>) -> Void, errorHandler:(error: NSError) -> Void){
+    func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void){
         var recordType = EVReflection.swiftStringFromClass(type)
         var query = CKQuery(recordType: recordType, predicate: predicate)
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -355,11 +355,11 @@ class EVCloudKitDao {
     
     :param: type An instance of the Object for what we want to query the record type
     :param: tokens The tokens that we will query for (words seperated by a space)
-    :param: completionHandler The function that will be called with a dictionary of the requested objects
+    :param: completionHandler The function that will be called with an array of the requested objects
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func query<T:EVCloudKitDataObject>(type:T, tokens:String ,completionHandler: (results: Dictionary<String, T>) -> Void, errorHandler:(error: NSError) -> Void) {
+    func query<T:EVCloudKitDataObject>(type:T, tokens:String ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
         var recordType = EVReflection.swiftStringFromClass(T())
         var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "ALL tokenize('\(tokens)', ‘Cdl') IN allTokens"))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -698,3 +698,6 @@ extension Dictionary {
         }
     }
 }
+
+
+

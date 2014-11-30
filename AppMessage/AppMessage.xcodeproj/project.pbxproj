@@ -8,6 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
+		7F41BB921A2B543D003FE1DD /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB871A2B543D003FE1DD /* Array.swift */; };
+		7F41BB931A2B543D003FE1DD /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB881A2B543D003FE1DD /* Dictionary.swift */; };
+		7F41BB941A2B543D003FE1DD /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB891A2B543D003FE1DD /* Double.swift */; };
+		7F41BB951A2B543D003FE1DD /* ExSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB8B1A2B543D003FE1DD /* ExSwift.swift */; };
+		7F41BB961A2B543D003FE1DD /* Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB8C1A2B543D003FE1DD /* Float.swift */; };
+		7F41BB971A2B543D003FE1DD /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB8D1A2B543D003FE1DD /* Int.swift */; };
+		7F41BB981A2B543D003FE1DD /* NSArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB8E1A2B543D003FE1DD /* NSArray.swift */; };
+		7F41BB991A2B543D003FE1DD /* Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB8F1A2B543D003FE1DD /* Range.swift */; };
+		7F41BB9A1A2B543D003FE1DD /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB901A2B543D003FE1DD /* Sequence.swift */; };
+		7F41BB9B1A2B543D003FE1DD /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB911A2B543D003FE1DD /* String.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
 		7F434A2B19628D490081F35C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2A19628D490081F35C /* ViewController.swift */; };
 		7F434A3019628D490081F35C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F434A2F19628D490081F35C /* Images.xcassets */; };
@@ -54,6 +64,17 @@
 		551833E22DBE457F8D311100 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBFAD2C72A01401977EA5D7 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudKitDataObject.swift; sourceTree = "<group>"; };
+		7F41BB871A2B543D003FE1DD /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		7F41BB881A2B543D003FE1DD /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
+		7F41BB891A2B543D003FE1DD /* Double.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
+		7F41BB8A1A2B543D003FE1DD /* ExSwift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExSwift.h; sourceTree = "<group>"; };
+		7F41BB8B1A2B543D003FE1DD /* ExSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExSwift.swift; sourceTree = "<group>"; };
+		7F41BB8C1A2B543D003FE1DD /* Float.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Float.swift; sourceTree = "<group>"; };
+		7F41BB8D1A2B543D003FE1DD /* Int.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
+		7F41BB8E1A2B543D003FE1DD /* NSArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSArray.swift; sourceTree = "<group>"; };
+		7F41BB8F1A2B543D003FE1DD /* Range.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Range.swift; sourceTree = "<group>"; };
+		7F41BB901A2B543D003FE1DD /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
+		7F41BB911A2B543D003FE1DD /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		7F434A2319628D490081F35C /* AppMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F434A2719628D490081F35C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F434A2819628D490081F35C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -113,6 +134,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7F41BB861A2B543D003FE1DD /* ExSwift */ = {
+			isa = PBXGroup;
+			children = (
+				7F41BB871A2B543D003FE1DD /* Array.swift */,
+				7F41BB881A2B543D003FE1DD /* Dictionary.swift */,
+				7F41BB891A2B543D003FE1DD /* Double.swift */,
+				7F41BB8A1A2B543D003FE1DD /* ExSwift.h */,
+				7F41BB8B1A2B543D003FE1DD /* ExSwift.swift */,
+				7F41BB8C1A2B543D003FE1DD /* Float.swift */,
+				7F41BB8D1A2B543D003FE1DD /* Int.swift */,
+				7F41BB8E1A2B543D003FE1DD /* NSArray.swift */,
+				7F41BB8F1A2B543D003FE1DD /* Range.swift */,
+				7F41BB901A2B543D003FE1DD /* Sequence.swift */,
+				7F41BB911A2B543D003FE1DD /* String.swift */,
+			);
+			name = ExSwift;
+			path = Frameworks/ExSwift;
+			sourceTree = "<group>";
+		};
 		7F434A1A19628D490081F35C = {
 			isa = PBXGroup;
 			children = (
@@ -241,6 +281,7 @@
 		FE945222C18A4F03BAF7064D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7F41BB861A2B543D003FE1DD /* ExSwift */,
 				7F434A4E1962B95D0081F35C /* CloudKit.framework */,
 				551833E22DBE457F8D311100 /* libPods.a */,
 			);
@@ -397,7 +438,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F41BB9B1A2B543D003FE1DD /* String.swift in Sources */,
 				7FC46F92198242A5000A875F /* NewsViewController.swift in Sources */,
+				7F41BB921A2B543D003FE1DD /* Array.swift in Sources */,
+				7F41BB9A1A2B543D003FE1DD /* Sequence.swift in Sources */,
+				7F41BB981A2B543D003FE1DD /* NSArray.swift in Sources */,
 				7FC46F8E19824121000A875F /* RightMenuViewController.swift in Sources */,
 				7F434A2B19628D490081F35C /* ViewController.swift in Sources */,
 				7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */,
@@ -405,8 +450,10 @@
 				7FC2CF4619D7F82500CF3549 /* EVReflection.swift in Sources */,
 				7FC46F9A19828082000A875F /* TestsViewController.swift in Sources */,
 				7FC46F8619813D77000A875F /* RootViewController.swift in Sources */,
+				7F41BB951A2B543D003FE1DD /* ExSwift.swift in Sources */,
 				7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */,
 				7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */,
+				7F41BB931A2B543D003FE1DD /* Dictionary.swift in Sources */,
 				7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */,
 				7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */,
 				7FC8B3B119E0600900C146AE /* MenuViewController.swift in Sources */,
@@ -414,7 +461,11 @@
 				7FC46F8C19814C17000A875F /* LeftMenuViewController.swift in Sources */,
 				7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */,
 				7FC46F9019824285000A875F /* HomeViewController.swift in Sources */,
+				7F41BB991A2B543D003FE1DD /* Range.swift in Sources */,
+				7F41BB961A2B543D003FE1DD /* Float.swift in Sources */,
 				7FCB04A419A8E14F00A257FE /* News.swift in Sources */,
+				7F41BB971A2B543D003FE1DD /* Int.swift in Sources */,
+				7F41BB941A2B543D003FE1DD /* Double.swift in Sources */,
 				7FC46F981982805A000A875F /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
