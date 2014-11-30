@@ -9,7 +9,8 @@ See TestsViewController.swift for a complete overview of the functionality. See 
 This is still a work in progress. The Dao, Data and Reflection classes are complete, the demo is progressing. The news items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. Also the contact list is functional. I'm now working on the chat window.
 
 ## A picture says more than 1000 words
-Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do.
+Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do. 
+
 ![Screenshot0][img0]
 
 ## Main features of EVCloudKitDao:
