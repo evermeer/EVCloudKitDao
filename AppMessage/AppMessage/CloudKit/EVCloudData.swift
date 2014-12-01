@@ -94,7 +94,7 @@ class EVCloudData {
                         data[filter]!.insert(item, atIndex: itemID!)
                         (updateHandlers[filter]!)(item: item)
                     } else {
-                        data[filter]!.append(item)
+                        data[filter]!.insert(item, atIndex: 0)
                         (insertedHandlers[filter]!)(item: item)
                     }
                 } else { // An update of a field that is used int the predicate could trigger a delete from that set.

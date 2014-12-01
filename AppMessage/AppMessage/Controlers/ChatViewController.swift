@@ -25,8 +25,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         self.senderDisplayName = "\(EVCloudKitDao.instance.activeUser?.firstName)  \(EVCloudKitDao.instance.activeUser?.lastName)"
         
         // configure JSQMessagesViewController
-        self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-        self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+        var defaultAvatarSize: CGSize = CGSizeMake(kJSQMessagesCollectionViewAvatarSizeDefault, kJSQMessagesCollectionViewAvatarSizeDefault)
+        self.collectionView.collectionViewLayout.incomingAvatarViewSize = defaultAvatarSize //CGSizeZero
+        self.collectionView.collectionViewLayout.outgoingAvatarViewSize = defaultAvatarSize //CGSizeZero
         self.showLoadEarlierMessagesHeader = false
         
     }
@@ -50,6 +51,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
                 NSLog("results = \(results.count)")
                 NSOperationQueue.mainQueue().addOperationWithBlock({
                     self.collectionView.reloadData()
+                    self.scrollToBottomAnimated(true)
                 })
             }, insertedHandler: { item in
                 NSLog("inserted \(item)")
@@ -170,6 +172,21 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         return kJSQMessagesCollectionViewCellLabelHeightDefault
     }
     
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+        var message = getMessageForId(indexPath.row)
+        var initials : String = ""
+        if message.senderId == self.senderId {
+            var l = Array(EVCloudKitDao.instance.activeUser.lastName)[0]
+            initials = "\(Array(EVCloudKitDao.instance.activeUser.firstName)[0]) \(Array(EVCloudKitDao.instance.activeUser.lastName)[0])"
+        } else {
+            initials = "\(Array(chatWith.firstName)[0]) \(Array(chatWith.lastName)[0])"
+        }
+        var size:CGFloat = 14
+        var avatar = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: UIColor.lightGrayColor(), textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(size), diameter: 30)
+        return avatar
+    }
+    
     // CellBottomLabel
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         return nil
@@ -230,7 +247,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     // ------------------------------------------------------------------------
     
     func getMessageForId(id:Int) -> JSQMessage {
-        var data:Message = EVCloudData.instance.data[dataID]![id] as Message
+        var data:Message = EVCloudData.instance.data[dataID]![EVCloudData.instance.data[dataID]!.count - id - 1] as Message
         var message: JSQMessage!
         if data.From_ID == self.senderId {
             message = JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName , text: data.Text)
