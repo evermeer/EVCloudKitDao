@@ -29,6 +29,7 @@ Here is a screenshot of the included demo app chat functionality. It's already f
 - it will store the fetched data collection in memory.
 - notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
+- since all data is processed all callback events will be executed on the mainQueue
 
 ## Todo's'
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
@@ -132,24 +133,18 @@ class LeftMenuViewController: UIViewController {
             notificationInfo.shouldSendContentAvailable = true }
         , completionHandler: { results in
             NSLog("There are \(results.count) existing news items")
-            self.refreshNewsVieuw()
+            self.newsController.tableView.reloadData()
         }, insertedHandler: {item in
             Helper.showStatus("New News item: '\((item as News).Subject)'")
-            self.refreshNewsVieuw()
+            self.newsController.tableView.reloadData()
         }, updatedHandler: {item in
             Helper.showStatus("Updated News item:'\((item as News).Subject)'")
-            self.refreshNewsVieuw()
+            self.newsController.tableView.reloadData()
         }, deletedHandler: {recordId in
             Helper.showStatus("News item was removed")
-            self.refreshNewsVieuw()
+            self.newsController.tableView.reloadData()
         }, errorHandler: {error in
             Helper.showError("Could not load news: \(error.description)")
-        })
-    }
-
-    func refreshNewsVieuw() {
-        NSOperationQueue.mainQueue().addOperationWithBlock({
-            self.newsController.tableView.reloadData()
         })
     }
 }

@@ -49,18 +49,14 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
                 notificationInfo.shouldSendContentAvailable = true
             }, completionHandler: { results in
                 NSLog("results = \(results.count)")
-                NSOperationQueue.mainQueue().addOperationWithBlock({
-                    self.collectionView.reloadData()
-                    self.scrollToBottomAnimated(true)
-                })
+                self.collectionView.reloadData()
+                self.scrollToBottomAnimated(true)
             }, insertedHandler: { item in
                 NSLog("inserted \(item)")
-                NSOperationQueue.mainQueue().addOperationWithBlock({
-                    self.showTypingIndicator = true
-                    self.scrollToBottomAnimated(true)
-                    JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
-                    self.finishReceivingMessage();
-                })
+                self.showTypingIndicator = true
+                self.scrollToBottomAnimated(true)
+                JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
+                self.finishReceivingMessage();
             }, updatedHandler: { item in
                 NSLog("updated \(item)")
             }, deletedHandler: { recordId in

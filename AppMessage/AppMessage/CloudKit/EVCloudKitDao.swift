@@ -80,13 +80,11 @@ class EVCloudKitDao {
     :return: No return value
     */
     func handleCallback(error: NSError?, errorHandler: () -> Void, completionHandler: () -> Void) {
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-            if (error != nil) {
-                NSLog("CloudKit Error : \(error?.code) = \(error?.description) \n\(error?.userInfo)")
-                errorHandler()
-            } else {
-                completionHandler()
-            }
+        if (error != nil) {
+            NSLog("CloudKit Error : \(error?.code) = \(error?.description) \n\(error?.userInfo)")
+            errorHandler()
+        } else {
+            completionHandler()
         }
     }
     

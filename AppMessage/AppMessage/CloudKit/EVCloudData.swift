@@ -92,16 +92,22 @@ class EVCloudData {
                     if itemID != nil && data[filter]!.EVget(itemID!) != nil  {
                         data[filter]!.removeAtIndex(itemID!)
                         data[filter]!.insert(item, atIndex: itemID!)
-                        (updateHandlers[filter]!)(item: item)
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            (self.updateHandlers[filter]!)(item: item)
+                        }
                     } else {
                         data[filter]!.insert(item, atIndex: 0)
-                        (insertedHandlers[filter]!)(item: item)
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            (self.insertedHandlers[filter]!)(item: item)
+                        }
                     }
                 } else { // An update of a field that is used int the predicate could trigger a delete from that set.
                     NSLog("Object not for filter \(filter)")
                     if (itemID != nil) {
                         data[filter]!.removeAtIndex(itemID!)
-                        (deletedHandlers[filter]!)(recordId: recordId)
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            (self.deletedHandlers[filter]!)(recordId: recordId)
+                        }
                     }
                 }
             }
@@ -119,7 +125,9 @@ class EVCloudData {
             var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID == recordId}
             if (itemID != nil) {
                 data[filter]!.removeAtIndex(itemID!)
-                (deletedHandlers[filter]!)(recordId: recordId)
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    (self.deletedHandlers[filter]!)(recordId: recordId)
+                }
             }
         }
     }
@@ -137,7 +145,15 @@ class EVCloudData {
     :return: No return value
     */
     func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
-        dao.getItem(recordId, completionHandler: completionHandler, errorHandler: errorHandler)
+        dao.getItem(recordId, completionHandler: { result in
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                completionHandler(result: result)
+            }
+        }, errorHandler: {error in
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                errorHandler(error: error)
+            }
+        })
     }
     
     /**
@@ -152,8 +168,14 @@ class EVCloudData {
         dao.saveItem(item, completionHandler: { record in
             var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)
             self.upsertObject(record.recordID.recordName, item: item)
-            completionHandler(record: record)
-            }, errorHandler: errorHandler)
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                completionHandler(record: record)
+            }
+        }, errorHandler: {error in
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                errorHandler(error: error)
+            }
+        })
     }
     
     /**
@@ -167,8 +189,14 @@ class EVCloudData {
     func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
-            completionHandler(recordId: recordId)
-            }, errorHandler: errorHandler)
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                completionHandler(recordId: recordId)
+            }
+        }, errorHandler: {error in
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                errorHandler(error: error)
+            }
+        })
     }
     
     // ------------------------------------------------------------------------
@@ -211,8 +239,14 @@ class EVCloudData {
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in
                 self.data[filterId] = results
-                completionHandler(results: results)
-                }, errorHandler: errorHandler)
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    completionHandler(results: results)
+                }
+            }, errorHandler: {error in
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    errorHandler(error: error)
+                }
+            })
     }
 
     /**
