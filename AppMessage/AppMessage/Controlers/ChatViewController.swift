@@ -80,7 +80,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         //[self.demoData.messages addObject:message];
         var message = Message()
         message.setFrom(EVCloudKitDao.instance.activeUser.userRecordID.recordName)
+        message.FromName = self.senderDisplayName
         message.setTo(chatWith.userRecordID.recordName)
+        message.ToName = self.chatWith.firstName + " " + self.chatWith.lastName
         message.Text = text
         EVCloudData.instance.saveItem(message, completionHandler: { message in
                 //Helper.showStatus("Message was send...")
