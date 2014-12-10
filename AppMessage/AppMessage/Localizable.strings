@@ -1,0 +1,9 @@
+/* 
+  Localizable.strings
+
+  Created by Edwin Vermeer on 12/10/14.
+  Copyright (c) 2014 mirabeau. All rights reserved.
+*/
+
+// Subscribe to News alert message
+"News: %1$@" = "News: %1$@";

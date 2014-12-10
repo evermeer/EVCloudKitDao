@@ -45,8 +45,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
             , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMe, recordIdOther], [recordIdOther, recordIdMe])!
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
-                notificationInfo.alertBody = "New Message record"
-                notificationInfo.shouldSendContentAvailable = true
+                notificationInfo.alertBody = "%1$@ : %2$@"
+                notificationInfo.alertLocalizationArgs = ["FromName", "Text"]
             }, completionHandler: { results in
                 NSLog("results = \(results.count)")
                 self.collectionView.reloadData()
@@ -246,11 +246,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         var data:Message = EVCloudData.instance.data[dataID]![EVCloudData.instance.data[dataID]!.count - id - 1] as Message
         var message: JSQMessage!
         if data.From_ID == self.senderId {
-            message = JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName , text: data.Text)
+            message = JSQMessage(senderId: self.senderId, senderDisplayName: self.senderDisplayName,date: data.creationDate, text: data.Text)
         } else {
-            message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, displayName: self.chatWith.firstName + " " + self.chatWith.lastName , text: data.Text)
+            message = JSQMessage(senderId: self.chatWith.userRecordID.recordName, senderDisplayName: self.chatWith.firstName + " " + self.chatWith.lastName, date:data.creationDate , text: data.Text)
         }
-
         return message;
     }
 }

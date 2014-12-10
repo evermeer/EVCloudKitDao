@@ -187,6 +187,7 @@ class TestsViewController : UIViewController {
             }, errorHandler: { error in
                 NSLog("<--- ERROR connect")
             })
+        
     }
     
 }

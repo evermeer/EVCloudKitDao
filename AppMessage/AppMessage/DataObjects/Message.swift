@@ -15,6 +15,7 @@ class Message : EVCloudKitDataObject {
         self.From_ID = id
         self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
     }
+    var FromName : String = ""
     // To what Channel or Group is this message
     var To : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var To_ID : String = ""
@@ -22,6 +23,7 @@ class Message : EVCloudKitDataObject {
         self.To_ID = id
         self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
     }
+    var ToName : String = ""
     // Message text
     var Text : String = ""
     // is there a (media) attachment

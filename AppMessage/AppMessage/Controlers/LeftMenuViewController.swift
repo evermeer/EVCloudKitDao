@@ -119,14 +119,14 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in
-                notificationInfo.alertBody = "News update"
+                //notificationInfo.alertBody = "News update"
                 notificationInfo.shouldSendContentAvailable = true
-                // notificationInfo.alertLocalizationKey = "subscriptionMessage"
-                // notificationInfo.alertLocalizationArgs = [recordType, filterId]
+                notificationInfo.alertLocalizationKey = "News: %1$@"
+                notificationInfo.alertLocalizationArgs = ["Subject"]
+                notificationInfo.shouldBadge = true
                 // notificationInfo.alertActionLocalizationKey = "subscrioptionActionMessage"
                 // notificationInfo.alertLaunchImage = "alertImage"
                 // notificationInfo.soundName = "alertSound"
-                // notificationInfo.shouldBadge = true
                 // notificationInfo.desiredKeys = [""]
             }
             , completionHandler: { results in

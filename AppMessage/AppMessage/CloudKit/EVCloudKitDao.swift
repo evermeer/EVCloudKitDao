@@ -621,6 +621,19 @@ class EVCloudKitDao {
         }
     }
     
+    
+    func setBadgeCounter(count:Int) {
+        let badgeResetOperation = CKModifyBadgeOperation(badgeValue: count)
+        badgeResetOperation.modifyBadgeCompletionBlock = { (error) -> Void in
+            self.handleCallback(error, errorHandler: {
+                    NSLog("Error resetting badge: \(error)")
+                }, completionHandler: {
+                    UIApplication.sharedApplication().applicationIconBadgeNumber = count
+                })
+        }
+        CKContainer.defaultContainer().addOperation(badgeResetOperation)
+    }
+    
     // ------------------------------------------------------------------------
     // MARK: - Converting a CKRecord from and to an object
     // ------------------------------------------------------------------------
