@@ -68,8 +68,9 @@ pod install
 4) Go to AppMessage target settings and update the:
 
 - bundle name (usually your own reversed domain)
-- Change the team settings (your own certificate)
+- Change the team settings (your own certificate that is enabled for push notifications)
 - fix the iCloud capabilities. (check key-value store and CloudKit with a default container)
+- fix the capabilities for Background Modes 'Background fetch' and 'Remote notifications'
 
 5) Build and Run the app. In the AppDelegate there is a call to initiate all objects (createRecordTypes). All required CloudKit objects will be created.
 
