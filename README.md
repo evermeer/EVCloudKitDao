@@ -22,6 +22,7 @@ Here is a screenshot of the included demo app chat functionality. It's already f
 - Storing CKAsset objects
 - Organising subscription
 - Handling incoming notifications
+- (Re)setting the badge
 
 ## Main features of EVCloudKitData:
 - Use just one predicate for a query, subscription and processing incoming notifications.
@@ -62,24 +63,22 @@ When adding a property to your object of type CKReference, then also add a prope
 pod install
 ```
 
-If you are having build issues, first make sure your pods are up to date
-
-```sh
-pod update
-pod install
-```
-
-occasionally, CocoaPods itself will need to be updated. Do this with
-
-```sh
-sudo gem update
-```
-
 3) Open the `AppMessage.xcworkspace` in Xcode.
 
-4) Go to AppMessage target settings and fix the iCloud capabilities.
+4) Go to AppMessage target settings and update the:
 
-5) Build and Run and you are ready to go!
+- bundle name (usually your own reversed domain)
+- Change the team settings (your own certificate)
+- fix the iCloud capabilities. (check key-value store and CloudKit with a default container)
+
+5) Build and Run the app. In the AppDelegate there is a call to initiate all objects (createRecordTypes). All required CloudKit objects will be created.
+
+6) Open the CloudKit dashboard, select all recordtypes and enable all 'Metadata Indexes'
+
+7) Disable the call to .createRecordTypes in AppDelegate and run the app again.
+
+
+and you are ready to go!
 
 ## How to use the EVCloudKitData
 Below is all the code you need to setup a news feed including push notification handling for any changes.
