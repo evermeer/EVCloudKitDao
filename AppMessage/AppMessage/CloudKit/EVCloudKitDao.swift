@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import UIKit
 
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
