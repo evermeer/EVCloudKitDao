@@ -100,6 +100,8 @@
 		7FED8DFA1A4A30C10071F7A9 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		7FED8E1D1A4B08FB0071F7A9 /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dummy.h; sourceTree = "<group>"; };
 		7FED8E1E1A4B08FB0071F7A9 /* Dummy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dummy.m; sourceTree = "<group>"; };
+		7FED8E201A4B14A30071F7A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
+		7FED8E211A4B14AF0071F7A9 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; name = .travis.yml; path = ../.travis.yml; sourceTree = "<group>"; };
 		7FF447431A16964C0003AE91 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		7FFD4C0C1A222E9D00E03FAB /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		82759452322E59420ABE0701 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -140,6 +142,8 @@
 		7F434A1A19628D490081F35C = {
 			isa = PBXGroup;
 			children = (
+				7FED8E201A4B14A30071F7A9 /* .gitignore */,
+				7FED8E211A4B14AF0071F7A9 /* .travis.yml */,
 				7FED8DF91A4A30B70071F7A9 /* EVCloudKitDao.podspec */,
 				7F51F15B197E6BA300A9E5B2 /* README.md */,
 				7FED8DFA1A4A30C10071F7A9 /* LICENSE */,
