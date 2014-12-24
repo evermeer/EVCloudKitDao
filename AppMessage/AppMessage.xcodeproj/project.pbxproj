@@ -44,6 +44,7 @@
 		7FCB04A419A8E14F00A257FE /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB04A319A8E14F00A257FE /* News.swift */; };
 		7FD051C119C591B2009B7FEE /* image-not-available.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FD051C019C591B2009B7FEE /* image-not-available.jpg */; };
 		7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
+		7FED8E1F1A4B08FB0071F7A9 /* Dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FED8E1E1A4B08FB0071F7A9 /* Dummy.m */; };
 		7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF447431A16964C0003AE91 /* ChatViewController.swift */; };
 		7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD4C0C1A222E9D00E03FAB /* Helper.swift */; };
 		B7149DC27D9A4EEFAC271E35 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 551833E22DBE457F8D311100 /* libPods.a */; };
@@ -97,6 +98,8 @@
 		7FD41610199666F3003C2CE9 /* EVCloudData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudData.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7FED8DF91A4A30B70071F7A9 /* EVCloudKitDao.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = EVCloudKitDao.podspec; path = ../EVCloudKitDao.podspec; sourceTree = "<group>"; };
 		7FED8DFA1A4A30C10071F7A9 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		7FED8E1D1A4B08FB0071F7A9 /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dummy.h; sourceTree = "<group>"; };
+		7FED8E1E1A4B08FB0071F7A9 /* Dummy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dummy.m; sourceTree = "<group>"; };
 		7FF447431A16964C0003AE91 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		7FFD4C0C1A222E9D00E03FAB /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		82759452322E59420ABE0701 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 		7F434A4519628E2D0081F35C /* CloudKit */ = {
 			isa = PBXGroup;
 			children = (
+				7FED8E1D1A4B08FB0071F7A9 /* Dummy.h */,
+				7FED8E1E1A4B08FB0071F7A9 /* Dummy.m */,
 				7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */,
 				7FD41610199666F3003C2CE9 /* EVCloudData.swift */,
 				7FC2CF4519D7F82500CF3549 /* EVReflection.swift */,
@@ -387,6 +392,7 @@
 				7F41BB951A2B543D003FE1DD /* ExSwift.swift in Sources */,
 				7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */,
 				7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */,
+				7FED8E1F1A4B08FB0071F7A9 /* Dummy.m in Sources */,
 				7F41BB931A2B543D003FE1DD /* Dictionary.swift in Sources */,
 				7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */,
 				7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */,
