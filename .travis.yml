@@ -1,5 +1,6 @@
 language: objective-c
 podfile: AppMessage/Podfile
+osx_image: xcode611
 
 before_install: 
 - export LANG=en_US.UTF-8
@@ -8,4 +9,4 @@ before_install:
 - if brew outdated | grep -qx xctool; then brew upgrade xctool; fi
 
 script:
-- xctool clean build test -workspace AppMessage/AppMessage.xcworkspace -scheme AppMessage -sdk iphonesimulator8.1 ONLY_ACTIVE_ARCH=NO
+- xctool clean build test -workspace AppMessage/AppMessage.xcworkspace -scheme AppMessage -sdk iphonesimulator8.0 ONLY_ACTIVE_ARCH=NO
