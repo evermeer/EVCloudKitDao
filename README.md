@@ -1,6 +1,10 @@
 EVCloudKitDao
 =============
 
+[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg)](https://travis-ci.org/evermeer/EVCloudKitDao)
+[![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+[![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+[![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 
 ## What is this
 This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
@@ -50,10 +54,6 @@ Unfortunately there is also a great library that can not be included using Cocoa
 - [ExSwift](https://github.com/pNre/ExSwift) - A set of Swift extensions for standard types and classes
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
-[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg)](https://travis-ci.org/evermeer/EVCloudKitDao)
-[![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
-[![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
-[![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 
 I'm trying to make 'EVCloudKitDao available through [CocoaPods](http://cocoapods.org). 
 At this moment there are still problems when using Swift in cocoapods. 
