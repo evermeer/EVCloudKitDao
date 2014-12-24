@@ -59,16 +59,16 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
         if cell == nil {
             cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellIdentifier)
             cell.backgroundColor = UIColor.clearColor()
-            cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 21)
-            cell.textLabel?.textColor = UIColor.blackColor()
-            cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
+            cell.textLabel!.font = UIFont(name: "HelveticaNeue", size: 21)
+            cell.textLabel!.textColor = UIColor.blackColor()
+            cell.textLabel!.highlightedTextColor = UIColor.lightGrayColor()
             cell.selectedBackgroundView = UIView()
         }
         
         //This line all you need to get the correct data for the cell
         var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
 
-        cell.textLabel?.text = news.Subject
+        cell.textLabel!.text = news.Subject
         cell.detailTextLabel?.text = news.Body
         
         return cell;
