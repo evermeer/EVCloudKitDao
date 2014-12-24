@@ -1,6 +1,16 @@
 EVCloudKitDao
 =============
 
+
+[![CI Status](http://img.shields.io/travis/Edwin Vermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/Edwin Vermeer/EVCloudKitDao)
+[![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+[![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+[![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+
+## Author
+
+Edwin Vermeer, edwin@evict.nl
+
 ## What is this
 This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
 
@@ -49,7 +59,15 @@ Unfortunately there is also a great library that can not be included using Cocoa
 - [ExSwift](https://github.com/pNre/ExSwift) - A set of Swift extensions for standard types and classes
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
-Just copy the Cloudkit folder containgint the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. Then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
+EVCloudKitDao is available through [CocoaPods](http://cocoapods.org). 
+At this moment cocoapods written in Swift can not be used. 
+According to the forum support for Swift will come soon.
+If that is released, then to install this, simply add the following line to your Podfile:
+
+pod "EVCloudKitDao"
+
+
+As long as Swift cocoapods don't work yet, you can just copy the Cloudkit folder containing the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. Then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 
 When adding a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
@@ -199,28 +217,10 @@ dao.query(Message()
 ```
 
 
+
 ## License
 
-MIT License
-
-Copyright (c) 2014 EVICT B.V.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
-Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+EVCloudKitDao is available under the MIT license. See the LICENSE file for more info.
 
 
 [img0]:https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png
