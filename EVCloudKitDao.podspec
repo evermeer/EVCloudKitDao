@@ -64,7 +64,7 @@ s.source       = { :git => "https://github.com/evermeer/EVCloudKitDao.git", :tag
 #  Not including the public_header_files will make all headers public.
 #
 
-s.source_files  = 'AppMessage/AppMessage/CloudKit/Dummy.m', 'AppMessage/AppMessage/CloudKit/Dummy.h'
+s.source_files  = 'AppMessage/AppMessage/CloudKit/*'
 
 # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
