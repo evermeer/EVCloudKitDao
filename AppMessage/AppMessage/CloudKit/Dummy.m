@@ -1,6 +1,5 @@
 //
-//  NSObject+Dummy.m
-//  AppMessage
+//  Dummy.m
 //
 //  Created by Edwin Vermeer on 12/24/14.
 //  Copyright (c) 2014 mirabeau. All rights reserved.

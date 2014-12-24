@@ -50,8 +50,7 @@ Unfortunately there is also a great library that can not be included using Cocoa
 - [ExSwift](https://github.com/pNre/ExSwift) - A set of Swift extensions for standard types and classes
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
-
-[![CI Status](http://img.shields.io/travis/Edwin Vermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/Edwin Vermeer/EVCloudKitDao)
+[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg)](https://travis-ci.org/evermeer/EVCloudKitDao)
 [![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
