@@ -1,13 +1,11 @@
 
 AppMessage/AppMessage.xcodeproj/xcuserdata/*
 
-AppMessage/Pods/*
-
-
-AppMessage/Podfile.lock
-
 *.xcuserstate
 
 AppMessage/AppMessage.xcworkspace/xcuserdata/evermeer.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
 
 *.xccheckout
+
+AppMessage/Pods/*
+

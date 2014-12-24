@@ -1,0 +1,19 @@
+PODS:
+  - CRToast (0.0.7)
+  - JSQMessagesViewController (6.1.1):
+    - JSQSystemSoundPlayer (~> 2.0.0)
+  - JSQSystemSoundPlayer (2.0.0)
+  - RESideMenu (4.0.7)
+
+DEPENDENCIES:
+  - CRToast
+  - JSQMessagesViewController
+  - RESideMenu
+
+SPEC CHECKSUMS:
+  CRToast: f9f2c4b29776d68ba24c4d621cba59a83fea921b
+  JSQMessagesViewController: 84a5823a1f6a4f29ee6d4db0ea4b9d63876be4ee
+  JSQSystemSoundPlayer: c98443b1cbb3b45db09d0d3d6c2355cf78294981
+  RESideMenu: a9c1cd2e64e60e1d3166ddac01a83e215a0e4d30
+
+COCOAPODS: 0.34.4
