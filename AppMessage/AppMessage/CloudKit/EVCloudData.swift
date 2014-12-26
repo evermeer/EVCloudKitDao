@@ -164,12 +164,12 @@ class EVCloudData {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func saveItem(item: EVCloudKitDataObject, completionHandler: (record: CKRecord) -> Void, errorHandler:(error: NSError) -> Void) {
+    func saveItem(item: EVCloudKitDataObject, completionHandler: (item: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.saveItem(item, completionHandler: { record in
             var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)
             self.upsertObject(record.recordID.recordName, item: item)
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                completionHandler(record: record)
+                completionHandler(item: self.dao.fromCKRecord(record))
             }
         }, errorHandler: {error in
             NSOperationQueue.mainQueue().addOperationWithBlock {

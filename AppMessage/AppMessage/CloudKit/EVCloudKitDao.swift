@@ -6,7 +6,6 @@
 //
 
 import CloudKit
-import UIKit
 
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
@@ -684,30 +683,6 @@ class EVCloudKitDao {
             dictionary[field as NSString] = record.objectForKey(field as NSString)
         }
         return dictionary
-    }
-}
-
-
-/**
-Extending the Dictionary
-*/
-extension Dictionary {
-    /**
-    Make a Dictionary subscriptable by an index so that you can return the value for an index instead of its key
-    
-    :param: index The index of the object to return
-    */
-    subscript(index: Int) -> Value? {
-        get {
-            var i:Int = 0
-            for (key, item) in self {
-                if i == index {
-                    return item
-                }
-                i++
-            }
-            return nil
-        }
     }
 }
 
