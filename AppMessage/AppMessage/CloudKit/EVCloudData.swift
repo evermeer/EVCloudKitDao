@@ -12,7 +12,7 @@ import CloudKit
 /**
     Class for access to  Apple's CloudKit data the easiest way possible
 */
-class EVCloudData {
+public class EVCloudData {
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -23,7 +23,7 @@ class EVCloudData {
     
     :return: The EVCloudData object
     */
-    class var instance : EVCloudData {
+    public class var instance : EVCloudData {
         struct Static { static let instance : EVCloudData = EVCloudData() }
         return Static.instance
     }
@@ -33,7 +33,7 @@ class EVCloudData {
     
     :return: The EVCloudData object
     */
-    class func sharedInstance() -> EVCloudData {
+    public class func sharedInstance() -> EVCloudData {
         return instance;
     }
 
@@ -44,32 +44,32 @@ class EVCloudData {
     /**
     The EVCloudKitDao instance that will be used
     */
-    var dao = EVCloudKitDao.instance;
+    public var dao = EVCloudKitDao.instance;
     /**
     Save the recordType of the connection.
     */
-    var recordType = Dictionary<String, String>()
+    public var recordType = Dictionary<String, String>()
     /**
     All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
     */
-    var data = Dictionary<String, [EVCloudKitDataObject]>()
+    public var data = Dictionary<String, [EVCloudKitDataObject]>()
 
     /**
     A dictionary of predicates. Each filterId is a dictionary entry containing a predicate
     */
-    var predicates = Dictionary<String, NSPredicate>()
+    public var predicates = Dictionary<String, NSPredicate>()
     /**
     A dictionary of insert event handlers. Each filterId is a dictionary entry containing a insert event handler
     */
-    var insertedHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
+    public var insertedHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
     /**
     A dictionary of update event handlers. Each filterId is a dictionary entry containing a update event handler
     */
-    var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
+    public var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
     /**
     A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
     */
-    var deletedHandlers = Dictionary<String, (recordId: String) -> Void>()
+    public var deletedHandlers = Dictionary<String, (recordId: String) -> Void>()
 
     // ------------------------------------------------------------------------
     // MARK: - Modify local data
@@ -144,7 +144,7 @@ class EVCloudData {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.getItem(recordId, completionHandler: { result in
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 completionHandler(result: result)
@@ -164,7 +164,7 @@ class EVCloudData {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func saveItem(item: EVCloudKitDataObject, completionHandler: (item: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func saveItem(item: EVCloudKitDataObject, completionHandler: (item: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.saveItem(item, completionHandler: { record in
             var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)
             self.upsertObject(record.recordID.recordName, item: item)
@@ -186,7 +186,7 @@ class EVCloudData {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
             NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -218,7 +218,7 @@ class EVCloudData {
     :return: No return value
     */
 
-    func connect<T:EVCloudKitDataObject>(type:T,
+    public func connect<T:EVCloudKitDataObject>(type:T,
         predicate: NSPredicate,
         filterId: String,
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
@@ -254,7 +254,7 @@ class EVCloudData {
     
     :param: filterId The filterId
     */
-    func disconnect(filterId: String) {
+    public func disconnect(filterId: String) {
         insertedHandlers.removeValueForKey(filterId)
         updateHandlers.removeValueForKey(filterId)
         deletedHandlers.removeValueForKey(filterId)
@@ -273,7 +273,7 @@ class EVCloudData {
     :param: executeIfNonQuery Will be called if the notification is not for a CloudKit subscription
     :return: No return value
     */
-    func didReceiveRemoteNotification(userInfo: [NSObject : NSObject]!, executeIfNonQuery:() -> Void) {
+    public func didReceiveRemoteNotification(userInfo: [NSObject : NSObject]!, executeIfNonQuery:() -> Void) {
         var dao: EVCloudKitDao = EVCloudKitDao.instance
         dao.didReceiveRemoteNotification(userInfo, executeIfNonQuery: executeIfNonQuery, inserted: {recordId, item in
                 self.upsertObject(recordId, item: item)
@@ -289,7 +289,7 @@ class EVCloudData {
     
     :return: No return value
     */
-    func fetchChangeNotifications() {
+    public func fetchChangeNotifications() {
         var dao: EVCloudKitDao = EVCloudKitDao.instance
         dao.fetchChangeNotifications(nil, {recordId, item in
                 self.upsertObject(recordId, item: item)

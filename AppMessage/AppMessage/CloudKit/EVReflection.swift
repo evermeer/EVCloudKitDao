@@ -10,7 +10,7 @@ import Foundation
 /**
 Reflection methods
 */
-class EVReflection {
+public class EVReflection {
     /**
     Create an object from a dictionary
     
@@ -18,7 +18,7 @@ class EVReflection {
     :param: anyobjectTypeString The string representation of the object type that will be created
     :return: The object that is created from the dictionary
     */
-    class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject {
+    public class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject {
         var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString)
         var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
         var nsobject: NSObject = nsobjectype()
@@ -36,7 +36,7 @@ class EVReflection {
     :param: theObject The object that will be converted to a dictionary
     :return: The dictionary that is created from theObject
     */
-    class func toDictionary(theObject: NSObject) -> Dictionary<String, AnyObject?> {
+    public class func toDictionary(theObject: NSObject) -> Dictionary<String, AnyObject?> {
         var propertiesDictionary : Dictionary<String, AnyObject?> = Dictionary<String, AnyObject?>()
         for i in 0..<reflect(theObject).count {
             let key : String = reflect(theObject)[i].0
@@ -55,7 +55,7 @@ class EVReflection {
     :param: theObject The object that will be loged
     :return: No return value
     */
-    class func logObject(theObject: NSObject) {
+    public class func logObject(theObject: NSObject) {
         for (key: String, value: AnyObject?) in toDictionary(theObject) {
             NSLog("key = \(key), value = \(value)")
         }
@@ -67,7 +67,7 @@ class EVReflection {
     :param: className The string representation of the class (name of the bundle dot name of the class)
     :return: The Class type
     */
-    class func swiftClassFromString(className: String) -> AnyClass! {
+    public class func swiftClassFromString(className: String) -> AnyClass! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
             let classStringName = "\(appName).\(className)"
             return NSClassFromString(classStringName)
@@ -81,7 +81,7 @@ class EVReflection {
     :param: theObject An object for whitch the string representation of the class will be returned
     :return: The string representation of the class (name of the bundle dot name of the class)
     */
-    class func swiftStringFromClass(theObject: NSObject) -> String! {
+    public class func swiftStringFromClass(theObject: NSObject) -> String! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
             let classStringName: String = NSStringFromClass(theObject.dynamicType)
             return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
@@ -96,7 +96,7 @@ class EVReflection {
     :param: anyValue Something of type Any is converted to a type NSObject
     :return: The NSOBject that is created from the Any value
     */
-    class func valueForAny(anyValue:Any) -> NSObject? {
+    public class func valueForAny(anyValue:Any) -> NSObject? {
         switch(anyValue) {
         case let intValue as Int:
             return NSNumber(int: CInt(intValue))

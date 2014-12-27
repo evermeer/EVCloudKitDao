@@ -9,39 +9,39 @@ import CloudKit
 
 /**
 */
-class EVCloudKitDataObject : NSObject {
+public class EVCloudKitDataObject : NSObject {
     /**
     The unique ID of the record.
     */
-    var recordID: CKRecordID!
+    public var recordID: CKRecordID!
     
     /**
     The app-defined string that identifies the type of the record.
     */
-    var recordType: String!
+    public var recordType: String!
     
     /**
     The time when the record was first saved to the server.
     */
-    var creationDate: NSDate!
+    public var creationDate: NSDate!
     
     /**
     The ID of the user who created the record.
     */
-    var creatorUserRecordID: CKRecordID!
+    public var creatorUserRecordID: CKRecordID!
     
     /**
     The time when the record was last saved to the server.
     */
-    var modificationDate: NSDate!
+    public var modificationDate: NSDate!
     
     /**
     The ID of the user who last modified the record.
     */
-    var lastModifiedUserRecordID: CKRecordID!
+    public var lastModifiedUserRecordID: CKRecordID!
 
     /**
     A string containing the server change token for the record.
     */
-    var recordChangeTag: String!
+    public var recordChangeTag: String!
 }
