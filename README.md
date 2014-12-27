@@ -55,17 +55,30 @@ Unfortunately there is also a great library that can not be included using Cocoa
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 
-I'm trying to make 'EVCloudKitDao available through [CocoaPods](http://cocoapods.org). 
-At this moment there are still problems when using Swift in cocoapods. 
-According to the forum, support for Swift will come soon. If that is done, then to install this, simply add the following line to your Podfile:
+'EVCloudKitDao' is now available through the dependency manager [CocoaPods](http://cocoapods.org). 
+You do have to use cocoapods version 0.36. At this moment this can be installed as a pre release by executing:
+
+```
+[sudo] gem install cocoapods --pre
+```
+
+If you have installed cocoapods version 0.36 or later, then you can just add EVCloudKitDao to your workspace by adding the folowin linge to your Podfile:
 
 ```
 pod "EVCloudKitDao"
 ```
 
-As long as Swift cocoapods don't work yet, you can just copy the Cloudkit folder containing the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. Then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
+Version 0.36 of cocoapods will make a dynamic framework of all the pods that you use. Because of that it's only supported in iOS 8.0 or later. When using a framework, you also have to add an import at the top of your swift file like this:
 
-When adding a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
+```
+import EVCloudKitDao
+```
+
+If you want to wait for the official release of cocoapods 0.36 of if you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. 
+
+When you have added EVCloudKitDao to your project, then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
+
+Note: If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
 ## Building the AppMessage demo
 
