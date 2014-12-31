@@ -24,7 +24,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         connectToNews()
         
         // Only already setup CloudKit connect's will receive these notifications (like the News above)
-        EVCloudData.instance.fetchChangeNotifications()        
+        EVCloudData.publicDB.fetchChangeNotifications()
     }
     
     func setupMenuTableViewLayout() {
@@ -46,7 +46,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     deinit {
-        EVCloudData.instance.disconnect("News_All")
+        EVCloudData.publicDB.disconnect("News_All")
     }
 
     // ------------------------------------------------------------------------
@@ -115,7 +115,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func connectToNews() {
         
-        EVCloudData.instance.connect(News()
+        EVCloudData.publicDB.connect(News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in

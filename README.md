@@ -19,7 +19,7 @@ Here is a screenshot of the included demo app chat functionality. It's already f
 ![Screenshot0][img0]
 
 ## Main features of EVCloudKitDao:
-- simple singleton access to your default database
+- simple singleton access to your public or private databas\=
 - You do not have to parse from and to CKRecord (is based on reflection)
 - Generic and simplified query handling
 - Error handling (separate completionHandler and errorHandler code blocs)
@@ -113,6 +113,7 @@ Below is all the code you need to setup a news feed including push notification 
 
 
 ```
+// Just enherit from EVCloudKitDataObject so that you have access to the CloudKit metadata
 class News : EVCloudKitDataObject {
     var Subject : String = ""
     var Text : String = ""
@@ -130,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {
         NSLog("Push received")
-        EVCloudData.instance.didReceiveRemoteNotification(userInfo, {
+        EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, {
             NSLog("Not a CloudKit Query notification.")            
         })
     }
@@ -144,15 +145,15 @@ class LeftMenuViewController: UIViewController {
         super.viewDidLoad()
         connectToNews()
         // Only already setup CloudKit connect's will receive these notifications (like the News above)
-        EVCloudData.instance.fetchChangeNotifications()        
+        EVCloudData.publicDB.fetchChangeNotifications()        
     }
 
     deinit {
-        EVCloudData.instance.disconnect("News_All")
+        EVCloudData.publicDB.disconnect("News_All")
     }
 
     func connectToNews() {
-        EVCloudData.instance.connect(News()
+        EVCloudData.publicDB.connect(News()
         , predicate: NSPredicate(value: true)
         , filterId: "News_All"
         , configureNotificationInfo: { notificationInfo in
@@ -183,7 +184,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
         var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
         ...
         //This line all you need to get the correct data for the cell
-        var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
+        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as News
 
         cell.textLabel?.text = news.Subject
         cell.detailTextLabel?.text = news.Body
@@ -197,13 +198,14 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
 
 ## How to use the EVCloudKitDao
 ```
+// Just enherit from EVCloudKitDataObject so that you have access to the CloudKit metadata
 class Message : EVCloudKitDataObject {
     var From : String = ""
     var To : String = ""
     var Text : String = ""
 }
 
-var dao: EVCloudKitDao = EVCloudKitDao.instance
+var dao: EVCloudKitDao = EVCloudKitDao.publicDB
 
 var message = Message()
 message.From = "me@me.com"

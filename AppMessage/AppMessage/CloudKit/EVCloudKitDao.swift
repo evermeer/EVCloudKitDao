@@ -17,22 +17,42 @@ public class EVCloudKitDao {
     // ------------------------------------------------------------------------
     
     /** 
-    Singleton access to EVCloudKitDao that can be called from Swift
+    Singleton access to EVCloudKitDao public database that can be called from Swift
     
     :return: The EVCLoudKitDao object
     */
-    public class var instance : EVCloudKitDao {
+    public class var publicDB : EVCloudKitDao {
         struct Static { static let instance : EVCloudKitDao = EVCloudKitDao() }
         return Static.instance
     }
     
     /**
-    Singleton access to EVCloudKitDao that can be called from Objective C
+    Singleton access to EVCloudKitDao public database that can be called from Objective C
     
     :return: The EVCLoudKitDao object
     */
-    public class func sharedInstance() -> EVCloudKitDao {
-        return instance;
+    public class func sharedPublicDB() -> EVCloudKitDao {
+        return publicDB;
+    }
+
+    /**
+    Singleton access to EVCloudKitDao private database that can be called from Swift
+    
+    :return: The EVCLoudKitDao object
+    */
+    public class var privateDB : EVCloudKitDao {
+        struct Static { static let instance : EVCloudKitDao = EVCloudKitDao() }
+        Static.instance.database = Static.instance.container.privateCloudDatabase
+        return Static.instance
+    }
+    
+    /**
+    Singleton access to EVCloudKitDao private database that can be called from Objective C
+    
+    :return: The EVCLoudKitDao object
+    */
+    public class func sharedPrivateDB() -> EVCloudKitDao {
+        return privateDB;
     }
     
     /**
@@ -535,7 +555,7 @@ public class EVCloudKitDao {
             if(queryNotification.queryNotificationReason == .RecordDeleted) {
                 deleted(recordId: recordID!.recordName)
             } else {
-                EVCloudKitDao.instance.getItem(recordID!.recordName, completionHandler: { item in
+                EVCloudKitDao.publicDB.getItem(recordID!.recordName, completionHandler: { item in
                     NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                     EVReflection.logObject(item)
                     if (queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated ) {
@@ -575,7 +595,7 @@ public class EVCloudKitDao {
                     if (queryNotification.queryNotificationReason == .RecordDeleted) {
                         deleted(recordId: queryNotification.recordID.recordName)
                     } else {
-                        EVCloudKitDao.instance.getItem(queryNotification.recordID.recordName, completionHandler: { item in
+                        EVCloudKitDao.publicDB.getItem(queryNotification.recordID.recordName, completionHandler: { item in
                             NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                             EVReflection.logObject(item)
                             if (queryNotification.queryNotificationReason == .RecordCreated) {

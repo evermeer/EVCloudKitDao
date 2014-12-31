@@ -21,8 +21,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        self.senderId = EVCloudKitDao.instance.activeUser?.userRecordID.recordName
-        self.senderDisplayName = "\(EVCloudKitDao.instance.activeUser?.firstName)  \(EVCloudKitDao.instance.activeUser?.lastName)"
+        self.senderId = EVCloudKitDao.publicDB.activeUser?.userRecordID.recordName
+        self.senderDisplayName = "\(EVCloudKitDao.publicDB.activeUser?.firstName)  \(EVCloudKitDao.publicDB.activeUser?.lastName)"
         
         // configure JSQMessagesViewController
         var defaultAvatarSize: CGSize = CGSizeMake(kJSQMessagesCollectionViewAvatarSizeDefault, kJSQMessagesCollectionViewAvatarSizeDefault)
@@ -39,9 +39,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
 
     
     func initializeCommunication() {
-        var recordIdMe = EVCloudKitDao.instance.activeUser.userRecordID.recordName
+        var recordIdMe = EVCloudKitDao.publicDB.activeUser.userRecordID.recordName
         var recordIdOther = chatWith.userRecordID.recordName
-        EVCloudData.instance.connect(Message()
+        EVCloudData.publicDB.connect(Message()
             , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMe, recordIdOther], [recordIdOther, recordIdMe])!
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
@@ -66,7 +66,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         })
     }
     deinit {
-        EVCloudData.instance.disconnect(dataID)
+        EVCloudData.publicDB.disconnect(dataID)
     }
     
 
@@ -79,12 +79,12 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         //var message = JSQMessage(senderId: "Z", senderDisplayName: "From Z", date: date, text: text)
         //[self.demoData.messages addObject:message];
         var message = Message()
-        message.setFrom(EVCloudKitDao.instance.activeUser.userRecordID.recordName)
+        message.setFrom(EVCloudKitDao.publicDB.activeUser.userRecordID.recordName)
         message.FromName = self.senderDisplayName
         message.setTo(chatWith.userRecordID.recordName)
         message.ToName = self.chatWith.firstName + " " + self.chatWith.lastName
         message.Text = text
-        EVCloudData.instance.saveItem(message, completionHandler: { message in
+        EVCloudData.publicDB.saveItem(message, completionHandler: { message in
                 //Helper.showStatus("Message was send...")
                 self.finishSendingMessage()
             }, errorHandler: { error in
@@ -175,8 +175,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
         var message = getMessageForId(indexPath.row)
         var initials : String = ""
         if message.senderId == self.senderId {
-            var l = Array(EVCloudKitDao.instance.activeUser.lastName)[0]
-            initials = "\(Array(EVCloudKitDao.instance.activeUser.firstName)[0]) \(Array(EVCloudKitDao.instance.activeUser.lastName)[0])"
+            var l = Array(EVCloudKitDao.publicDB.activeUser.lastName)[0]
+            initials = "\(Array(EVCloudKitDao.publicDB.activeUser.firstName)[0]) \(Array(EVCloudKitDao.publicDB.activeUser.lastName)[0])"
         } else {
             initials = "\(Array(chatWith.firstName)[0]) \(Array(chatWith.lastName)[0])"
         }
@@ -199,10 +199,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     // ------------------------------------------------------------------------
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if EVCloudData.instance.data[dataID] == nil {
+        if EVCloudData.publicDB.data[dataID] == nil {
             return 0
         }
-        return EVCloudData.instance.data[dataID]!.count
+        return EVCloudData.publicDB.data[dataID]!.count
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -245,7 +245,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate {
     // ------------------------------------------------------------------------
     
     func getMessageForId(id:Int) -> JSQMessage {
-        var data:Message = EVCloudData.instance.data[dataID]![EVCloudData.instance.data[dataID]!.count - id - 1] as Message
+        var data:Message = EVCloudData.publicDB.data[dataID]![EVCloudData.publicDB.data[dataID]!.count - id - 1] as Message
         var message: JSQMessage!
         if data.From_ID == self.senderId {
             message = JSQMessage(senderId: self.senderId, senderDisplayName: self.senderDisplayName,date: data.creationDate, text: data.Text)

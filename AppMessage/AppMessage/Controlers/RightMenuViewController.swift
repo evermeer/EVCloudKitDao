@@ -40,7 +40,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     
     func loadContacts() {
         // Look who of our contact is also using this app.
-        EVCloudKitDao.instance.allContactsUserInfo({ users in
+        EVCloudKitDao.publicDB.allContactsUserInfo({ users in
                 NSLog("AllContactUserInfo count = \(users.count)");
                 NSOperationQueue.mainQueue().addOperationWithBlock({
                     self.contacts = users

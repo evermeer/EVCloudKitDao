@@ -11,7 +11,7 @@ class TestsViewController : UIViewController {
     
     @IBAction func runTest(sender: AnyObject) {
         // See AppDelegate.swift to see how to handle subscriptions
-        var dao: EVCloudKitDao = EVCloudKitDao.instance
+        var dao: EVCloudKitDao = EVCloudKitDao.publicDB
         
         // retrieve our CloudKit user id. (made syncronous for this demo)
         var sema = dispatch_semaphore_create(0)
@@ -170,7 +170,7 @@ class TestsViewController : UIViewController {
                 NSLog("<--- ERROR deleteItem")
             })
         
-        EVCloudData.instance.connect(Message()
+        EVCloudData.publicDB.connect(Message()
             , predicate: NSPredicate(value: true)
             , filterId: "Message_all"
             , configureNotificationInfo:{ notificationInfo in

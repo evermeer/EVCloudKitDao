@@ -49,7 +49,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //To prevent copying the dictionary never assign it to a variable first.
-        return EVCloudData.instance.data["News_All"]!.count
+        return EVCloudData.publicDB.data["News_All"]!.count
     }
     
     var cellIdentifier = "NewsCell";
@@ -66,7 +66,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
         }
         
         //This line all you need to get the correct data for the cell
-        var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
+        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as News
 
         cell.textLabel?.text = news.Subject
         cell.detailTextLabel?.text = news.Body
@@ -76,7 +76,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
     
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         //This line all you need to get the correct data for cell that is selected
-        var news:News = EVCloudData.instance.data["News_All"]![indexPath.row] as News
+        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as News
 
         let url:NSURL! = NSURL(string: news.ActionUrl)
         UIApplication.sharedApplication().openURL(url)

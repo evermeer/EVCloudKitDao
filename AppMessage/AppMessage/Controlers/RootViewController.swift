@@ -36,7 +36,7 @@ class RootViewController: UIViewController {
     */
     func getUser() {
         self.loginLabel.hidden = true
-        EVCloudKitDao.instance.getUserInfo({user in
+        EVCloudKitDao.publicDB.getUserInfo({user in
                 NSLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)");
                         
                 NSOperationQueue.mainQueue().addOperationWithBlock(){

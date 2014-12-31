@@ -23,7 +23,7 @@ public class EVCloudData {
     
     :return: The EVCloudData object
     */
-    public class var instance : EVCloudData {
+    public class var publicDB : EVCloudData {
         struct Static { static let instance : EVCloudData = EVCloudData() }
         return Static.instance
     }
@@ -33,10 +33,31 @@ public class EVCloudData {
     
     :return: The EVCloudData object
     */
-    public class func sharedInstance() -> EVCloudData {
-        return instance;
+    public class func sharedPublicDB() -> EVCloudData {
+        return publicDB;
     }
 
+    /**
+    Singleton access to EVCloudData that can be called from Swift
+    
+    :return: The EVCloudData object
+    */
+    public class var privateDB : EVCloudData {
+        struct Static { static let instance : EVCloudData = EVCloudData() }
+        Static.instance.dao = EVCloudKitDao.privateDB
+        return Static.instance
+    }
+    
+    /**
+    Singleton access to EVCloudData that can be called from Objective C
+    
+    :return: The EVCloudData object
+    */
+    public class func sharedPrivateDB() -> EVCloudData {
+        return privateDB;
+    }
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - class variables
     // ------------------------------------------------------------------------
@@ -44,7 +65,7 @@ public class EVCloudData {
     /**
     The EVCloudKitDao instance that will be used
     */
-    public var dao = EVCloudKitDao.instance;
+    public var dao = EVCloudKitDao.publicDB;
     /**
     Save the recordType of the connection.
     */
@@ -274,7 +295,6 @@ public class EVCloudData {
     :return: No return value
     */
     public func didReceiveRemoteNotification(userInfo: [NSObject : NSObject]!, executeIfNonQuery:() -> Void) {
-        var dao: EVCloudKitDao = EVCloudKitDao.instance
         dao.didReceiveRemoteNotification(userInfo, executeIfNonQuery: executeIfNonQuery, inserted: {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated: {recordId, item in
@@ -290,7 +310,6 @@ public class EVCloudData {
     :return: No return value
     */
     public func fetchChangeNotifications() {
-        var dao: EVCloudKitDao = EVCloudKitDao.instance
         dao.fetchChangeNotifications(nil, {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated : {recordId, item in
