@@ -69,6 +69,7 @@ public class EVReflection {
     */
     public class func swiftClassFromString(className: String) -> AnyClass! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
+            appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName = "\(appName).\(className)"
             return NSClassFromString(classStringName)
         }
@@ -83,8 +84,9 @@ public class EVReflection {
     */
     public class func swiftStringFromClass(theObject: NSObject) -> String! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
+            appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName: String = NSStringFromClass(theObject.dynamicType)
-            return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil).stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
+            return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
         }
         return nil;
     }
