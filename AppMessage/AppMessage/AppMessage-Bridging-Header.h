@@ -8,4 +8,6 @@
 #import "RESideMenu.h"
 #import <JSQMessagesViewController/JSQMessages.h>
 #import "CRToast.h"
+#import <CTAssetsPickerController.h>
+#import "UIImage+Resize.h"
 //#import <AsyncDisplayKit/AsyncDisplayKit.h>

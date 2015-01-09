@@ -1,19 +1,25 @@
 PODS:
   - CRToast (0.0.7)
+  - CTAssetsPickerController (2.8.0)
   - JSQMessagesViewController (6.1.1):
     - JSQSystemSoundPlayer (~> 2.0.0)
   - JSQSystemSoundPlayer (2.0.0)
   - RESideMenu (4.0.7)
+  - UIImage-Resize (1.0.1)
 
 DEPENDENCIES:
   - CRToast
+  - CTAssetsPickerController
   - JSQMessagesViewController
   - RESideMenu
+  - UIImage-Resize
 
 SPEC CHECKSUMS:
   CRToast: f9f2c4b29776d68ba24c4d621cba59a83fea921b
+  CTAssetsPickerController: 32b02079e2dd41c76fbc63740f4638ced71b7d1b
   JSQMessagesViewController: 84a5823a1f6a4f29ee6d4db0ea4b9d63876be4ee
   JSQSystemSoundPlayer: c98443b1cbb3b45db09d0d3d6c2355cf78294981
   RESideMenu: a9c1cd2e64e60e1d3166ddac01a83e215a0e4d30
+  UIImage-Resize: fc57263eed2cd98f74e5ba4848bedae979a0bdf0
 
-COCOAPODS: 0.34.4
+COCOAPODS: 0.36.0.beta.1

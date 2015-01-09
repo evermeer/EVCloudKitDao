@@ -32,8 +32,11 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
         
         // Setting the views
         self.contentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController
-        self.leftMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as UIViewController
-        self.rightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController") as UIViewController
+        var leftMenu:LeftMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as LeftMenuViewController
+        self.leftMenuViewController = leftMenu as UIViewController
+        var rightMenu:RightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController")! as RightMenuViewController
+        self.rightMenuViewController = rightMenu as UIViewController
+        rightMenu.leftMenu = leftMenu
     }
     
     

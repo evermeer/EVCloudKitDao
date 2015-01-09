@@ -11,18 +11,20 @@ This is a library for simplified access to  Apple's CloudKit data. You can use t
 
 See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage demo will be a complete functional messaging app based on CloudKit.
 
-This is still a work in progress. The Dao, Data and Reflection classes are complete, the demo is progressing. The news items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. Also the contact list is functional. I'm now working on the chat window.
+The Dao, Data and Reflection classes are complete, the demo is progressing. The news items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. The contacts list is functional. You can start a chat and send text messages and pictures.
 
 ## A picture says more than 1000 words
 Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do. 
 
 ![Screenshot0][img0]
+![Screenshot1][img1]
+
 
 ## Main features of EVCloudKitDao:
-- simple singleton access to your public or private databas\=
-- You do not have to parse from and to CKRecord (is based on reflection)
+- simple singleton access to your public or private database
+- Object mapping: You do not have to parse from and to CKRecord (is based on reflection)
 - Generic and simplified query handling
-- Error handling (separate completionHandler and errorHandler code blocs)
+- Error handling (separate completionHandler and errorHandler code blocks)
 - Storing CKReference objects
 - Storing CKAsset objects
 - Organising subscription
@@ -48,6 +50,7 @@ The AppMessage demo is using the following components which can be installed usi
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
+- [UIImage-Resize](https://github.com/AliSoftware/UIImage-Resize) - Category to add some resizing methods to the UIImage class, to resize it to a given CGSize — or fit in a CGSize keeping aspect ratio
 
 Unfortunately there is also a great library that can not be included using CocoaPods. The code for this has been added to this project.
 
@@ -104,6 +107,8 @@ pod install
 6) Open the CloudKit dashboard, select all recordtypes and enable all 'Metadata Indexes'
 
 7) Disable the call to .createRecordTypes in AppDelegate and run the app again.
+
+8) Make sure you run the app on 2 devices, each using a diverent iCloud account and each device having the other account in it's contact list.
 
 
 and you are ready to go!
@@ -235,3 +240,4 @@ EVCloudKitDao is available under the MIT license. See the LICENSE file for more 
 
 
 [img0]:https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png
+[img1]:https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png

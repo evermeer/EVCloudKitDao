@@ -61,7 +61,7 @@ class TestsViewController : UIViewController {
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userIdTo)
         message.Text = "This is the message text"
-        message.HasAttachments = true
+        message.MessageType = MessageTypeEnum.Picture.rawValue
         
         // The attachment
         var asset = Asset()
@@ -70,12 +70,12 @@ class TestsViewController : UIViewController {
         asset.FileType = "png"
         
         // Save the message
-        dao.saveItem(message, completionHandler: {record in
-            NSLog("saveItem Message: \(record.recordID.recordName)");
+        dao.saveItem(asset, completionHandler: {record in
+            NSLog("saveItem Asset: \(record.recordID.recordName)");
             // Save the attached image
-            asset.AttachedTo = CKReference(recordID: record.recordID, action: .DeleteSelf)
-            dao.saveItem(asset, completionHandler: {record in
-                NSLog("saveItem Asset: \(record.recordID.recordName)");
+            message.setAsset(record.recordID.recordName)
+            dao.saveItem(message, completionHandler: {record in
+                NSLog("saveItem Message: \(record.recordID.recordName)");
                 }, errorHandler: {error in
                     NSLog("<--- ERROR saveItem asset");
                 })
@@ -87,7 +87,7 @@ class TestsViewController : UIViewController {
         // Save an other instance without the file, make the action synchronous so we can use the id for query and deletion
         sema = dispatch_semaphore_create(0);
         var createdId = "";
-        message.HasAttachments = false
+        message.MessageType = MessageTypeEnum.Text.rawValue
         dao.saveItem(message, completionHandler: {record in
             createdId = record.recordID.recordName;
             NSLog("saveItem Message: \(createdId)");

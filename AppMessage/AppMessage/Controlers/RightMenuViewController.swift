@@ -11,7 +11,7 @@ import CloudKit
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var contacts: [CKDiscoveredUserInfo]! = []
     var tableView: UITableView!
-    
+    var leftMenu: LeftMenuViewController!
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -82,11 +82,6 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
-        var controller : ChatViewController! = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
-            if controller != nil {
-                controller.setContact(contacts[indexPath.row])
-                self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: controller!), animated: true)
-            }
-        self.sideMenuViewController.hideMenuViewController()
+        leftMenu.startChat(contacts[indexPath.row])        
     }
 }

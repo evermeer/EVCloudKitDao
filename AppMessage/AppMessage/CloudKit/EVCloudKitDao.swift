@@ -163,9 +163,9 @@ public class EVCloudKitDao {
         for item in types {
             var sema = dispatch_semaphore_create(0);
             saveItem(item, completionHandler: {record in
-                    NSLog("saveItem Message: \(record.recordID.recordName)");
+                    NSLog("saveItem \(item): \(record.recordID.recordName)");
                     self.deleteItem(record.recordID.recordName, completionHandler: { recordId in
-                        NSLog("deleteItem : \(recordId)")
+                        NSLog("deleteItem \(item): \(recordId)")
                         dispatch_semaphore_signal(sema);
                     }, errorHandler: {error in
                         NSLog("<--- ERROR deleteItem")

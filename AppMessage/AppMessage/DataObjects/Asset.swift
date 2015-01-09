@@ -8,14 +8,16 @@
 import CloudKit
 import UIKit
 
-//TODO: valueForAny does not work yet for nulable types.
 class Asset : EVCloudKitDataObject {
-    var AttachedTo : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var File : CKAsset = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!))
     var FileName : String = ""
     var FileType : String = ""
     
     func image() -> UIImage {
-        return UIImage(contentsOfFile: File.fileURL.absoluteString!)!
+        var data = NSData(contentsOfURL: File.fileURL)
+        if data != nil {
+            return UIImage(data: data!)!
+        }
+        return UIImage()
     }
 }

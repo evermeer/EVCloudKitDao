@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import CloudKit
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, RESideMenuDelegate {
     
     var tableView: UITableView!
     var newsController: NewsViewController!
+    var chatViewController : ChatViewController!
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -22,6 +24,8 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         setupMenuTableViewLayout()
 
         connectToNews()
+        
+        connectToMessagesToMe()
         
         // Only already setup CloudKit connect's will receive these notifications (like the News above)
         EVCloudData.publicDB.fetchChangeNotifications()
@@ -47,6 +51,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     
     deinit {
         EVCloudData.publicDB.disconnect("News_All")
+        EVCloudData.publicDB.disconnect("Message_ToMe")
     }
 
     // ------------------------------------------------------------------------
@@ -107,7 +112,26 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         self.sideMenuViewController.hideMenuViewController()
     }
 
+    func startChat(user:CKDiscoveredUserInfo) {
+        startChat(user.userRecordID.recordName, firstName: user.firstName, lastName: user.lastName)
+    }
     
+    func startChat(recordId:String, firstName:String, lastName:String) {
+        if chatViewController != nil {
+            if chatViewController.chatWithId == recordId {
+                self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: chatViewController!), animated: true)
+                return;
+            }
+        }
+        
+        chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
+        if chatViewController != nil {
+            chatViewController.setContact(recordId, firstName: firstName, lastName: lastName)
+            self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: chatViewController!), animated: true)
+        }
+        self.sideMenuViewController.hideMenuViewController()
+        
+    }
     // ------------------------------------------------------------------------
     // MARK: - News data and events
     // ------------------------------------------------------------------------
@@ -145,5 +169,29 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 Helper.showError("Could not load news: \(error.description)")
         })
     }
+    
+    
+    func connectToMessagesToMe() {
+        var recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
+        EVCloudData.publicDB.connect(Message()
+            , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)!
+            , filterId: "Message_ToMe"
+            , configureNotificationInfo:{ notificationInfo in
+                notificationInfo.alertBody = "%1$@ %2$@ : %3$@"
+                notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
+            }, completionHandler: { results in
+                NSLog("results = \(results.count)")
+            }, insertedHandler: { item in
+                NSLog("inserted \(item)")
+                self.startChat((item as Message).To_ID, firstName: (item as Message).ToFirstName, lastName: (item as Message).ToLastName)
+            }, updatedHandler: { item in
+                NSLog("updated \(item)")
+            }, deletedHandler: { recordId in
+                NSLog("deleted : \(recordId)")
+            }, errorHandler: { error in
+                Helper.showError("Could not load messages: \(error.description)")
+        })
+    }
+    
     
 }
