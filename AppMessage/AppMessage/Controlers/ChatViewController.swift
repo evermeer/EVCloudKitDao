@@ -6,8 +6,10 @@
 //
 
 import Foundation
-import UIKit
 import CloudKit
+import JSQMessagesViewController
+import CTAssetsPickerController
+import WhereAmI
 
 class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTAssetsPickerControllerDelegate {
     
@@ -18,6 +20,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     var dataID : String = ""
     var senderFirstName : String = ""
     var senderLastName : String = ""
+    
+    var localData : [JSQMessage?] = []
     
     func setContact(recordId:String, firstName:String, lastName:String) {
         chatWithId = recordId
@@ -64,23 +68,26 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
                 notificationInfo.alertBody = "%1$@ %2$@ : %3$@"
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results in
-                NSLog("results = \(results.count)")
+                NSLog("Conversation message results = \(results.count)")
+                self.localData = [JSQMessage?](count:results.count, repeatedValue:nil)
                 self.checkAttachedAssets(results)
                 self.collectionView.reloadData()
                 self.scrollToBottomAnimated(true)
             }, insertedHandler: { item in
-                NSLog("inserted \(item)")
+                NSLog("Conversation message inserted \(item)")
+                self.localData.insert(nil, atIndex: 0)
                 if (item as Message).MessageType == MessageTypeEnum.Picture.rawValue {
                     self.getAttachment((item as Message).Asset_ID)
                 }
                 self.showTypingIndicator = true
-                self.scrollToBottomAnimated(true)
                 JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
                 self.finishReceivingMessage();
-            }, updatedHandler: { item in
-                NSLog("updated \(item)")
-            }, deletedHandler: { recordId in
-                NSLog("deleted : \(recordId)")
+            }, updatedHandler: { item, dataIndex in
+                NSLog("Conversation message updated \(item)")
+                self.localData[dataIndex] = nil
+            }, deletedHandler: { recordId, dataIndex in
+                NSLog("Conversation message deleted : \(recordId)")
+                self.localData.removeAtIndex(dataIndex)
             }, errorHandler: { error in
                 Helper.showError("Could not load messages: \(error.description)")
         })
@@ -157,7 +164,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
         case 1:
             addPhoto()
         case 2:
-            NSLog("Add location")
+            addLocation()
         case 3:
             addVideo()
         default:
@@ -179,16 +186,43 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
         self.presentViewController(picker, animated:true, completion:nil)
     }
     
+    func addLocation() {
+        WhereAmI.sharedInstance.whereAmI({ location in
+            var message = Message()
+            message.setFrom(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
+            message.FromFirstName = self.senderDisplayName
+            message.setTo(self.chatWithId)
+            message.ToFirstName = self.chatWithFirstName
+            message.ToLastName = self.chatWithLastName
+            message.Text = "<location>"
+            message.MessageType = MessageTypeEnum.Location.rawValue
+            message.Longitude = (location.coordinate.longitude as Double)
+            message.Latitude = (location.coordinate.latitude as Double)
+            EVCloudData.publicDB.saveItem(message, completionHandler: {record in
+                NSLog("saveItem location Message: \(record.recordID.recordName)");
+                self.finishSendingMessage()
+                }, errorHandler: {error in
+                    NSLog("<--- ERROR saveItem location message");
+                    Helper.showError("Could not send location message!  \(error.description)")
+                    self.finishSendingMessage()
+            })
+        }, locationRefusedHandler: {(locationIsAuthorized) -> Void in
+            Helper.showError("Location authorization has been refused, can not send location")
+        });
+    }
+    
     func assetsPickerController(picker: CTAssetsPickerController!, didFinishPickingAssets assets: [AnyObject]!) {
         picker.dismissViewControllerAnimated(true, completion: nil)
+        var i:Int = 0
         for asset in assets {
+            i = i++
             let mediaType = (asset as ALAsset).valueForProperty("ALAssetPropertyType") as String
             if mediaType == "ALAssetTypePhoto" {
                 JSQSystemSoundPlayer.jsq_playMessageSentSound()
                 
                 // make sure we have a file with url
                 var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
-                var filePath =  docDirPath.stringByAppendingPathComponent("tempImage.png")
+                var filePath =  docDirPath.stringByAppendingPathComponent("Image_\(i).png")
                 var image = getUIImageFromCTAsset(asset as ALAsset)
                 var myData = UIImagePNGRepresentation(image)
                 myData.writeToFile(filePath, atomically:true)
@@ -207,7 +241,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
                 var assetC = Asset()
                 var url:NSURL = NSURL(fileURLWithPath: filePath)!
                 assetC.File = CKAsset(fileURL: url)
-                assetC.FileName = "image"
+                assetC.FileName = "Image_\(i).png"
                 assetC.FileType = "png"
                 
                 // Save the asset
@@ -216,8 +250,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
+                    var fromFilePath =  docDirPath.stringByAppendingPathComponent(assetC.FileName)
                     let toPath = docDirPath.stringByAppendingPathComponent(record.recordID.recordName + ".png")
-                    filemanager.moveItemAtPath(filePath, toPath: toPath, error: nil)
+                    filemanager.moveItemAtPath(fromFilePath, toPath: toPath, error: nil)
 
                     // Save the attached image
                     message.setAsset(record.recordID.recordName)
@@ -226,13 +261,13 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
                         self.finishSendingMessage()
                     }, errorHandler: {error in
                         NSLog("<--- ERROR saveItem asset");
-                        Helper.showError("Could not send message!  \(error.description)")
+                        Helper.showError("Could not send picture message!  \(error.description)")
                         self.finishSendingMessage()
                     })
                     
                 }, errorHandler: {error in
                     NSLog("<--- ERROR saveItem message");
-                    Helper.showError("Could not send message!  \(error.description)")
+                    Helper.showError("Could not send picture!  \(error.description)")
                     self.finishSendingMessage()
                 })
                 
@@ -389,7 +424,11 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     // ------------------------------------------------------------------------
     
     func getMessageForId(id:Int) -> JSQMessage {
-        var data:Message = EVCloudData.publicDB.data[dataID]![EVCloudData.publicDB.data[dataID]!.count - id - 1] as Message
+        var count = EVCloudData.publicDB.data[dataID]!.count
+        if let data = localData[count - id - 1]  {
+            return data
+        }
+        var data:Message = EVCloudData.publicDB.data[dataID]![count - id - 1] as Message
         var message: JSQMessage!
 
         // receiving or sending..
@@ -399,11 +438,17 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
             sender = self.chatWithId
             senderName = self.chatWithFirstName + " " + self.chatWithLastName
         }
-
         // normal or media message
-        if data.MessageType != MessageTypeEnum.Picture.rawValue {
+        if data.MessageType == MessageTypeEnum.Text.rawValue {
             message = JSQMessage(senderId: sender, senderDisplayName: senderName,date: data.creationDate, text: data.Text)
-        } else {
+        } else if data.MessageType == MessageTypeEnum.Location.rawValue {
+            var location = CLLocation(latitude: CLLocationDegrees(data.Latitude), longitude: CLLocationDegrees(data.Longitude))
+            var locationItem = JSQLocationMediaItem()
+            locationItem.setLocation(location, withCompletionHandler: {
+                self.collectionView.reloadData()
+            })
+            message = JSQMessage(senderId: sender, displayName: senderName, media: locationItem)
+        } else if data.MessageType == MessageTypeEnum.Picture.rawValue {
             var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
             var filePath =  docDirPath.stringByAppendingPathComponent(data.Asset_ID + ".png")
             var url = NSURL(fileURLWithPath: filePath)
@@ -416,6 +461,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
             var photoItem = JSQPhotoMediaItem(image: image)
             message = JSQMessage(senderId: sender, displayName: senderName, media: photoItem)
         }
+        localData[count - id - 1] = message
         return message;
     }
 }

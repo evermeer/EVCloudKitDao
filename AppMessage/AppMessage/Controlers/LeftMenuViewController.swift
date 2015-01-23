@@ -7,6 +7,7 @@
 
 import UIKit
 import CloudKit
+import RESideMenu
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, RESideMenuDelegate {
     
@@ -159,10 +160,10 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             }, insertedHandler: {item in
                 Helper.showStatus("New News item: '\((item as News).Subject)'")
                 self.newsController.tableView.reloadData()
-            }, updatedHandler: {item in
+            }, updatedHandler: {item, dataIndex in
                 Helper.showStatus("Updated News item:'\((item as News).Subject)'")
                 self.newsController.tableView.reloadData()
-            }, deletedHandler: {recordId in
+            }, deletedHandler: {recordId, dataIndex in
                 Helper.showStatus("News item was removed")
                 self.newsController.tableView.reloadData()
             }, errorHandler: {error in
@@ -180,14 +181,14 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 notificationInfo.alertBody = "%1$@ %2$@ : %3$@"
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results in
-                NSLog("results = \(results.count)")
+                NSLog("Message to me results = \(results.count)")
             }, insertedHandler: { item in
-                NSLog("inserted \(item)")
+                NSLog("Message to me inserted \(item)")
                 self.startChat((item as Message).To_ID, firstName: (item as Message).ToFirstName, lastName: (item as Message).ToLastName)
-            }, updatedHandler: { item in
-                NSLog("updated \(item)")
-            }, deletedHandler: { recordId in
-                NSLog("deleted : \(recordId)")
+            }, updatedHandler: { item, dataIndex in
+                NSLog("Message to me updated \(item)")
+            }, deletedHandler: { recordId, dataIndex in
+                NSLog("Message to me deleted : \(recordId)")
             }, errorHandler: { error in
                 Helper.showError("Could not load messages: \(error.description)")
         })

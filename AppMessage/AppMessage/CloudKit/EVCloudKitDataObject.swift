@@ -9,7 +9,7 @@ import CloudKit
 
 /**
 */
-public class EVCloudKitDataObject : NSObject {
+public class EVCloudKitDataObject : NSObject, NSCoding {
     /**
     The unique ID of the record.
     */
@@ -44,4 +44,25 @@ public class EVCloudKitDataObject : NSObject {
     A string containing the server change token for the record.
     */
     public var recordChangeTag: String!
+    
+
+    /**
+    Decode any object
+    
+    :param: theObject The object that we want to decode.
+    :param: aDecoder The NSCoder that will be used for decoding the object.
+    */
+    public required convenience init(coder aDecoder: NSCoder) {
+        self.init()
+        EVReflection.decodeObjectWithCoder(self, aDecoder: aDecoder)
+    }
+    
+    /**
+    Encode this object using a NSCoder
+    
+    :param: aCoder The NSCoder that will be used for encoding the object
+    */
+    public func encodeWithCoder(aCoder: NSCoder) {
+        EVReflection.encodeWithCoder(self, aCoder: aCoder)
+    }
 }

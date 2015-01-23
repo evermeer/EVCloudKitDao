@@ -90,6 +90,30 @@ public class EVReflection {
         }
         return nil;
     }
+
+    /**
+    Encode any object
+    
+    :param: theObject The object that we want to encode.
+    :param: aCoder The NSCoder that will be used for encoding the object.
+    */
+    public class func encodeWithCoder(theObject:NSObject, aCoder: NSCoder) {
+        for (key, value) in toDictionary(theObject) {
+            aCoder.encodeObject(value, forKey: key)
+        }
+    }
+
+    /**
+    Decode any object
+    
+    :param: theObject The object that we want to decode.
+    :param: aDecoder The NSCoder that will be used for decoding the object.
+    */
+    public class func decodeObjectWithCoder(theObject:NSObject, aDecoder: NSCoder) {
+        for (key, value) in toDictionary(theObject) {
+            theObject.setValue(aDecoder.decodeObjectForKey(key), forKey: key)
+        }
+    }
     
     //TODO: Make this work with nulable types
     /**

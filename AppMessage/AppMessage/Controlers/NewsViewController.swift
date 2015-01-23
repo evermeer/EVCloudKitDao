@@ -5,6 +5,8 @@
 //  Copyright (c) 2014. All rights reserved.
 //
 
+import RESideMenu
+
 class NewsViewController : UIViewController, UITableViewDataSource, UITableViewDelegate, RESideMenuDelegate {
     
     var tableView: UITableView = UITableView()

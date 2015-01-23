@@ -1,10 +1,11 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '7.0'
+platform :ios, '8.0'
 pod 'RESideMenu'
 pod 'JSQMessagesViewController'
 pod 'CRToast'
 pod 'CTAssetsPickerController'
 pod 'UIImage-Resize'
+pod 'WhereAmI'
 
 # Will not work using a pos. Just added the files to the project.
 #pod 'ExSwift', :git => 'https://github.com/pNre/ExSwift.git', :branch => 'iOS'

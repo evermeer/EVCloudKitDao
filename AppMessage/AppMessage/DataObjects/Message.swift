@@ -48,4 +48,6 @@ class Message : EVCloudKitDataObject {
         self.Asset = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
     }
 
+    var Latitude : Double = 52.8350711
+    var Longitude : Double = 4.8653827
 }

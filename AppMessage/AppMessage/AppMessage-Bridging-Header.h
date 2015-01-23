@@ -5,9 +5,11 @@
 //  Copyright (c) 2014. All rights reserved.
 //
 
-#import "RESideMenu.h"
+#import <RESideMenu/RESideMenu.h>
 #import <JSQMessagesViewController/JSQMessages.h>
-#import "CRToast.h"
-#import <CTAssetsPickerController.h>
-#import "UIImage+Resize.h"
+#import <CRToast/CRToast.h>
+#import <CTAssetsPickerController/CTAssetsPickerController.h>
+#import <JSQSystemSoundPlayer/JSQSystemSoundPlayer.h>
+#import <UIImage_Resize/UIImage+Resize.h>
+
 //#import <AsyncDisplayKit/AsyncDisplayKit.h>

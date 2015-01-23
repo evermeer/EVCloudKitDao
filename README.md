@@ -11,7 +11,10 @@ This is a library for simplified access to  Apple's CloudKit data. You can use t
 
 See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage demo will be a complete functional messaging app based on CloudKit.
 
-The Dao, Data and Reflection classes are complete, the demo is progressing. The news items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. The contacts list is functional. You can start a chat and send text messages and pictures.
+The Dao, Data and Reflection classes are complete, the demo is progressing. It has support for:
+- News items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. 
+- A Contacts list based on your contacts that also have installed the app. 
+- Chat with someone using text messages, pictures and sending your location
 
 ## A picture says more than 1000 words
 Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do. 
@@ -51,6 +54,7 @@ The AppMessage demo is using the following components which can be installed usi
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
 - [UIImage-Resize](https://github.com/AliSoftware/UIImage-Resize) - Category to add some resizing methods to the UIImage class, to resize it to a given CGSize — or fit in a CGSize keeping aspect ratio
+- [WhereAmI](https://github.com/lypiut/WhereAmI) - Easy to use Core Location library in Swift
 
 Unfortunately there is also a great library that can not be included using CocoaPods. The code for this has been added to this project.
 

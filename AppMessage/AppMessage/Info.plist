@@ -31,7 +31,11 @@
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Storyboard</string>
-	<key>UIRequiredDeviceCapabilities</key>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Because we need it :)</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Because we always need it :)</string>
+    <key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
 	</array>

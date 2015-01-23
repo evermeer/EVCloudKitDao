@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RESideMenu
 
 class MenuViewController: RESideMenu, RESideMenuDelegate {
     

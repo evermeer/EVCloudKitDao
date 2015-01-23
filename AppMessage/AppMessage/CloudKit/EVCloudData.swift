@@ -86,11 +86,11 @@ public class EVCloudData {
     /**
     A dictionary of update event handlers. Each filterId is a dictionary entry containing a update event handler
     */
-    public var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
+    public var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject, dataIndex:Int) -> Void>()
     /**
     A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
     */
-    public var deletedHandlers = Dictionary<String, (recordId: String) -> Void>()
+    public var deletedHandlers = Dictionary<String, (recordId: String, dataIndex:Int) -> Void>()
 
     // ------------------------------------------------------------------------
     // MARK: - Modify local data
@@ -114,7 +114,7 @@ public class EVCloudData {
                         data[filter]!.removeAtIndex(itemID!)
                         data[filter]!.insert(item, atIndex: itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
-                            (self.updateHandlers[filter]!)(item: item)
+                            (self.updateHandlers[filter]!)(item: item, dataIndex:itemID!)
                         }
                     } else {
                         data[filter]!.insert(item, atIndex: 0)
@@ -127,7 +127,7 @@ public class EVCloudData {
                     if (itemID != nil) {
                         data[filter]!.removeAtIndex(itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
-                            (self.deletedHandlers[filter]!)(recordId: recordId)
+                            (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
                         }
                     }
                 }
@@ -147,7 +147,7 @@ public class EVCloudData {
             if (itemID != nil) {
                 data[filter]!.removeAtIndex(itemID!)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    (self.deletedHandlers[filter]!)(recordId: recordId)
+                    (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
                 }
             }
         }
@@ -233,8 +233,8 @@ public class EVCloudData {
     :param: configureNotificationInfo The function that will be called with the CKNotificationInfo object so that we can configure it
     :param: completionHandler The function that will be called with a record id of the deleted object
     :param: insertedHandler Executed if the notification was for an inserted object
-    :param: updatedHandler Executed if the notification was for an updated object
-    :param: deletedHandler Executed if the notification was for an deleted object
+    :param: updatedHandler Executed if the notification was for an updated object pasing on the data object plus the index in the data array
+    :param: deletedHandler Executed if the notification was for an deleted object passing on the recordId plus the index it had in the data array
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
@@ -245,8 +245,8 @@ public class EVCloudData {
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
         completionHandler: (results: [T]) -> Void,
         insertedHandler:(item: EVCloudKitDataObject) -> Void,
-        updatedHandler:(item: EVCloudKitDataObject) -> Void,
-        deletedHandler:(recordId: String) -> Void,
+        updatedHandler:(item: EVCloudKitDataObject, dataIndex:Int) -> Void,
+        deletedHandler:(recordId: String, dataIndex:Int) -> Void,
         errorHandler:(error: NSError) -> Void
         ) -> Void {
             self.data[filterId] = nil
