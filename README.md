@@ -41,10 +41,11 @@ Here is a screenshot of the included demo app chat functionality. It's already f
 - notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
 - since all data is processed all callback events will be executed on the mainQueue
+- basic support for caching all data to file.
 
 ## Todo's'
 - The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
-- Completing the AppMessage demo
+- Add caching options (specify per connection caching types: None, Direct, EachMinute(X))
 
 ## External components for the demo
 The AppMessage demo is using the following components which can be installed using CocoaPods. See instructions below.
@@ -143,6 +144,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, {
             NSLog("Not a CloudKit Query notification.")            
         })
+    }
+
+    func applicationDidEnterBackground(application: UIApplication) {
+        // If you do a backup then this backup will be reloaded after app restart.
+        EVCloudData.publicDB.backupData()        
     }
 }
 

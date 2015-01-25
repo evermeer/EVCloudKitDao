@@ -29,7 +29,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
         chatWithLastName = lastName
         chatWithDisplayName = "\(firstName) \(lastName)"
         dataID =  "Message_\(chatWithId)"
-        initializeCommunication()
+        if EVCloudData.publicDB.data.has(dataID) {
+            self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
+        }
     }
     
     override func viewDidLoad() {
@@ -49,8 +51,15 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     }
         
     override func viewDidAppear(animated: Bool) {
+        if EVCloudData.publicDB.data.has(dataID) {
+            self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
+        }
         super.viewDidAppear(animated)
         self.collectionView.collectionViewLayout.springinessEnabled = true
+
+        self.collectionView.reloadData()
+        self.scrollToBottomAnimated(true)
+        initializeCommunication()
     }
 
     
@@ -199,15 +208,15 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
             message.Longitude = (location.coordinate.longitude as Double)
             message.Latitude = (location.coordinate.latitude as Double)
             EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                NSLog("saveItem location Message: \(record.recordID.recordName)");
+                NSLog("saveItem location Message: \(record.recordID!.recordName)");
                 self.finishSendingMessage()
                 }, errorHandler: {error in
                     NSLog("<--- ERROR saveItem location message");
                     Helper.showError("Could not send location message!  \(error.description)")
                     self.finishSendingMessage()
             })
-        }, locationRefusedHandler: {(locationIsAuthorized) -> Void in
-            Helper.showError("Location authorization has been refused, can not send location")
+        }, locationRefusedHandler: {
+            Helper.showError("Location authorization has been refused, unable to  send location")
         });
     }
     
@@ -227,37 +236,36 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
                 var myData = UIImagePNGRepresentation(image)
                 myData.writeToFile(filePath, atomically:true)
                 
-                // Create the message object that represents the asset
-                var message = Message()
-                message.setFrom(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
-                message.FromFirstName = self.senderDisplayName
-                message.setTo(chatWithId)
-                message.ToFirstName = chatWithFirstName
-                message.ToLastName = chatWithLastName
-                message.Text = "<foto>"
-                message.MessageType = MessageTypeEnum.Picture.rawValue
                 
                 // Create an asset object for the attached image
                 var assetC = Asset()
-                var url:NSURL = NSURL(fileURLWithPath: filePath)!
-                assetC.File = CKAsset(fileURL: url)
+                assetC.File = CKAsset(fileURL: NSURL(fileURLWithPath: filePath)!)
                 assetC.FileName = "Image_\(i).png"
                 assetC.FileType = "png"
                 
                 // Save the asset
                 EVCloudData.publicDB.saveItem(assetC, completionHandler: {record in
-                    NSLog("saveItem Asset: \(record.recordID.recordName)");
+                    NSLog("saveItem Asset: \(record.recordID!.recordName)");
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
-                    var fromFilePath =  docDirPath.stringByAppendingPathComponent(assetC.FileName)
-                    let toPath = docDirPath.stringByAppendingPathComponent(record.recordID.recordName + ".png")
+                    var fromFilePath =  docDirPath.stringByAppendingPathComponent((record as Asset).FileName)
+                    let toPath = docDirPath.stringByAppendingPathComponent(record.recordID!.recordName + ".png")
                     filemanager.moveItemAtPath(fromFilePath, toPath: toPath, error: nil)
 
-                    // Save the attached image
-                    message.setAsset(record.recordID.recordName)
+                    // Create the message object that represents the asset
+                    var message = Message()
+                    message.setFrom(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
+                    message.FromFirstName = self.senderDisplayName
+                    message.setTo(self.chatWithId)
+                    message.ToFirstName = self.chatWithFirstName
+                    message.ToLastName = self.chatWithLastName
+                    message.Text = "<foto>"
+                    message.MessageType = MessageTypeEnum.Picture.rawValue
+                    message.setAsset(record.recordID!.recordName)
+
                     EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                        NSLog("saveItem Message: \(record.recordID.recordName)");
+                        NSLog("saveItem Message: \(record.recordID!.recordName)");
                         self.finishSendingMessage()
                     }, errorHandler: {error in
                         NSLog("<--- ERROR saveItem asset");
@@ -378,10 +386,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     // ------------------------------------------------------------------------
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if EVCloudData.publicDB.data[dataID] == nil {
-            return 0
-        }
-        return EVCloudData.publicDB.data[dataID]!.count
+        return localData.count
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -424,11 +429,25 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     // ------------------------------------------------------------------------
     
     func getMessageForId(id:Int) -> JSQMessage {
-        var count = EVCloudData.publicDB.data[dataID]!.count
-        if let data = localData[count - id - 1]  {
-            return data
+        var data:Message!
+        var count : Int = 0
+        let lockQueue = dispatch_queue_create("nl.evict.AppMessage.ChatLockQueue", nil)
+        dispatch_sync(lockQueue) {
+            count = EVCloudData.publicDB.data[self.dataID]!.count
+            if self.localData.count != count {
+                self.localData = [JSQMessage?](count:count, repeatedValue:nil)
+            }
+            if id < count {
+                data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as Message
+            }
         }
-        var data:Message = EVCloudData.publicDB.data[dataID]![count - id - 1] as Message
+        if count <= id {
+            return JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, text: "")
+        }
+        if let localMessage = self.localData[count - id - 1]  {
+            return localMessage
+        }
+        
         var message: JSQMessage!
 
         // receiving or sending..
@@ -447,19 +466,19 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
             locationItem.setLocation(location, withCompletionHandler: {
                 self.collectionView.reloadData()
             })
-            message = JSQMessage(senderId: sender, displayName: senderName, media: locationItem)
+            message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: locationItem)
         } else if data.MessageType == MessageTypeEnum.Picture.rawValue {
             var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
             var filePath =  docDirPath.stringByAppendingPathComponent(data.Asset_ID + ".png")
             var url = NSURL(fileURLWithPath: filePath)
-            var data = NSData(contentsOfURL: url!)
-            if data == nil {
+            var mediaData = NSData(contentsOfURL: url!)
+            if mediaData == nil {
                 url = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!)
-                data = NSData(contentsOfURL: url!)
+                mediaData = NSData(contentsOfURL: url!)
             }
-            var image = UIImage(data: data!)
+            var image = UIImage(data: mediaData!)
             var photoItem = JSQPhotoMediaItem(image: image)
-            message = JSQMessage(senderId: sender, displayName: senderName, media: photoItem)
+            message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: photoItem)
         }
         localData[count - id - 1] = message
         return message;

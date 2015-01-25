@@ -6,7 +6,7 @@ PODS:
   - JSQSystemSoundPlayer (2.0.1)
   - RESideMenu (4.0.7)
   - UIImage-Resize (1.0.1)
-  - WhereAmI (1.0.0)
+  - WhereAmI (1.1.0)
 
 DEPENDENCIES:
   - CRToast
@@ -23,6 +23,6 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: 55528c699a283aae2220d3ae7b8b527d2ecef4b4
   RESideMenu: a9c1cd2e64e60e1d3166ddac01a83e215a0e4d30
   UIImage-Resize: fc57263eed2cd98f74e5ba4848bedae979a0bdf0
-  WhereAmI: 4b0f9d687366620ddae8c142cbd43883888f3f90
+  WhereAmI: a1a9c85b7c924d30868cccb2197a2b3fbd66239d
 
 COCOAPODS: 0.36.0.beta.1

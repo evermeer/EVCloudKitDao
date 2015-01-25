@@ -36,14 +36,27 @@ public class EVReflection {
     :param: theObject The object that will be converted to a dictionary
     :return: The dictionary that is created from theObject
     */
-    public class func toDictionary(theObject: NSObject) -> Dictionary<String, AnyObject?> {
-        var propertiesDictionary : Dictionary<String, AnyObject?> = Dictionary<String, AnyObject?>()
-        for i in 0..<reflect(theObject).count {
-            let key : String = reflect(theObject)[i].0
-            let value = reflect(theObject)[i].1.value
+    public class func toDictionary(theObject: NSObject) -> Dictionary<String, AnyObject> {
+        var propertiesDictionary : Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
+        let reflected = reflect(theObject)
+        return reflectedSub(reflected)
+    }
+    
+    
+    private class func reflectedSub(reflected:MirrorType) -> Dictionary<String, AnyObject> {
+        var propertiesDictionary : Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
+        for i in 0..<reflected.count {
+            let key : String = reflected[i].0
+            let value = reflected[i].1.value
             if key != "super" {
-                var v : AnyObject? = valueForAny(value)
+                var v : AnyObject = valueForAny(value)
                 propertiesDictionary.updateValue(v, forKey: key)
+            } else {
+                let superReflected = reflected[i].1
+                let addProperties = reflectedSub(superReflected)
+                for (k, v) in addProperties {
+                    propertiesDictionary.updateValue(v, forKey: k)
+                }
             }
         }
         return propertiesDictionary
@@ -56,10 +69,24 @@ public class EVReflection {
     :return: No return value
     */
     public class func logObject(theObject: NSObject) {
-        for (key: String, value: AnyObject?) in toDictionary(theObject) {
-            NSLog("key = \(key), value = \(value)")
-        }
+        NSLog(description(theObject))
     }
+
+    /**
+    Return a string representation of this object
+    
+    :param: theObject The object that will be loged
+    :return: The string representation of the object
+    */
+    public class func description(theObject: NSObject) -> String {
+        var description : String = swiftStringFromClass(theObject) + " {\n"
+        for (key: String, value: AnyObject) in toDictionary(theObject) {
+            description = description  + "   key = \(key), value = \(value)\n"
+        }
+        description = description + "}\n"
+        return description
+    }
+
     
     /**
     Get the swift Class from a string
@@ -122,7 +149,7 @@ public class EVReflection {
     :param: anyValue Something of type Any is converted to a type NSObject
     :return: The NSOBject that is created from the Any value
     */
-    public class func valueForAny(anyValue:Any) -> NSObject? {
+    public class func valueForAny(anyValue:Any) -> NSObject {
         switch(anyValue) {
         case let intValue as Int:
             return NSNumber(int: CInt(intValue))
@@ -135,7 +162,7 @@ public class EVReflection {
         case let anyvalue as NSObject:
             return anyvalue as NSObject
         default:
-            return nil
+            return NSObject()
         }
     }
 }

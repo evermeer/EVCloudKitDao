@@ -7,8 +7,6 @@ pod 'CTAssetsPickerController'
 pod 'UIImage-Resize'
 pod 'WhereAmI'
 
-# Will not work using a pos. Just added the files to the project.
-#pod 'ExSwift', :git => 'https://github.com/pNre/ExSwift.git', :branch => 'iOS'
+# Will not work using a pod becauese public extensions are not supported in a framework. Just added the files to the project.
+#pod 'ExSwift'
 
-# Maybe later...
-#pod 'AsyncDisplayKit'

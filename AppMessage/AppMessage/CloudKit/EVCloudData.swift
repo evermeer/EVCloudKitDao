@@ -57,6 +57,25 @@ public class EVCloudData {
         return privateDB;
     }
     
+
+    // ------------------------------------------------------------------------
+    // MARK: - Store to local file cache
+    // ------------------------------------------------------------------------
+
+    var filePath =  (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString).stringByAppendingPathComponent("CloudKitDataBackup.bak")
+
+    init() {
+        let filemanager = NSFileManager.defaultManager()
+        if filemanager.fileExistsAtPath(filePath) {
+            data = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as Dictionary<String, [EVCloudKitDataObject]>
+            NSLog("data = \(data)")
+        }
+    }
+    
+    public func backupData() {
+        NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
+    }
+    
     
     // ------------------------------------------------------------------------
     // MARK: - class variables
@@ -107,10 +126,14 @@ public class EVCloudData {
         NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
-                var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID == recordId}
+                var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID!.recordName == recordId}
                 if predicate.evaluateWithObject(item) {
-                    
-                    if itemID != nil && data[filter]!.EVget(itemID!) != nil  {
+                    var d:[EVCloudKitDataObject] = data[filter]!
+                    var s:EVCloudKitDataObject?
+                    if itemID != nil && itemID < d.count {
+                        s = d[itemID!]
+                    }
+                    if s != nil  {
                         data[filter]!.removeAtIndex(itemID!)
                         data[filter]!.insert(item, atIndex: itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -249,7 +272,9 @@ public class EVCloudData {
         deletedHandler:(recordId: String, dataIndex:Int) -> Void,
         errorHandler:(error: NSError) -> Void
         ) -> Void {
-            self.data[filterId] = nil
+            if !data.has(filterId) {
+                self.data[filterId] = [T]()
+            }
             self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
             self.insertedHandlers[filterId] = insertedHandler
             self.updateHandlers[filterId] = updatedHandler

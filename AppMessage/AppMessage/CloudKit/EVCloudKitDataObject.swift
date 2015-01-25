@@ -13,37 +13,37 @@ public class EVCloudKitDataObject : NSObject, NSCoding {
     /**
     The unique ID of the record.
     */
-    public var recordID: CKRecordID!
+    public var recordID: CKRecordID?
     
     /**
     The app-defined string that identifies the type of the record.
     */
-    public var recordType: String!
+    public var recordType: String?
     
     /**
     The time when the record was first saved to the server.
     */
-    public var creationDate: NSDate!
+    public var creationDate: NSDate?
     
     /**
     The ID of the user who created the record.
     */
-    public var creatorUserRecordID: CKRecordID!
+    public var creatorUserRecordID: CKRecordID?
     
     /**
     The time when the record was last saved to the server.
     */
-    public var modificationDate: NSDate!
+    public var modificationDate: NSDate?
     
     /**
     The ID of the user who last modified the record.
     */
-    public var lastModifiedUserRecordID: CKRecordID!
+    public var lastModifiedUserRecordID: CKRecordID?
 
     /**
     A string containing the server change token for the record.
     */
-    public var recordChangeTag: String!
+    public var recordChangeTag: String?
     
 
     /**
@@ -64,5 +64,9 @@ public class EVCloudKitDataObject : NSObject, NSCoding {
     */
     public func encodeWithCoder(aCoder: NSCoder) {
         EVReflection.encodeWithCoder(self, aCoder: aCoder)
+    }
+    
+    public func description() -> String {
+        return EVReflection.description(self)
     }
 }

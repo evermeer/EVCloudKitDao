@@ -13,7 +13,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     
     var tableView: UITableView!
     var newsController: NewsViewController!
-    var chatViewController : ChatViewController!
+    var chatViewController : ChatViewController?
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -118,25 +118,20 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func startChat(recordId:String, firstName:String, lastName:String) {
-        if chatViewController != nil {
-            if chatViewController.chatWithId == recordId {
-                self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: chatViewController!), animated: true)
-                return;
-            }
+        if self.chatViewController == nil {
+            self.chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
+            self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: self.chatViewController!), animated: true)
         }
-        
-        chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
-        if chatViewController != nil {
-            chatViewController.setContact(recordId, firstName: firstName, lastName: lastName)
-            self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: chatViewController!), animated: true)
+        if self.chatViewController!.chatWithId != recordId {
+            chatViewController!.setContact(recordId, firstName: firstName, lastName: lastName)
         }
-        self.sideMenuViewController.hideMenuViewController()
-        
+        self.sideMenuViewController.hideMenuViewController()    
     }
+
+    
     // ------------------------------------------------------------------------
     // MARK: - News data and events
     // ------------------------------------------------------------------------
-    
     
     func connectToNews() {
         
@@ -184,7 +179,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 NSLog("Message to me results = \(results.count)")
             }, insertedHandler: { item in
                 NSLog("Message to me inserted \(item)")
-                self.startChat((item as Message).To_ID, firstName: (item as Message).ToFirstName, lastName: (item as Message).ToLastName)
+                self.startChat((item as Message).From_ID, firstName: (item as Message).ToFirstName, lastName: (item as Message).ToLastName)
             }, updatedHandler: { item, dataIndex in
                 NSLog("Message to me updated \(item)")
             }, deletedHandler: { recordId, dataIndex in

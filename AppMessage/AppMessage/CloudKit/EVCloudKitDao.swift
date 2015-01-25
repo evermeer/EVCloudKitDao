@@ -70,19 +70,36 @@ public class EVCloudKitDao {
     */
     private var database : CKDatabase
     
-    public  var activeUser : CKDiscoveredUserInfo!
+
+    /**
+    The iClout account status of the current user
+    
+    :return: The account status of the current user
+    */
+    public var accountStatus : CKAccountStatus?
+    
+    /**
+    The iClout account information of the current user
+    
+    :return: The account information of the current user
+    */
+    public var activeUser : CKDiscoveredUserInfo!
     
     /**
     On init set a quick refrence to the container and database
     */
     init() {
         container = CKContainer.defaultContainer()
+        database = container.publicCloudDatabase
         container.accountStatusWithCompletionHandler({status, error in
-            if (error != nil) { NSLog("Error = \(error.description)")}
+            if (error != nil) {
+                NSLog("Error = \(error.description)")
+            } else {
+                self.accountStatus = status
+            }
             NSLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
         })
         NSLog("Container identifier = \(container.containerIdentifier)")
-        database = container.publicCloudDatabase
     }
 
     
@@ -543,8 +560,8 @@ public class EVCloudKitDao {
     */
     public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject]!, executeIfNonQuery:() -> Void, inserted:(recordID:String, item: EVCloudKitDataObject) -> Void, updated:(recordID:String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void) {
         var cloudNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
-        var alertBody = cloudNotification.alertBody
-        NSLog("Notification alert body : \(alertBody)")
+        //var alertBody: String = cloudNotification.alertBody
+        //NSLog("Notification alert body : \(alertBody)")
         
         // Handle CloudKit subscription notifications
         var recordID:CKRecordID?
@@ -685,8 +702,12 @@ public class EVCloudKitDao {
     public func toCKRecord(theObject: EVCloudKitDataObject) -> CKRecord {
         var record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject))
         var fromDict = EVReflection.toDictionary(theObject)
-        for (key: String, value: AnyObject?) in fromDict {
-            record.setValue(value, forKey: key)
+        for (key: String, value: AnyObject) in fromDict {
+            if !contains(["recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag"] ,key) {
+                if key != "recordID" {
+                    record.setValue(value, forKey: key)
+                }
+            }
         }
         return record
     }

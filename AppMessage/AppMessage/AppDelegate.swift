@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-        
         // Make sure we receive subscription notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
         application.registerForRemoteNotifications()
@@ -23,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
-        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News()])
+//        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News()])
 
         // During development we will probably play around with subscriptins. To be sure we do not have any old subscriptions left over, we just clear them all on startup.
         EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in NSLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
@@ -37,6 +36,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, {
             NSLog("Not a CloudKit Query notification.")            
         })
+    }
+    
+    func applicationDidEnterBackground(application: UIApplication) {
+        // If you do a backup then this backup will be reloaded after app restart.
+        EVCloudData.publicDB.backupData()        
     }
     
 }
