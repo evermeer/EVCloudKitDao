@@ -29,7 +29,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
         chatWithLastName = lastName
         chatWithDisplayName = "\(firstName) \(lastName)"
         dataID =  "Message_\(chatWithId)"
-        if EVCloudData.publicDB.data.has(dataID) {
+        if EVCloudData.publicDB.data[dataID] != nil {
             self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
         }
     }
@@ -51,7 +51,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     }
         
     override func viewDidAppear(animated: Bool) {
-        if EVCloudData.publicDB.data.has(dataID) {
+        if EVCloudData.publicDB.data[dataID] != nil {
             self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
         }
         super.viewDidAppear(animated)

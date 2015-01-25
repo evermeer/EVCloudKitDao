@@ -272,7 +272,7 @@ public class EVCloudData {
         deletedHandler:(recordId: String, dataIndex:Int) -> Void,
         errorHandler:(error: NSError) -> Void
         ) -> Void {
-            if !data.has(filterId) {
+            if data[filterId] == nil {
                 self.data[filterId] = [T]()
             }
             self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
