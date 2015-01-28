@@ -22,6 +22,9 @@ Here is a screenshot of the included demo app chat functionality. It's already f
 ![Screenshot0][img0]
 ![Screenshot1][img1]
 
+## Documentation ##
+Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
+
 
 ## Main features of EVCloudKitDao:
 - simple singleton access to your public or private database
