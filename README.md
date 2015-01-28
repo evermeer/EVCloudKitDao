@@ -41,11 +41,21 @@ Here is a screenshot of the included demo app chat functionality. It's already f
 - notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
 - since all data is processed all callback events will be executed on the mainQueue
-- basic support for caching all data to file.
+- basic support for caching all data to file. 
+
+## Main features of EVReflection:
+- Parsing objects based on NSObject to a dictionary. (except for nullable fields)
+- Parsing a dictionary back to an object.
+- Creating a class from a string value and get the string value for a class.
+- Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
 
 ## Todo's'
-- The object can not have nullable types because of a reflection problem (wait for Shift improvement or figure out a hack/workaround).
 - Add caching options (specify per connection caching types: None, Direct, EachMinute(X))
+
+## Known issues (Swift limitations) ##
+- If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
+
+- Optional objects properties can now be used. Optional type properties not. Swift is not able to do a .setValue forKey on an optional like Int? or Double? As a workaround for this you could use a NSNumber?
 
 ## External components for the demo
 The AppMessage demo is using the following components which can be installed using CocoaPods. See instructions below.
@@ -86,7 +96,6 @@ If you want to wait for the official release of cocoapods 0.36 of if you want su
 
 When you have added EVCloudKitDao to your project, then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 
-Note: If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
 ## Building the AppMessage demo
 

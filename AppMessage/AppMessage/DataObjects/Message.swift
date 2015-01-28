@@ -15,7 +15,7 @@ enum MessageTypeEnum : String {
 
 class Message : EVCloudKitDataObject {
     // From which Channel is this message
-    var From : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
+    var From : CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var From_ID : String = ""
     func setFrom(id:String) {
         self.From_ID = id
@@ -25,7 +25,7 @@ class Message : EVCloudKitDataObject {
     var FromLastName : String = ""
     
     // To what Channel or Group is this message
-    var To : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
+    var To : CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var To_ID : String = ""
     func setTo(id:String) {
         self.To_ID = id
@@ -41,7 +41,7 @@ class Message : EVCloudKitDataObject {
     var MessageType : String = MessageTypeEnum.Text.rawValue
 
     // From which Channel is this message
-    var Asset : CKReference = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
+    var Asset : CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var Asset_ID : String = ""
     func setAsset(id:String) {
         self.Asset_ID = id

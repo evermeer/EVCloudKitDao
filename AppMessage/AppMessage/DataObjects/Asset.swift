@@ -9,14 +9,16 @@ import CloudKit
 import UIKit
 
 class Asset : EVCloudKitDataObject {
-    var File : CKAsset = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!))
+    var File : CKAsset?  // = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!))
     var FileName : String = ""
     var FileType : String = ""
     
     func image() -> UIImage {
-        var data = NSData(contentsOfURL: File.fileURL)
-        if data != nil {
-            return UIImage(data: data!)!
+        if File != nil {
+            var data = NSData(contentsOfURL: File!.fileURL)
+            if data != nil {
+                return UIImage(data: data!)!
+            }
         }
         return UIImage()
     }

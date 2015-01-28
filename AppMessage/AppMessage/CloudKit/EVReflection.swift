@@ -24,7 +24,11 @@ public class EVReflection {
         var nsobject: NSObject = nsobjectype()
         for (key: String, value: AnyObject?) in dictionary {
             if (dictionary[key] != nil) {
-                nsobject.setValue(dictionary[key]!, forKey: key)
+                var newValue: AnyObject? = dictionary[key]!
+                var error:NSError?
+                if nsobject.validateValue(&newValue, forKey: key, error: &error) {
+                    nsobject.setValue(newValue, forKey: key)
+                }
             }
         }
         return nsobject
@@ -48,7 +52,7 @@ public class EVReflection {
         for i in 0..<reflected.count {
             let key : String = reflected[i].0
             let value = reflected[i].1.value
-            if key != "super" {
+            if key != "super" || i != 0 {
                 var v : AnyObject = valueForAny(value)
                 propertiesDictionary.updateValue(v, forKey: key)
             } else {
@@ -138,10 +142,15 @@ public class EVReflection {
     */
     public class func decodeObjectWithCoder(theObject:NSObject, aDecoder: NSCoder) {
         for (key, value) in toDictionary(theObject) {
-            theObject.setValue(aDecoder.decodeObjectForKey(key), forKey: key)
+            if aDecoder.containsValueForKey(key) {
+                var newValue: AnyObject? = aDecoder.decodeObjectForKey(key)
+                if theObject.validateValue(&newValue, forKey: key, error: nil) {
+                    theObject.setValue(newValue, forKey: key)
+                }
+            }
         }
     }
-    
+
     //TODO: Make this work with nulable types
     /**
     Helper function to convert an Any to AnyObject
@@ -150,7 +159,15 @@ public class EVReflection {
     :return: The NSOBject that is created from the Any value
     */
     public class func valueForAny(anyValue:Any) -> NSObject {
-        switch(anyValue) {
+        var theValue = anyValue
+        let mi:MirrorType = reflect(theValue)
+        if mi.disposition == .Optional {
+          if mi.count == 0 { return NSNull() } // Optional.None
+          let (name,some) = mi[0]
+          theValue = some.value
+        }
+        
+        switch(theValue) {
         case let intValue as Int:
             return NSNumber(int: CInt(intValue))
         case let doubleValue as Double:
@@ -159,10 +176,15 @@ public class EVReflection {
             return stringValue as NSString
         case let boolValue as Bool:
             return NSNumber(bool: boolValue)
+        case let primitiveArrayValue as Array<String>:
+            return primitiveArrayValue as NSArray
+        case let primitiveArrayValue as Array<Int>:
+            return primitiveArrayValue as NSArray
         case let anyvalue as NSObject:
             return anyvalue as NSObject
         default:
-            return NSObject()
+            return NSNull() // Could not happen
         }
     }
+    
 }

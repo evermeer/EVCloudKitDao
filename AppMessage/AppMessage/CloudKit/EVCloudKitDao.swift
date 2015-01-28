@@ -181,14 +181,7 @@ public class EVCloudKitDao {
             var sema = dispatch_semaphore_create(0);
             saveItem(item, completionHandler: {record in
                     NSLog("saveItem \(item): \(record.recordID.recordName)");
-                    self.deleteItem(record.recordID.recordName, completionHandler: { recordId in
-                        NSLog("deleteItem \(item): \(recordId)")
-                        dispatch_semaphore_signal(sema);
-                    }, errorHandler: {error in
-                        NSLog("<--- ERROR deleteItem")
-                        dispatch_semaphore_signal(sema);
-                    })
-                
+                    dispatch_semaphore_signal(sema);
                 }, errorHandler: {error in
                     NSLog("<--- ERROR saveItem");
                     dispatch_semaphore_signal(sema);
@@ -704,7 +697,9 @@ public class EVCloudKitDao {
         var fromDict = EVReflection.toDictionary(theObject)
         for (key: String, value: AnyObject) in fromDict {
             if !contains(["recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag"] ,key) {
-                if key != "recordID" {
+                if let t = value as? NSNull {
+//                    record.setValue(nil, forKey: key)
+                } else if key != "recordID" {
                     record.setValue(value, forKey: key)
                 }
             }
