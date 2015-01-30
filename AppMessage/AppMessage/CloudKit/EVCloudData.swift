@@ -8,6 +8,58 @@
 import Foundation
 import CloudKit
 
+/**
+The enum for specifying the caching strategy for the data
+*/
+public enum CachingStrategy {
+    /**
+    Do not cache this
+    */
+    case None,
+    /**
+    Always write changes to the cache immediately
+    */
+    Direct,
+    /**
+    Only write to the cache once every .. minutes when there are changes (initial query result will always be written directly)
+    */
+    Every(minute:Int)
+}
+
+
+/**
+Strange enough by default Swift does not implement the Equality operator for enums. So we just made one ourselves.
+
+:param: leftPart The CachingStrategy value at the left of the equality operator.
+:param: rightPart The CachingStrategy value at the right of the equality operator.
+*/
+func ==(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
+    switch(leftPart) {
+    case let .None:
+        switch(rightPart) {
+        case let .None: return true
+        default: return false
+        }
+    case let .Direct:
+        switch(rightPart) {
+        case let .Direct: return true
+        default: return false
+        }
+        
+    case let .Every(minutea):
+        switch(rightPart) {
+        case let .Every(minuteb): return minutea == minuteb
+        default: return false
+        }
+    default:
+        return false
+    }
+}
+
+func !=(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
+    return !(leftPart == rightPart)
+}
+
 
 /**
     Class for access to  Apple's CloudKit data the easiest way possible
@@ -57,25 +109,6 @@ public class EVCloudData {
         return privateDB;
     }
     
-
-    // ------------------------------------------------------------------------
-    // MARK: - Store to local file cache
-    // ------------------------------------------------------------------------
-
-    var filePath =  (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString).stringByAppendingPathComponent("CloudKitDataBackup.bak")
-
-    init() {
-        let filemanager = NSFileManager.defaultManager()
-        if filemanager.fileExistsAtPath(filePath) {
-            data = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as Dictionary<String, [EVCloudKitDataObject]>
-            NSLog("data = \(data)")
-        }
-    }
-    
-    public func backupData() {
-        NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
-    }
-    
     
     // ------------------------------------------------------------------------
     // MARK: - class variables
@@ -93,7 +126,18 @@ public class EVCloudData {
     All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
     */
     public var data = Dictionary<String, [EVCloudKitDataObject]>()
-
+    /**
+    The caching strategy for each filter for when incomming data should be written to a file
+    */
+    public var cachingStrategies = Dictionary <String, CachingStrategy>()
+    /**
+    The timestamp of the last cach write for each filter
+    */
+    public var cachingLastWrite = Dictionary <String, NSDate>()
+    /**
+    The number of changes since the last cache write for each filter
+    */
+    public var cachingChangesCount = Dictionary <String, Int>()
     /**
     A dictionary of predicates. Each filterId is a dictionary entry containing a predicate
     */
@@ -111,6 +155,168 @@ public class EVCloudData {
     */
     public var deletedHandlers = Dictionary<String, (recordId: String, dataIndex:Int) -> Void>()
 
+    
+    // ------------------------------------------------------------------------
+    // MARK: - Store data to local file cache
+    // ------------------------------------------------------------------------
+    
+    private let fileDirectory =  (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString)
+    private let filemanager = NSFileManager.defaultManager()
+    
+    
+    /**
+    Write the data for a specific filter to a file if the corresponding backup strategy has been met.
+
+    :param: filterId The filter id for the data that needs to be written to a file
+    */
+    private func backupDataWithStrategyTest(filterId:String) {
+        switch cachingStrategies[filterId]! {
+        case CachingStrategy.None:
+            return
+        case CachingStrategy.Direct:
+            if cachingChangesCount[filterId] > 0 {
+                backupDataForFilter(filterId)
+            }
+        case CachingStrategy.Every(let minute):
+            if cachingChangesCount[filterId] > 0 {
+                if dateDiffInMinutes(cachingLastWrite[filterId]!, toDate: NSDate()) >= minute {
+                    backupDataForFilter(filterId)
+                }
+            }
+        }
+    }
+
+    /**
+    Handle data updates
+    
+    :param: filterId The filter id for the data that was received from CloudKit
+    */
+    private func dataIsUpdated(filterId:String) {
+        cachingChangesCount[filterId] = cachingChangesCount[filterId]! + 1
+        backupDataWithStrategyTest(filterId)
+    }
+    
+    
+    /**
+    Return the difrence of 2 dates in minutes
+    
+    :param: fromDate The first date for the comparison
+    :param: toDate The second date for the comparison
+    */
+    private func dateDiffInMinutes(fromDate:NSDate, toDate:NSDate) -> Int {
+        return NSCalendar.currentCalendar().components(.CalendarUnitMinute, fromDate: fromDate, toDate: toDate, options: nil).minute
+    }
+
+    
+    /**
+    Make sure that all data is backed up while taking into account the selected CachingStrategy. You should call this method right before exiting your app.
+    */
+    public func backupAllData() {
+        for (key, value) in cachingLastWrite {
+            backupDataWithStrategyTest(key)
+        }
+    }
+    
+    
+    /**
+    Restore all previously backed up data for all initialized connections. Be aware that these already should have been restored.
+    */
+    public func restoreAllData() {
+        for (key, value) in cachingLastWrite {
+            restoreDataForFilter(key)
+        }
+    }
+
+    
+    /**
+    Remove the backup files for all the initialized connections.
+    */
+    public func removeAllBackups() {
+        for (key, value) in cachingLastWrite {
+            removeBackupForFilter(key)
+        }
+    }
+    
+    
+    /**
+    Write the data for a specific filter to a file
+    
+    :param: filterId The filter id for the data that needs to be written to a file
+    */
+    public func backupDataForFilter(filterId:String) {
+        if let theData = data[filterId] {
+            backupData(theData, toFile: "Filter_\(filterId).bak" )
+            self.cachingLastWrite[filterId] = NSDate()
+            self.cachingChangesCount[filterId] = 0
+        }
+    }
+    
+    /**
+    Restore data for a specific filter from a file
+
+    :param: filterId The filter id for the data that will be restored from file
+    */
+    public func restoreDataForFilter(filterId:String) -> Bool {
+        if let theData = restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
+            data[filterId] = theData
+            return true
+        }
+        return false
+    }
+    
+    /**
+    Remove the backup for a specific filter
+    
+    :param: filterId The filter id for the backup file that will be removed
+    */
+    public func removeBackupForFilter(filterId:String) {
+        removeBackup("Filter_\(filterId).bak")
+    }
+    
+    
+    /**
+    Write data to a file
+    
+    :param: data The data that will be written to the file (Needs to implement NSCoding like the EVCloudKitDataObject)
+    :param: toFile The file that will be written to
+    */
+    public func backupData(data:AnyObject, toFile:String){
+        var filePath = fileDirectory.stringByAppendingPathComponent(toFile)
+        NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
+        NSLog("Data is written to \(filePath))")
+    }
+    
+
+    /**
+    Read a backup file and return it as an unarchived object
+    
+    :param: fromFile The file that will be read and parsed to objects
+    */
+    public func restoreData(fromFile:String) -> AnyObject? {
+        var filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
+        if filemanager.fileExistsAtPath(filePath) {
+            var result:AnyObject? = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
+            NSLog("Data is restored from \(filePath))")
+            return result
+        }
+        return nil
+    }
+    
+    
+    /**
+    Remove a backup file
+    
+    :param: file The file that will be removed from the backup folder (EVCloudDataBackup)
+    */
+    public func removeBackup(file:String) {
+        var filePath = fileDirectory.stringByAppendingPathComponent(file)
+        if filemanager.fileExistsAtPath(filePath) {
+            var error:NSError?
+            filemanager.removeItemAtPath(filePath, error: &error)
+        }
+    }
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - Modify local data
     // ------------------------------------------------------------------------
@@ -128,22 +334,23 @@ public class EVCloudData {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
                 var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID!.recordName == recordId}
                 if predicate.evaluateWithObject(item) {
-                    var d:[EVCloudKitDataObject] = data[filter]!
-                    var s:EVCloudKitDataObject?
-                    if itemID != nil && itemID < d.count {
-                        s = d[itemID!]
+                    var existingItem:EVCloudKitDataObject?
+                    if itemID != nil && itemID < data[filter]!.count {
+                        existingItem = data[filter]![itemID!]
                     }
-                    if s != nil  {
+                    if existingItem != nil  {
                         data[filter]!.removeAtIndex(itemID!)
                         data[filter]!.insert(item, atIndex: itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.updateHandlers[filter]!)(item: item, dataIndex:itemID!)
                         }
+                        dataIsUpdated(filter)
                     } else {
                         data[filter]!.insert(item, atIndex: 0)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.insertedHandlers[filter]!)(item: item)
                         }
+                        dataIsUpdated(filter)
                     }
                 } else { // An update of a field that is used int the predicate could trigger a delete from that set.
                     NSLog("Object not for filter \(filter)")
@@ -152,11 +359,13 @@ public class EVCloudData {
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
                         }
+                        dataIsUpdated(filter)
                     }
                 }
             }
         }
     }
+    
     
     /**
     Delete an object from every data collection where it's part of
@@ -172,9 +381,12 @@ public class EVCloudData {
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
                 }
+                dataIsUpdated(filter)
             }
         }
     }
+    
+    
     
     // ------------------------------------------------------------------------
     // MARK: - Data methods - CRUD
@@ -243,6 +455,8 @@ public class EVCloudData {
         })
     }
     
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - Query and subscribe
     // ------------------------------------------------------------------------
@@ -253,6 +467,7 @@ public class EVCloudData {
     :param: type The CloudKit record id of the record that we want to delete
     :param: predicate The filter that will be used. To see how to create a predicate, see: https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKQuery_class/index.html
     :param: filterId The filterId under what this filter should be registered (must be unique per predicate
+    :param: cachingStrategy Optional vale for setting the caching strategy for this connect. The default value is CachingStrategy.Direct
     :param: configureNotificationInfo The function that will be called with the CKNotificationInfo object so that we can configure it
     :param: completionHandler The function that will be called with a record id of the deleted object
     :param: insertedHandler Executed if the notification was for an inserted object
@@ -265,6 +480,7 @@ public class EVCloudData {
     public func connect<T:EVCloudKitDataObject>(type:T,
         predicate: NSPredicate,
         filterId: String,
+        cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
         completionHandler: (results: [T]) -> Void,
         insertedHandler:(item: EVCloudKitDataObject) -> Void,
@@ -272,6 +488,9 @@ public class EVCloudData {
         deletedHandler:(recordId: String, dataIndex:Int) -> Void,
         errorHandler:(error: NSError) -> Void
         ) -> Void {
+            if restoreDataForFilter(filterId) {
+                completionHandler(results: self.data[filterId] as [T])
+            }
             if data[filterId] == nil {
                 self.data[filterId] = [T]()
             }
@@ -280,6 +499,10 @@ public class EVCloudData {
             self.updateHandlers[filterId] = updatedHandler
             self.deletedHandlers[filterId] = deletedHandler
             self.predicates[filterId] = predicate
+            self.cachingLastWrite[filterId] = NSDate()
+            self.cachingChangesCount[filterId] = 0
+            self.cachingStrategies[filterId] = cachingStrategy
+            
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
             var recordType = EVReflection.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
@@ -287,6 +510,9 @@ public class EVCloudData {
                 self.data[filterId] = results
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     completionHandler(results: results)
+                }
+                if self.cachingStrategies[filterId]! != CachingStrategy.None {
+                    self.backupDataForFilter(filterId)
                 }
             }, errorHandler: {error in
                 NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -343,6 +569,7 @@ public class EVCloudData {
                 self.deleteObject(recordId)
             })
     }
+    
 }
 
 /**
@@ -363,29 +590,5 @@ extension Array {
         }
         
         return nil
-    }
-    
-    
-    /**
-    Gets the object at the specified index, if it exists.
-    
-    :param: index
-    :returns: Object at index in self
-    */
-    func EVget (index: Int) -> Element? {
-        
-        //  If the index is out of bounds it's assumed relative
-        func relativeIndex (index: Int) -> Int {
-            var _index = (index % count)
-            
-            if _index < 0 {
-                _index = count + _index
-            }
-            
-            return _index
-        }
-        
-        let _index = relativeIndex(index)
-        return _index < count ? self[_index] : nil
     }
 }

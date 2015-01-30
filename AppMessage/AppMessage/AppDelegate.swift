@@ -28,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in NSLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
 
         EVCloudKitDao.publicDB.setBadgeCounter(0)
+        
+        EVCloudData.publicDB.restoreAllData()
         return true
     }
     
@@ -40,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidEnterBackground(application: UIApplication) {
         // If you do a backup then this backup will be reloaded after app restart.
-        EVCloudData.publicDB.backupData()        
+        EVCloudData.publicDB.backupAllData()
     }
     
 }

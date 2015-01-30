@@ -44,7 +44,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
 - since all data is processed all callback events will be executed on the mainQueue
-- basic support for caching all data to file. 
+- caching of the results to file for speady app restart. (You can set the caching strategy) 
 
 ## Main features of EVReflection:
 - Parsing objects based on NSObject to a dictionary. (except for nullable fields)
