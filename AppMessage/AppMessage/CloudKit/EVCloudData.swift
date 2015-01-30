@@ -64,7 +64,7 @@ func !=(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
 /**
     Class for access to  Apple's CloudKit data the easiest way possible
 */
-public class EVCloudData {
+public class EVCloudData:NSObject {
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -109,6 +109,10 @@ public class EVCloudData {
         return privateDB;
     }
     
+    override init() {
+        super.init()
+        NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
+    }
     
     // ------------------------------------------------------------------------
     // MARK: - class variables
