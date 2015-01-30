@@ -52,9 +52,6 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - Creating a class from a string value and get the string value for a class.
 - Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
 
-## Todo's'
-- Add caching options (specify per connection caching types: None, Direct, EachMinute(X))
-
 ## Known issues (Swift limitations) ##
 - If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
@@ -69,10 +66,6 @@ The AppMessage demo is using the following components which can be installed usi
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
 - [UIImage-Resize](https://github.com/AliSoftware/UIImage-Resize) - Category to add some resizing methods to the UIImage class, to resize it to a given CGSize — or fit in a CGSize keeping aspect ratio
 - [WhereAmI](https://github.com/lypiut/WhereAmI) - Easy to use Core Location library in Swift
-
-Unfortunately there is also a great library that can not be included using CocoaPods. The code for this has been added to this project.
-
-- [ExSwift](https://github.com/pNre/ExSwift) - A set of Swift extensions for standard types and classes
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 

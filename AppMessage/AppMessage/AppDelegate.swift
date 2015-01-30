@@ -29,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         EVCloudKitDao.publicDB.setBadgeCounter(0)
         
-        EVCloudData.publicDB.restoreAllData()
         return true
     }
     
@@ -41,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
-        // If you do a backup then this backup will be reloaded after app restart.
+        // Just to make sure that all updates are written do the cache.
         EVCloudData.publicDB.backupAllData()
     }
     
