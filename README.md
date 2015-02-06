@@ -5,6 +5,7 @@ EVCloudKitDao
 [![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+[![Contact](https://img.shields.io/badge/contact-@evermeer-blue.svg?style=flat)](http://twitter.com/evermeer)
 
 ## What is this
 This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
