@@ -52,9 +52,9 @@ public class EVCloudKitDataObject : NSObject, NSCoding {
     :param: theObject The object that we want to decode.
     :param: aDecoder The NSCoder that will be used for decoding the object.
     */
-    public required convenience init(coder aDecoder: NSCoder) {
+    public required convenience init(coder: NSCoder) {
         self.init()
-        EVReflection.decodeObjectWithCoder(self, aDecoder: aDecoder)
+        EVReflection.decodeObjectWithCoder(self, aDecoder: coder)
     }
     
     /**

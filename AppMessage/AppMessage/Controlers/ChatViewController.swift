@@ -127,12 +127,20 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
             var image = (item as Asset).image()
             var myData = UIImagePNGRepresentation(image)
             myData.writeToFile(filePath, atomically:true)
-            self.scrollToBottomAnimated(true)
-            self.finishReceivingMessage();
+            NSLog("Image downloaded to \(id).png")
+            for (index, element) in enumerate(self.localData) {
+                if var data:Message = EVCloudData.publicDB.data[self.dataID]![index] as? Message {
+                    if data.Asset_ID == id {
+                        self.localData[index] = nil
+                    }
+                }
+            }
+            self.finishSendingMessage()
         }, errorHandler: { error in
             Helper.showError("Could not load Asset: \(error.description)")
         })
     }
+
 
     // ------------------------------------------------------------------------
     // MARK: - User interaction
@@ -471,14 +479,16 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
             var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
             var filePath =  docDirPath.stringByAppendingPathComponent(data.Asset_ID + ".png")
             var url = NSURL(fileURLWithPath: filePath)
-            var mediaData = NSData(contentsOfURL: url!)
-            if mediaData == nil {
-                url = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!)
-                mediaData = NSData(contentsOfURL: url!)
+            if var mediaData = NSData(contentsOfURL: url!) {
+                var image = UIImage(data: mediaData)
+                var photoItem = JSQPhotoMediaItem(image: image)
+                message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: photoItem)
+            } else {
+                //url = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!)
+                //mediaData = NSData(contentsOfURL: url!)
+                message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: JSQPhotoMediaItem())
+                
             }
-            var image = UIImage(data: mediaData!)
-            var photoItem = JSQPhotoMediaItem(image: image)
-            message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: photoItem)
         }
         localData[count - id - 1] = message
         return message;

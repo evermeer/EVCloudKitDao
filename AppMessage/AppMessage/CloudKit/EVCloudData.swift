@@ -166,6 +166,7 @@ public class EVCloudData:NSObject {
     
     private let fileDirectory =  (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString)
     private let filemanager = NSFileManager.defaultManager()
+    private let ioQueue: dispatch_queue_t = dispatch_queue_create("NL.EVICT.CloudKit.ioQueue", DISPATCH_QUEUE_SERIAL)
     
     
     /**
@@ -286,8 +287,10 @@ public class EVCloudData:NSObject {
     */
     public func backupData(data:AnyObject, toFile:String){
         var filePath = fileDirectory.stringByAppendingPathComponent(toFile)
-        NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
-        NSLog("Data is written to \(filePath))")
+        dispatch_sync(ioQueue) {
+            NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
+            NSLog("Data is written to \(filePath))")
+        }
     }
     
 
@@ -298,12 +301,14 @@ public class EVCloudData:NSObject {
     */
     public func restoreData(fromFile:String) -> AnyObject? {
         var filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
-        if filemanager.fileExistsAtPath(filePath) {
-            var result:AnyObject? = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
-            NSLog("Data is restored from \(filePath))")
-            return result
+        var result:AnyObject? = nil
+        dispatch_sync(ioQueue) {
+            if self.filemanager.fileExistsAtPath(filePath) {
+                result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
+                NSLog("Data is restored from \(filePath))")
+            }
         }
-        return nil
+        return result
     }
     
     
@@ -314,9 +319,11 @@ public class EVCloudData:NSObject {
     */
     public func removeBackup(file:String) {
         var filePath = fileDirectory.stringByAppendingPathComponent(file)
-        if filemanager.fileExistsAtPath(filePath) {
-            var error:NSError?
-            filemanager.removeItemAtPath(filePath, error: &error)
+        dispatch_sync(ioQueue) {
+            if self.filemanager.fileExistsAtPath(filePath) {
+                var error:NSError?
+                self.filemanager.removeItemAtPath(filePath, error: &error)
+            }
         }
     }
     
