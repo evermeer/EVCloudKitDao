@@ -267,7 +267,15 @@ public class EVCloudKitDao {
     public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:(error:NSError) -> Void) {
         container.discoverAllContactUserInfosWithCompletionHandler({users, error in
             self.handleCallback(error, errorHandler:{errorHandler(error: error)}, completionHandler: {
-                completionHandler(users:users as [CKDiscoveredUserInfo])
+                var returnData = users as [CKDiscoveredUserInfo]
+                if returnData.count == 0 {
+                    if let restoreData = EVCloudData.publicDB.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
+                        returnData = restoreData
+                    }
+                } else {
+                    EVCloudData.publicDB.backupData(returnData, toFile: "allContactsUserInfo.bak")
+                }
+                completionHandler(users:returnData)
             })
         })
     }

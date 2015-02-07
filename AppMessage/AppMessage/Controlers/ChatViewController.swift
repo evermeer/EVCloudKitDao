@@ -132,10 +132,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
                 if var data:Message = EVCloudData.publicDB.data[self.dataID]![index] as? Message {
                     if data.Asset_ID == id {
                         self.localData[index] = nil
+                        self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: index as Int, inSection: 0 as Int)])
                     }
                 }
             }
-            self.finishSendingMessage()
         }, errorHandler: { error in
             Helper.showError("Could not load Asset: \(error.description)")
         })
