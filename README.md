@@ -1,11 +1,18 @@
 EVCloudKitDao
 =============
 
-[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg)](https://travis-ci.org/evermeer/EVCloudKitDao)
+[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/evermeer/EVCloudKitDao)
+[![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
+[![Stars](https://img.shields.io/github/stars/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/stargazers)
 [![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
-[![Contact](https://img.shields.io/badge/contact-@evermeer-blue.svg?style=flat)](http://twitter.com/evermeer)
+
+[![Git](https://img.shields.io/badge/GitHub-evermeer-blue.svg?style=flat)](https://github.com/evermeer)
+[![Twitter](https://img.shields.io/badge/twitter-@evermeer-blue.svg?style=flat)](http://twitter.com/evermeer)
+[![LinkedIn](https://img.shields.io/badge/linkedin-Edwin Vermeer-blue.svg?style=flat)](http://nl.linkedin.com/in/evermeer/en)
+[![Website](https://img.shields.io/badge/website-evict.nl-blue.svg?style=flat)](http://evict.nl)
+
 
 ## What is this
 This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
@@ -20,8 +27,8 @@ The Dao, Data and Reflection classes are complete, the demo is progressing. It h
 ## A picture says more than 1000 words
 Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do. 
 
-![Screenshot0][img0]
-![Screenshot1][img1]
+![Screenshot0](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png?raw=true)
+![Screenshot1](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true)
 
 ## Documentation ##
 Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
@@ -254,6 +261,3 @@ dao.query(Message()
 
 EVCloudKitDao is available under the MIT license. See the LICENSE file for more info.
 
-
-[img0]:https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png
-[img1]:https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png
