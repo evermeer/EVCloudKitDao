@@ -13,6 +13,9 @@
 		7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
 		7F434A4C1962AE780081F35C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4B1962AE780081F35C /* Message.swift */; };
 		7F434A4F1962B95D0081F35C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F434A4E1962B95D0081F35C /* CloudKit.framework */; };
+		7F5DFB4E1A86B95600628235 /* UzysAssetsPickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB4D1A86B95600628235 /* UzysAssetsPickerController.xib */; };
+		7F5DFB501A86BC8200628235 /* UzysAssetPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB4F1A86BC8200628235 /* UzysAssetPickerController.bundle */; };
+		7F5DFB521A86C04100628235 /* JSQMessagesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB511A86C04100628235 /* JSQMessagesViewController.xib */; };
 		7F61CA3A19829CC7005EF254 /* MessageBubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3719829CC7005EF254 /* MessageBubble@2x.png */; };
 		7F61CA3B19829CC7005EF254 /* MessageIncoming.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3819829CC7005EF254 /* MessageIncoming.aiff */; };
 		7F61CA3C19829CC7005EF254 /* MessageOutgoing.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3919829CC7005EF254 /* MessageOutgoing.aiff */; };
@@ -34,7 +37,6 @@
 		7FCB04A419A8E14F00A257FE /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB04A319A8E14F00A257FE /* News.swift */; };
 		7FD051C119C591B2009B7FEE /* image-not-available.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FD051C019C591B2009B7FEE /* image-not-available.jpg */; };
 		7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
-		7FE31C181A71BD1E009F96D2 /* JSQMessagesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FE31C171A71BD1E009F96D2 /* JSQMessagesViewController.xib */; };
 		7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF447431A16964C0003AE91 /* ChatViewController.swift */; };
 		7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD4C0C1A222E9D00E03FAB /* Helper.swift */; };
 		EEBBFDCB1C430396CE90E894 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -53,6 +55,9 @@
 		7F434A4D1962B94E0081F35C /* AppMessage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppMessage.entitlements; sourceTree = "<group>"; };
 		7F434A4E1962B95D0081F35C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		7F51F15B197E6BA300A9E5B2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		7F5DFB4D1A86B95600628235 /* UzysAssetsPickerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UzysAssetsPickerController.xib; sourceTree = "<group>"; };
+		7F5DFB4F1A86BC8200628235 /* UzysAssetPickerController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UzysAssetPickerController.bundle; sourceTree = "<group>"; };
+		7F5DFB511A86C04100628235 /* JSQMessagesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JSQMessagesViewController.xib; sourceTree = "<group>"; };
 		7F61CA3719829CC7005EF254 /* MessageBubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MessageBubble@2x.png"; sourceTree = "<group>"; };
 		7F61CA3819829CC7005EF254 /* MessageIncoming.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageIncoming.aiff; sourceTree = "<group>"; };
 		7F61CA3919829CC7005EF254 /* MessageOutgoing.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageOutgoing.aiff; sourceTree = "<group>"; };
@@ -75,7 +80,6 @@
 		7FCB04A319A8E14F00A257FE /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = News.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7FD051C019C591B2009B7FEE /* image-not-available.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "image-not-available.jpg"; sourceTree = "<group>"; };
 		7FD41610199666F3003C2CE9 /* EVCloudData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudData.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		7FE31C171A71BD1E009F96D2 /* JSQMessagesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JSQMessagesViewController.xib; sourceTree = "<group>"; };
 		7FED8DF91A4A30B70071F7A9 /* EVCloudKitDao.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = EVCloudKitDao.podspec; path = ../EVCloudKitDao.podspec; sourceTree = "<group>"; };
 		7FED8DFA1A4A30C10071F7A9 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		7FED8E201A4B14A30071F7A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
@@ -171,7 +175,9 @@
 		7FC46F6819813282000A875F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7FE31C171A71BD1E009F96D2 /* JSQMessagesViewController.xib */,
+				7F5DFB511A86C04100628235 /* JSQMessagesViewController.xib */,
+				7F5DFB4F1A86BC8200628235 /* UzysAssetPickerController.bundle */,
+				7F5DFB4D1A86B95600628235 /* UzysAssetsPickerController.xib */,
 				7F7C03611A382C3C00054ED7 /* Localizable.strings */,
 				7FD051C019C591B2009B7FEE /* image-not-available.jpg */,
 				7FC46F9319825B33000A875F /* Default-568h@2x.png */,
@@ -287,8 +293,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FE31C181A71BD1E009F96D2 /* JSQMessagesViewController.xib in Resources */,
 				7F61CA3C19829CC7005EF254 /* MessageOutgoing.aiff in Resources */,
+				7F5DFB521A86C04100628235 /* JSQMessagesViewController.xib in Resources */,
 				7F61CA3B19829CC7005EF254 /* MessageIncoming.aiff in Resources */,
 				7F434A3019628D490081F35C /* Images.xcassets in Resources */,
 				7F61CA3A19829CC7005EF254 /* MessageBubble@2x.png in Resources */,
@@ -298,6 +304,8 @@
 				7FC46F7B198134C8000A875F /* Storyboard.storyboard in Resources */,
 				7FC46F9419825B33000A875F /* Default-568h@2x.png in Resources */,
 				7FD051C119C591B2009B7FEE /* image-not-available.jpg in Resources */,
+				7F5DFB4E1A86B95600628235 /* UzysAssetsPickerController.xib in Resources */,
+				7F5DFB501A86BC8200628235 /* UzysAssetPickerController.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

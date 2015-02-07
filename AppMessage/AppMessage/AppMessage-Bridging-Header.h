@@ -8,7 +8,7 @@
 #import <RESideMenu/RESideMenu.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <CRToast/CRToast.h>
-#import <CTAssetsPickerController/CTAssetsPickerController.h>
+#import <UzysAssetsPickerController/UzysAssetsPickerController.h>
 #import <JSQSystemSoundPlayer/JSQSystemSoundPlayer.h>
 #import <UIImage_Resize/UIImage+Resize.h>
 

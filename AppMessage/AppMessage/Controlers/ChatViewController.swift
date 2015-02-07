@@ -8,10 +8,10 @@
 import Foundation
 import CloudKit
 import JSQMessagesViewController
-import CTAssetsPickerController
+import UzysAssetsPickerController
 import WhereAmI
 
-class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTAssetsPickerControllerDelegate {
+class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate {
     
     var chatWithId : String = ""
     var chatWithDisplayName : String = ""
@@ -22,6 +22,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     var senderLastName : String = ""
     
     var localData : [JSQMessage?] = []
+    
+    var picker :UzysAssetsPickerController = UzysAssetsPickerController()
     
     func setContact(recordId:String, firstName:String, lastName:String) {
         chatWithId = recordId
@@ -48,8 +50,13 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
         self.collectionView.collectionViewLayout.outgoingAvatarViewSize = defaultAvatarSize //CGSizeZero
         self.showLoadEarlierMessagesHeader = false
         //self.inputToolbar.contentView.leftBarButtonItem
-    }
         
+        // configure UzysAssetsPickerController
+        var config = UzysAppearanceConfig()
+        config.finishSelectionButtonColor = UIColor.greenColor()
+        UzysAssetsPickerController.setUpAppearanceConfig(config)
+    }
+    
     override func viewDidAppear(animated: Bool) {
         if EVCloudData.publicDB.data[dataID] != nil {
             self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
@@ -190,16 +197,16 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
     }
     
     func addPhoto() {
-        var picker: CTAssetsPickerController = CTAssetsPickerController()
         picker.delegate = self
-        picker.assetsFilter = ALAssetsFilter.allPhotos()
+        picker.maximumNumberOfSelectionVideo = 0;
+        picker.maximumNumberOfSelectionPhoto = 5;
         self.presentViewController(picker, animated:true, completion:nil)
     }
     
     func addVideo() {
-        var picker: CTAssetsPickerController = CTAssetsPickerController()
         picker.delegate = self
-        picker.assetsFilter = ALAssetsFilter.allVideos()
+        picker.maximumNumberOfSelectionVideo = 1;
+        picker.maximumNumberOfSelectionPhoto = 0;
         self.presentViewController(picker, animated:true, completion:nil)
     }
     
@@ -228,7 +235,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, CTA
         });
     }
     
-    func assetsPickerController(picker: CTAssetsPickerController!, didFinishPickingAssets assets: [AnyObject]!) {
+    func uzysAssetsPickerController(picker: UzysAssetsPickerController!, didFinishPickingAssets assets: [AnyObject]!) {
         picker.dismissViewControllerAnimated(true, completion: nil)
         var i:Int = 0
         for asset in assets {
