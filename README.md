@@ -74,6 +74,7 @@ The AppMessage demo is using the following components which can be installed usi
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
 - [UIImage-Resize](https://github.com/AliSoftware/UIImage-Resize) - Category to add some resizing methods to the UIImage class, to resize it to a given CGSize — or fit in a CGSize keeping aspect ratio
 - [WhereAmI](https://github.com/lypiut/WhereAmI) - Easy to use Core Location library in Swift
+- [UzysAssetsPickerController](https://github.com/uzysjung/UzysAssetsPickerController) - Alternative UIImagePickerController , You can take a picture with camera and choose multiple photos and videos
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 
