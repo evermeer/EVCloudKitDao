@@ -518,6 +518,10 @@ public class EVCloudData:NSObject {
             var recordType = EVReflection.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in
+                if self.data[filterId] != nil && self.data[filterId]! == results {
+                    return // Result was already returned from cache
+                }
+                
                 self.data[filterId] = results
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     completionHandler(results: results)

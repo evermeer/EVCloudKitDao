@@ -25,29 +25,31 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     
     var picker :UzysAssetsPickerController = UzysAssetsPickerController()
     
+    var recordIdMeForConnection: String = ""
+    var recordIdOtherForConnection: String = ""
+    var viewAppeared = false
+    
     func setContact(recordId:String, firstName:String, lastName:String) {
         chatWithId = recordId
         chatWithFirstName = firstName
         chatWithLastName = lastName
         chatWithDisplayName = "\(firstName) \(lastName)"
-        dataID =  "Message_\(chatWithId)"
-        if EVCloudData.publicDB.data[dataID] != nil {
-            self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
+        if dataID != "" {
+            EVCloudData.publicDB.disconnect(dataID)
         }
+        dataID =  "Message_\(chatWithId)"
+        
+        initializeCommunication()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        self.senderId = EVCloudData.publicDB.dao.activeUser?.userRecordID.recordName
-        senderFirstName = "\(EVCloudData.publicDB.dao.activeUser?.firstName)"
-        senderLastName = "\(EVCloudData.publicDB.dao.activeUser?.lastName)"
-        self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
         
         // configure JSQMessagesViewController
         var defaultAvatarSize: CGSize = CGSizeMake(kJSQMessagesCollectionViewAvatarSizeDefault, kJSQMessagesCollectionViewAvatarSizeDefault)
         self.collectionView.collectionViewLayout.incomingAvatarViewSize = defaultAvatarSize //CGSizeZero
         self.collectionView.collectionViewLayout.outgoingAvatarViewSize = defaultAvatarSize //CGSizeZero
+        self.collectionView.collectionViewLayout.springinessEnabled = true
         self.showLoadEarlierMessagesHeader = false
         //self.inputToolbar.contentView.leftBarButtonItem
         
@@ -58,14 +60,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     }
     
     override func viewDidAppear(animated: Bool) {
-        if EVCloudData.publicDB.data[dataID] != nil {
-            self.localData = [JSQMessage?](count:EVCloudData.publicDB.data[dataID]!.count, repeatedValue:nil)
-        }
         super.viewDidAppear(animated)
-        self.collectionView.collectionViewLayout.springinessEnabled = true
-
-        self.collectionView.reloadData()
-        self.scrollToBottomAnimated(true)
+        self.viewAppeared = true
         initializeCommunication()
     }
 
@@ -75,10 +71,19 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     // ------------------------------------------------------------------------
    
     func initializeCommunication() {
-        var recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
-        var recordIdOther = chatWithId
+        if !viewAppeared || (recordIdMeForConnection == EVCloudData.publicDB.dao.activeUser.userRecordID.recordName && recordIdOtherForConnection == chatWithId) {
+            return //Already connected or not ready yet
+        }
+        recordIdMeForConnection = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
+        recordIdOtherForConnection = chatWithId
+        
+        self.senderId = EVCloudData.publicDB.dao.activeUser?.userRecordID.recordName
+        senderFirstName = "\(EVCloudData.publicDB.dao.activeUser?.firstName)"
+        senderLastName = "\(EVCloudData.publicDB.dao.activeUser?.lastName)"
+        self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
+        
         EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMe, recordIdOther], [recordIdOther, recordIdMe])!
+            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])!
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
                 notificationInfo.alertBody = "%1$@ %2$@ : %3$@"
@@ -444,6 +449,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     // ------------------------------------------------------------------------
     
     func getMessageForId(id:Int) -> JSQMessage {
+        // Get the CloudKit Message data plus count
         var data:Message!
         var count : Int = 0
         let lockQueue = dispatch_queue_create("nl.evict.AppMessage.ChatLockQueue", nil)
@@ -456,15 +462,20 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as Message
             }
         }
+        
+        // Should never happen... just here to prevent a crash if it does happen.
         if count <= id {
             return JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, text: "")
         }
+        
+        // The JSQMessage was already created before
         if let localMessage = self.localData[count - id - 1]  {
             return localMessage
         }
         
+        // Create a JSQMessage based on the Message object from CloudKit
         var message: JSQMessage!
-
+        
         // receiving or sending..
         var sender = self.senderId
         var senderName = self.senderDisplayName
@@ -472,14 +483,15 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             sender = self.chatWithId
             senderName = self.chatWithFirstName + " " + self.chatWithLastName
         }
-        // normal or media message
+        
+        // normal, location or media message
         if data.MessageType == MessageTypeEnum.Text.rawValue {
             message = JSQMessage(senderId: sender, senderDisplayName: senderName,date: data.creationDate, text: data.Text)
         } else if data.MessageType == MessageTypeEnum.Location.rawValue {
             var location = CLLocation(latitude: CLLocationDegrees(data.Latitude), longitude: CLLocationDegrees(data.Longitude))
             var locationItem = JSQLocationMediaItem()
             locationItem.setLocation(location, withCompletionHandler: {
-                self.collectionView.reloadData()
+                self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: id as Int, inSection: 0 as Int)])
             })
             message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: locationItem)
         } else if data.MessageType == MessageTypeEnum.Picture.rawValue {

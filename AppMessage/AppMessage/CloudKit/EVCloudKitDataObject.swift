@@ -9,7 +9,7 @@ import CloudKit
 
 /**
 */
-public class EVCloudKitDataObject : NSObject, NSCoding {
+public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Equatable {
     /**
     The unique ID of the record.
     */
@@ -69,4 +69,11 @@ public class EVCloudKitDataObject : NSObject, NSCoding {
     public func description() -> String {
         return EVReflection.description(self)
     }
+    
 }
+
+public func ==(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
+    return EVReflection.areEqual(lhs, rhs: rhs)
+}
+
+

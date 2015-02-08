@@ -150,6 +150,20 @@ public class EVReflection {
             }
         }
     }
+    
+    public class func areEqual(lhs:NSObject, rhs:NSObject) -> Bool {
+        let lhsdict = toDictionary(lhs)
+        for (key, value) in toDictionary(rhs) {
+            if let compareTo: AnyObject = lhsdict[key] {
+                if !compareTo.isEqual(value) {
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+        return true
+    }
 
     //TODO: Make this work with nulable types
     /**
@@ -186,5 +200,5 @@ public class EVReflection {
             return NSNull() // Could not happen
         }
     }
-    
 }
+
