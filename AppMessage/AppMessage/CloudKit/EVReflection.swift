@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CloudKit
 
 /**
 Reflection methods
@@ -84,7 +85,7 @@ public class EVReflection {
     :return: The string representation of the object
     */
     public class func description(theObject: NSObject) -> String {
-        var description : String = swiftStringFromClass(theObject) + " {\n"
+        var description : String = swiftStringFromClass(theObject) + " {\n   hash = \(theObject.hash)\n"
         for (key: String, value: AnyObject) in toDictionary(theObject) {
             description = description  + "   key = \(key), value = \(value)\n"
         }
@@ -102,12 +103,11 @@ public class EVReflection {
     public class func hashValue(theObject: NSObject) -> Int {
         var hash : Int = 0
         var counter : Int = 0
-            for (key: String, value: AnyObject) in self.toDictionary(theObject) {
-                NSLog("key \(key) value \(value)  hash \(value.hash)")
-                hash = hash + value.hash << counter
-                counter = counter + 1
-            }
-        return hash
+        for (key, value) in toDictionary(theObject) {
+            hash = hash &+ (value.hash << counter)
+            counter = counter + 1
+        }
+        return Int(hash)
     }
     
     
