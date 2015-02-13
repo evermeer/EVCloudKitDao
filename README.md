@@ -59,7 +59,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - Parsing a dictionary back to an object.
 - Creating a class from a string value and get the string value for a class.
 - Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
-- Supporting Printable, Hashable and Equatable while using all properties.
+- Supporting Printable, Hashable and Equatable while using all properties. (Support for Set in Swift 1.2?)
 
 ## Known issues (Swift limitations) ##
 - If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.

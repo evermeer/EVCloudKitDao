@@ -49,7 +49,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         var defaultAvatarSize: CGSize = CGSizeMake(kJSQMessagesCollectionViewAvatarSizeDefault, kJSQMessagesCollectionViewAvatarSizeDefault)
         self.collectionView.collectionViewLayout.incomingAvatarViewSize = defaultAvatarSize //CGSizeZero
         self.collectionView.collectionViewLayout.outgoingAvatarViewSize = defaultAvatarSize //CGSizeZero
-        self.collectionView.collectionViewLayout.springinessEnabled = true
+        self.collectionView.collectionViewLayout.springinessEnabled = false
         self.showLoadEarlierMessagesHeader = false
         //self.inputToolbar.contentView.leftBarButtonItem
         
@@ -86,8 +86,6 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])!
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
-                notificationInfo.alertBody = "%1$@ %2$@ : %3$@"
-                notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results in
                 NSLog("Conversation message results = \(results.count)")
                 self.localData = [JSQMessage?](count:results.count, repeatedValue:nil)

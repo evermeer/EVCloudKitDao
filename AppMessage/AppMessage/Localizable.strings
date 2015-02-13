@@ -7,3 +7,4 @@
 
 // Subscribe to News alert message
 "News: %1$@" = "News: %1$@";
+"%1$@ %2$@ : %3$@" = "%1$@ %2$@ : %3$@";

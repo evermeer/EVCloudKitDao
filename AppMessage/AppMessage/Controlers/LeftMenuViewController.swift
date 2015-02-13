@@ -120,8 +120,8 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     func startChat(recordId:String, firstName:String, lastName:String) {
         if self.chatViewController == nil {
             self.chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
-            self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: self.chatViewController!), animated: true)
         }
+        self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: self.chatViewController!), animated: true)
         if self.chatViewController!.chatWithId != recordId {
             chatViewController!.setContact(recordId, firstName: firstName, lastName: lastName)
         }
@@ -173,7 +173,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)!
             , filterId: "Message_ToMe"
             , configureNotificationInfo:{ notificationInfo in
-                notificationInfo.alertBody = "%1$@ %2$@ : %3$@"
+                notificationInfo.alertLocalizationKey = "%1$@ %2$@ : %3$@"
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results in
                 NSLog("Message to me results = \(results.count)")
