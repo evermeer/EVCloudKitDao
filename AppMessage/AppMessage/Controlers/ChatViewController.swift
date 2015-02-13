@@ -491,7 +491,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             var location = CLLocation(latitude: CLLocationDegrees(data.Latitude), longitude: CLLocationDegrees(data.Longitude))
             var locationItem = JSQLocationMediaItem()
             locationItem.setLocation(location, withCompletionHandler: {
-                self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: id as Int, inSection: 0 as Int)])
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: id as Int, inSection: 0 as Int)])
+                }
             })
             message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: locationItem)
         } else if data.MessageType == MessageTypeEnum.Picture.rawValue {

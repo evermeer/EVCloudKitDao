@@ -11,6 +11,7 @@ import Foundation
 Reflection methods
 */
 public class EVReflection {
+
     /**
     Create an object from a dictionary
     
@@ -46,7 +47,6 @@ public class EVReflection {
         return reflectedSub(reflected)
     }
     
-    
     private class func reflectedSub(reflected:MirrorType) -> Dictionary<String, AnyObject> {
         var propertiesDictionary : Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
         for i in 0..<reflected.count {
@@ -65,6 +65,7 @@ public class EVReflection {
         }
         return propertiesDictionary
     }
+    
     
     /**
     Dump the content of this object
@@ -90,7 +91,25 @@ public class EVReflection {
         description = description + "}\n"
         return description
     }
+    
 
+    /**
+    Create a hashvalue for the object
+    
+    :param: theObject The object for what you want a hashvalue
+    :return: the hashvalue for the object
+    */
+    public class func hashValue(theObject: NSObject) -> Int {
+        var hash : Int = 0
+        var counter : Int = 0
+            for (key: String, value: AnyObject) in self.toDictionary(theObject) {
+                NSLog("key \(key) value \(value)  hash \(value.hash)")
+                hash = hash + value.hash << counter
+                counter = counter + 1
+            }
+        return hash
+    }
+    
     
     /**
     Get the swift Class from a string
@@ -107,6 +126,7 @@ public class EVReflection {
         return nil;
     }
     
+    
     /**
     Get the class name as a string from a swift class
     
@@ -122,6 +142,7 @@ public class EVReflection {
         return nil;
     }
 
+    
     /**
     Encode any object
     
@@ -133,6 +154,7 @@ public class EVReflection {
             aCoder.encodeObject(value, forKey: key)
         }
     }
+    
 
     /**
     Decode any object
@@ -151,6 +173,14 @@ public class EVReflection {
         }
     }
     
+    
+    /**
+    Compare all fields of 2 objects
+    
+    :param: lhs The first object for the comparisson
+    :param: rhs The second object for the comparisson
+    :return: true if the objects are the same, otherwise false
+    */
     public class func areEqual(lhs:NSObject, rhs:NSObject) -> Bool {
         let lhsdict = toDictionary(lhs)
         for (key, value) in toDictionary(rhs) {
@@ -165,6 +195,7 @@ public class EVReflection {
         return true
     }
 
+    
     //TODO: Make this work with nulable types
     /**
     Helper function to convert an Any to AnyObject

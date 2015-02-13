@@ -9,7 +9,7 @@ import CloudKit
 
 /**
 */
-public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Equatable {
+public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equatable {
     /**
     The unique ID of the record.
     */
@@ -66,12 +66,55 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Equatable {
         EVReflection.encodeWithCoder(self, aCoder: aCoder)
     }
     
+    /**
+    Returns the pritty description of this object
+    
+    :return: The pritty description
+    */
     public func description() -> String {
         return EVReflection.description(self)
     }
     
+    /**
+    Returns the hashvalue of this object
+    
+    :return: The hashvalue of this object
+    */
+    public override var hashValue : Int {
+        get {
+            return EVReflection.hashValue(self)
+        }
+    }
+    
+    /**
+    Function for returning the hash for the NSObject based functionality
+    
+    :return: The hashvalue of this object
+    */
+    public func hash() -> Int {
+        return self.hashValue
+    }
+    
+    /**
+    Implementation of the NSObject isEqual comparisson method
+    
+    :param: object The object where you want to compare with
+    :return: Returns true if the object is the same otherwise false
+    */
+    override public func isEqual(object: AnyObject?) -> Bool { // for isEqual:
+        if let dataObject = object as? EVCloudKitDataObject {
+            return dataObject == self // just use our "==" function
+        } else { return false }
+    }
 }
 
+/**
+Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
+
+:param: lhs Object to compare
+:param: rhs Object to compare
+:return: true if objects are equal, otherwise false
+*/
 public func ==(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
     return EVReflection.areEqual(lhs, rhs: rhs)
 }
