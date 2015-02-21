@@ -35,7 +35,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 
 
 ## Main features of EVCloudKitDao:
-- simple singleton access to your public or private database
+- simple singleton access to your public or private database and containers (defauld and named)
 - Object mapping: You do not have to parse from and to CKRecord (is based on reflection)
 - Generic and simplified query handling
 - Error handling (separate completionHandler and errorHandler code blocks)
@@ -235,7 +235,8 @@ class Message : EVCloudKitDataObject {
     var Text : String = ""
 }
 
-var dao: EVCloudKitDao = EVCloudKitDao.publicDB
+let dao: EVCloudKitDao = EVCloudKitDao.publicDB
+let dao2 = EVCloudKitDao.publicDBForContainer("iCloud.nl.evict.myapp")
 
 var message = Message()
 message.From = "me@me.com"

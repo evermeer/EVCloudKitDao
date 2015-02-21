@@ -170,6 +170,7 @@ class TestsViewController : UIViewController {
                 NSLog("<--- ERROR deleteItem")
             })
         
+        // Creating a connection to the Message recordType in the public database
         EVCloudData.publicDB.connect(Message()
             , predicate: NSPredicate(value: true)
             , filterId: "Message_all"
@@ -187,6 +188,14 @@ class TestsViewController : UIViewController {
             }, errorHandler: { error in
                 NSLog("<--- ERROR connect")
             })
+        
+        let dao2 = EVCloudKitDao.publicDBForContainer("iCloud.nl.evict.myapp")
+        dao2.saveItem(message, completionHandler: {record in
+            createdId = record.recordID.recordName;
+            NSLog("saveItem Message: \(createdId)");
+            }, errorHandler: {error in
+                NSLog("<--- ERROR saveItem message, you probably need to fix the container id iCloud.nl.evict.myapp");
+        })
         
     }
     

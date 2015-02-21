@@ -7,13 +7,22 @@
 
 import CloudKit
 
+
+/**
+Wrapper class for being able to use a class instance Dictionary
+*/
+private class DaoContainerWrapper {
+    var publicContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
+    var privateContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
+}
+
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
 public class EVCloudKitDao {
     
     // ------------------------------------------------------------------------
-    // MARK: - Initialisation
+    // MARK: - For getting the various instances
     // ------------------------------------------------------------------------
     
     /** 
@@ -35,6 +44,7 @@ public class EVCloudKitDao {
         return publicDB;
     }
 
+    
     /**
     Singleton access to EVCloudKitDao private database that can be called from Swift
     
@@ -46,6 +56,7 @@ public class EVCloudKitDao {
         return Static.instance
     }
     
+    
     /**
     Singleton access to EVCloudKitDao private database that can be called from Objective C
     
@@ -54,6 +65,52 @@ public class EVCloudKitDao {
     public class func sharedPrivateDB() -> EVCloudKitDao {
         return privateDB;
     }
+    
+    
+    /**
+    Singleton acces to the wrapper class with the dictionaries with public and private containers.
+    
+    :return: The container wrapper class
+    */
+    private class var containerWrapperInstance : DaoContainerWrapper {
+        struct Static { static var instance : DaoContainerWrapper = DaoContainerWrapper()}
+        return Static.instance
+    }
+    
+    
+    /**
+    Singleton acces to a specific named public container
+    :param: containterIdentifier The identifier of the public container that you want to use.
+    
+    :return: The public container for the identifier.
+    */
+    public class func publicDBForContainer(containterIdentifier:String) -> EVCloudKitDao {
+        if let containerInstance = containerWrapperInstance.publicContainers[containterIdentifier] {
+            return containerInstance
+        }
+        containerWrapperInstance.publicContainers[containterIdentifier] =  EVCloudKitDao(containerIdentifier: containterIdentifier)
+        return containerWrapperInstance.publicContainers[containterIdentifier]!
+    }
+
+    
+    /**
+    Singleton acces to a specific named private container
+    :param: containterIdentifier The identifier of the private container that you want to use.
+    
+    :return: The private container for the identifier.
+    */
+    public class func privateDBForContainer(containterIdentifier:String) -> EVCloudKitDao {
+        if let containerInstance = containerWrapperInstance.privateContainers[containterIdentifier] {
+            return containerInstance
+        }
+        containerWrapperInstance.privateContainers[containterIdentifier] =  EVCloudKitDao(containerIdentifier: containterIdentifier)
+        return containerWrapperInstance.privateContainers[containterIdentifier]!
+    }
+
+
+    // ------------------------------------------------------------------------
+    // MARK: - Initialisation
+    // ------------------------------------------------------------------------
     
     /**
     Access to the default CloudKit container
@@ -102,6 +159,23 @@ public class EVCloudKitDao {
         NSLog("Container identifier = \(container.containerIdentifier)")
     }
 
+    
+    /**
+    On init set a quick refrence to the container and database for a specific container.
+    */
+    init(containerIdentifier: String) {
+        container = CKContainer(identifier: containerIdentifier)
+        database = container.publicCloudDatabase
+        container.accountStatusWithCompletionHandler({status, error in
+            if (error != nil) {
+                NSLog("Error = \(error.description)")
+            } else {
+                self.accountStatus = status
+            }
+            NSLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
+        })
+        NSLog("Container identifier = \(container.containerIdentifier)")
+    }
     
     // ------------------------------------------------------------------------
     // MARK: - Helper methods

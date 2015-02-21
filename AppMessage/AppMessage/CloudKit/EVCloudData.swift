@@ -62,6 +62,15 @@ func !=(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
 
 
 /**
+Wrapper class for being able to use a class instance Dictionary
+*/
+private class DataContainerWrapper {
+    var publicContainers : Dictionary<String,EVCloudData> = Dictionary<String,EVCloudData>()
+    var privateContainers : Dictionary<String,EVCloudData> = Dictionary<String,EVCloudData>()
+}
+
+
+/**
     Class for access to  Apple's CloudKit data the easiest way possible
 */
 public class EVCloudData:NSObject {
@@ -109,11 +118,57 @@ public class EVCloudData:NSObject {
         return privateDB;
     }
     
+    
+    /**
+    Singleton acces to the wrapper class with the dictionaries with public and private containers.
+    
+    :return: The container wrapper class
+    */
+    private class var containerWrapperInstance : DataContainerWrapper {
+        struct Static { static var instance : DataContainerWrapper = DataContainerWrapper()}
+        return Static.instance
+    }
+    
+    
+    /**
+    Singleton acces to a specific named public container
+    :param: containterIdentifier The identifier of the public container that you want to use.
+    
+    :return: The public container for the identifier.
+    */
+    public class func publicDBForContainer(containerIdentifier:String) -> EVCloudData {
+        if let containerInstance = containerWrapperInstance.publicContainers[containerIdentifier] {
+            return containerInstance
+        }
+        var cloudData = EVCloudData()
+        cloudData.dao = EVCloudKitDao.publicDBForContainer(containerIdentifier)
+        containerWrapperInstance.publicContainers[containerIdentifier] =  cloudData
+        return cloudData
+    }
+    
+    
+    /**
+    Singleton acces to a specific named private container
+    :param: containterIdentifier The identifier of the private container that you want to use.
+    
+    :return: The private container for the identifier.
+    */
+    public class func privateDBForContainer(containerIdentifier:String) -> EVCloudData {
+        if let containerInstance = containerWrapperInstance.privateContainers[containerIdentifier] {
+            return containerInstance
+        }
+        var cloudData = EVCloudData()
+        cloudData.dao = EVCloudKitDao.privateDBForContainer(containerIdentifier)
+        containerWrapperInstance.privateContainers[containerIdentifier] =  cloudData
+        return cloudData
+    }
+
     override init() {
         super.init()
         NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
     }
     
+        
     // ------------------------------------------------------------------------
     // MARK: - class variables
     // ------------------------------------------------------------------------

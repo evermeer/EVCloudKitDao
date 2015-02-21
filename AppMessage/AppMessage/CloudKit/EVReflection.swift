@@ -101,13 +101,7 @@ public class EVReflection {
     :return: the hashvalue for the object
     */
     public class func hashValue(theObject: NSObject) -> Int {
-        var hash : Int = 0
-        var counter : Int = 0
-        for (key, value) in toDictionary(theObject) {
-            hash = hash &+ (value.hash << counter)
-            counter = counter + 1
-        }
-        return Int(hash)
+        return Int(map(toDictionary(theObject)) {$1}.reduce(0) {(31 &* $0) &+ $1.hash})
     }
     
     
