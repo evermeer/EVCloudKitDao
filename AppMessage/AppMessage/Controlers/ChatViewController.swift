@@ -10,8 +10,10 @@ import CloudKit
 import JSQMessagesViewController
 import UzysAssetsPickerController
 import WhereAmI
+import VIPhotoView
+import MapKit
 
-class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate {
+class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
     
     var chatWithId : String = ""
     var chatWithDisplayName : String = ""
@@ -29,6 +31,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     var recordIdOtherForConnection: String = ""
     var viewAppeared = false
     
+    
+    // Start the conversation
     func setContact(recordId:String, firstName:String, lastName:String) {
         chatWithId = recordId
         chatWithFirstName = firstName
@@ -42,6 +46,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         initializeCommunication()
     }
     
+    
+    // Setting up the components
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -74,14 +80,18 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         if !viewAppeared || (recordIdMeForConnection == EVCloudData.publicDB.dao.activeUser.userRecordID.recordName && recordIdOtherForConnection == chatWithId) {
             return //Already connected or not ready yet
         }
+
+        // Setup conversation for
         recordIdMeForConnection = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
         recordIdOtherForConnection = chatWithId
         
+        // Sender settings for the component
         self.senderId = EVCloudData.publicDB.dao.activeUser?.userRecordID.recordName
-        senderFirstName = "\(EVCloudData.publicDB.dao.activeUser?.firstName)"
-        senderLastName = "\(EVCloudData.publicDB.dao.activeUser?.lastName)"
+        senderFirstName = "\(EVCloudData.publicDB.dao.activeUser!.firstName)"
+        senderLastName = "\(EVCloudData.publicDB.dao.activeUser!.lastName)"
         self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
         
+        // The data connection to the conversation
         EVCloudData.publicDB.connect(Message()
             , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])!
             , filterId: dataID
@@ -111,6 +121,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 Helper.showError("Could not load messages: \(error.description)")
         })
     }
+    
+    // Disconnect from the conversation
     deinit {
         EVCloudData.publicDB.disconnect(dataID)
     }
@@ -221,7 +233,11 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             message.setTo(self.chatWithId)
             message.ToFirstName = self.chatWithFirstName
             message.ToLastName = self.chatWithLastName
-            message.Text = "<location>"
+            if location.course < 0 {
+                message.Text = "±\(location.verticalAccuracy)m"
+            } else {
+                message.Text = "±\(location.verticalAccuracy)m, \(Int(location.speed/0.36)/10)kmh \(self.direction(Int(location.course))) \(location.course)°"
+            }
             message.MessageType = MessageTypeEnum.Location.rawValue
             message.Longitude = (location.coordinate.longitude as Double)
             message.Latitude = (location.coordinate.latitude as Double)
@@ -238,6 +254,33 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         });
     }
     
+    // Get the direction indicator for a degree
+    func direction(degree : Int) -> String {
+        switch(degree) {
+        case 338...360:
+            return "N"
+        case 0...22:
+            return "N"
+        case 23...67:
+            return "NO"
+        case 68...112:
+            return "O"
+        case 113...158:
+            return "ZO"
+        case 159...202:
+            return "Z"
+        case 203...248:
+            return "ZW"
+        case 249...292:
+            return "W"
+        case 293...337:
+            return "NW"
+        default:
+            return ""
+        }
+    }
+
+    // Callback from the asset picker
     func uzysAssetsPickerController(picker: UzysAssetsPickerController!, didFinishPickingAssets assets: [AnyObject]!) {
         picker.dismissViewControllerAnimated(true, completion: nil)
         var i:Int = 0
@@ -305,6 +348,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         }
     }
     
+    // The image picker will return an CTAsset. We need an UIImage.
     func getUIImageFromCTAsset(asset:ALAsset) -> UIImage {
         var representation:ALAssetRepresentation = (asset as ALAsset).defaultRepresentation();
         var img:CGImage = representation.fullResolutionImage().takeUnretainedValue()
@@ -317,7 +361,31 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     
     
     // ------------------------------------------------------------------------
-    // MARK: - JSQMessages CollectionView handling
+    // MARK: - Standard CollectionView handling
+    // ------------------------------------------------------------------------
+    
+    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return localData.count
+    }
+    
+    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        var cell : JSQMessagesCollectionViewCell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as JSQMessagesCollectionViewCell
+        var message = getMessageForId(indexPath.row)
+        if !message.isMediaMessage {
+            if message.senderId == self.senderId {
+                cell.textView.textColor = UIColor.blackColor()
+            } else {
+                cell.textView.textColor = UIColor.whiteColor()
+            }
+            cell.textView.linkTextAttributes = [NSForegroundColorAttributeName : cell.textView.textColor,
+                NSUnderlineStyleAttributeName : NSUnderlineStyle.StyleSingle.rawValue]
+        }
+        return cell
+    }
+    
+    
+    // ------------------------------------------------------------------------
+    // MARK: - JSQMessagesCollectionView handling
     // ------------------------------------------------------------------------
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -398,33 +466,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         return 0
     }
     
-
-    // ------------------------------------------------------------------------
-    // MARK: - Standard CollectionView handling
-    // ------------------------------------------------------------------------
-
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return localData.count
-    }
-    
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        var cell : JSQMessagesCollectionViewCell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as JSQMessagesCollectionViewCell
-        var message = getMessageForId(indexPath.row)
-        if !message.isMediaMessage {
-            if message.senderId == self.senderId {
-                cell.textView.textColor = UIColor.blackColor()
-            } else {
-                cell.textView.textColor = UIColor.whiteColor()
-            }
-            cell.textView.linkTextAttributes = [NSForegroundColorAttributeName : cell.textView.textColor,
-                NSUnderlineStyleAttributeName : NSUnderlineStyle.StyleSingle.rawValue]
-        } 
-        return cell
-    }
-    
     
     // ------------------------------------------------------------------------
-    // MARK: - CollectionView events
+    // MARK: - JSQMessagesCollectionView events
     // ------------------------------------------------------------------------
 
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
@@ -434,9 +478,42 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
         NSLog("Tapped avatar!")
     }
+    
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
         NSLog("Tapped message bubble!")
+        var (data, count) = getDataForId(indexPath.row)
+        
+        var message = getMessageForId(indexPath.row)
+        let viewController = UIViewController()
+        viewController.view.backgroundColor = UIColor.whiteColor()
+
+        if data.MessageType == MessageTypeEnum.Picture.rawValue {
+            viewController.title = "Photo"
+            let photoView = VIPhotoView(frame:self.navigationController!.view.bounds, andImage:(message.media as? JSQPhotoMediaItem)?.image)
+            photoView.autoresizingMask = UIViewAutoresizing(1 << 6 - 1)
+            viewController.view.addSubview(photoView)
+            self.navigationController!.pushViewController(viewController, animated: true)
+        } else if data.MessageType == MessageTypeEnum.Location.rawValue {
+            viewController.title = "Map"
+            let map = MKMapView(frame:self.navigationController!.view.bounds)
+            map.delegate = self
+            map.showsUserLocation = true
+            
+            let point = MKPointAnnotation()
+            point.coordinate = CLLocationCoordinate2D(latitude: data.Latitude, longitude: data.Longitude)
+            point.title = "\(data.FromFirstName) \(data.FromLastName)"
+            point.subtitle = data.Text
+            
+            map.addAnnotation(point)
+            viewController.view.addSubview(map)
+            self.navigationController!.pushViewController(viewController, animated: true)
+        }
     }
+    
+    func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
+        mapView.setRegion(MKCoordinateRegionMakeWithDistance((views[0] as MKAnnotationView).annotation.coordinate, 1000, 1000), animated: true)
+    }
+    
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapCellAtIndexPath indexPath: NSIndexPath!, touchLocation: CGPoint) {
         NSLog("Tapped cel at \(indexPath.row)")
@@ -446,8 +523,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     // MARK: - Data parsing: Message to JSQMessage
     // ------------------------------------------------------------------------
     
-    func getMessageForId(id:Int) -> JSQMessage {
-        // Get the CloudKit Message data plus count
+    func getDataForId(id:Int) -> (Message, Int) {
         var data:Message!
         var count : Int = 0
         let lockQueue = dispatch_queue_create("nl.evict.AppMessage.ChatLockQueue", nil)
@@ -460,6 +536,12 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as Message
             }
         }
+        return (data, count)
+    }
+    
+    func getMessageForId(id:Int) -> JSQMessage {
+        // Get the CloudKit Message data plus count
+        var (data, count) = getDataForId(id)
         
         // Should never happen... just here to prevent a crash if it does happen.
         if count <= id {
@@ -510,4 +592,6 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         localData[count - id - 1] = message
         return message;
     }
+
+
 }
