@@ -62,7 +62,8 @@ func !=(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
 
 
 /**
-Wrapper class for being able to use a class instance Dictionary
+Wrapper class for being able to use a class instance Dictionary. 
+This is used for singleton access to named containers.
 */
 private class DataContainerWrapper {
     var publicContainers : Dictionary<String,EVCloudData> = Dictionary<String,EVCloudData>()
@@ -398,7 +399,7 @@ public class EVCloudData:NSObject {
         NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
-                var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID!.recordName == recordId}
+                var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
                 if predicate.evaluateWithObject(item) {
                     var existingItem:EVCloudKitDataObject?
                     if itemID != nil && itemID < data[filter]!.count {
@@ -418,7 +419,7 @@ public class EVCloudData:NSObject {
                         }
                         dataIsUpdated(filter)
                     }
-                } else { // An update of a field that is used int the predicate could trigger a delete from that set.
+                } else { // An update of a field that is used in the predicate could trigger a delete from that set.
                     NSLog("Object not for filter \(filter)")
                     if (itemID != nil) {
                         data[filter]!.removeAtIndex(itemID!)
@@ -487,9 +488,12 @@ public class EVCloudData:NSObject {
     :return: No return value
     */
     public func saveItem(item: EVCloudKitDataObject, completionHandler: (item: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
+        NSOperationQueue().addOperationWithBlock() {
+            self.upsertObject(item.recordID.recordName, item: item)
+        }
         dao.saveItem(item, completionHandler: { record in
             var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)
-            self.upsertObject(record.recordID.recordName, item: item)
+            self.upsertObject(item.recordID.recordName, item: item)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 completionHandler(item: self.dao.fromCKRecord(record))
             }
@@ -509,6 +513,7 @@ public class EVCloudData:NSObject {
     :return: No return value
     */
     public func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
+        self.deleteObject(recordId)
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
             NSOperationQueue.mainQueue().addOperationWithBlock {

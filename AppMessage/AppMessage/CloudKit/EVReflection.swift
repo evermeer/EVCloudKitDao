@@ -160,8 +160,10 @@ public class EVReflection {
         for (key, value) in toDictionary(theObject) {
             if aDecoder.containsValueForKey(key) {
                 var newValue: AnyObject? = aDecoder.decodeObjectForKey(key)
-                if theObject.validateValue(&newValue, forKey: key, error: nil) {
-                    theObject.setValue(newValue, forKey: key)
+                if !(newValue is NSNull) {
+                    if theObject.validateValue(&newValue, forKey: key, error: nil) {
+                        theObject.setValue(newValue, forKey: key)
+                    }
                 }
             }
         }

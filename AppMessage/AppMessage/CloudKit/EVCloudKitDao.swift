@@ -775,7 +775,7 @@ public class EVCloudKitDao {
     :return: The CKRecord that is created from theObject
     */
     public func toCKRecord(theObject: EVCloudKitDataObject) -> CKRecord {
-        var record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject))
+        var record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
         var fromDict = EVReflection.toDictionary(theObject)
         for (key: String, value: AnyObject) in fromDict {
             if !contains(["recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag"] ,key) {

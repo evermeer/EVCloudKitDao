@@ -13,32 +13,32 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     /**
     The unique ID of the record.
     */
-    public var recordID: CKRecordID?
+    public var recordID: CKRecordID = CKRecordID(recordName: NSUUID().UUIDString)
     
     /**
     The app-defined string that identifies the type of the record.
     */
-    public var recordType: String?
+    public var recordType: String!
     
     /**
     The time when the record was first saved to the server.
     */
-    public var creationDate: NSDate?
+    public var creationDate: NSDate = NSDate()
     
     /**
     The ID of the user who created the record.
     */
-    public var creatorUserRecordID: CKRecordID?
+    public var creatorUserRecordID: CKRecordID = EVCloudKitDao.publicDB.activeUser.userRecordID
     
     /**
     The time when the record was last saved to the server.
     */
-    public var modificationDate: NSDate?
+    public var modificationDate: NSDate = NSDate()
     
     /**
     The ID of the user who last modified the record.
     */
-    public var lastModifiedUserRecordID: CKRecordID?
+    public var lastModifiedUserRecordID: CKRecordID = EVCloudKitDao.publicDB.activeUser.userRecordID
 
     /**
     A string containing the server change token for the record.
@@ -46,6 +46,14 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     public var recordChangeTag: String?
     
 
+    /**
+    Initialize and make sure we have a valid recordType
+    */
+    public override init() {
+        super.init()
+        recordType = EVReflection.swiftStringFromClass(self)
+    }
+    
     /**
     Decode any object
     
@@ -111,8 +119,8 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
 /**
 Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
 
-:param: lhs Object to compare
-:param: rhs Object to compare
+:param: lhs Object to compare at the left side of the equation
+:param: rhs Object to compare at the right side of the equation
 :return: true if objects are equal, otherwise false
 */
 public func ==(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {

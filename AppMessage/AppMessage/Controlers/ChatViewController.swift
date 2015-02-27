@@ -108,7 +108,6 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 if (item as Message).MessageType == MessageTypeEnum.Picture.rawValue {
                     self.getAttachment((item as Message).Asset_ID)
                 }
-                self.showTypingIndicator = true
                 JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
                 self.finishReceivingMessage();
             }, updatedHandler: { item, dataIndex in
@@ -179,12 +178,12 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         message.ToLastName = chatWithLastName
         message.Text = text
         EVCloudData.publicDB.saveItem(message, completionHandler: { message in
-                //Helper.showStatus("Message was send...")
                 self.finishSendingMessage()
             }, errorHandler: { error in
                 self.finishSendingMessage()
                 Helper.showError("Could not send message!  \(error.description)")
         })
+        self.finishSendingMessage()
     }
     
     override func didPressAccessoryButton(sender: UIButton!) {
@@ -242,7 +241,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             message.Longitude = (location.coordinate.longitude as Double)
             message.Latitude = (location.coordinate.latitude as Double)
             EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                NSLog("saveItem location Message: \(record.recordID!.recordName)");
+                NSLog("saveItem location Message: \(record.recordID.recordName)");
                 self.finishSendingMessage()
                 }, errorHandler: {error in
                     NSLog("<--- ERROR saveItem location message");
@@ -306,12 +305,12 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 
                 // Save the asset
                 EVCloudData.publicDB.saveItem(assetC, completionHandler: {record in
-                    NSLog("saveItem Asset: \(record.recordID!.recordName)");
+                    NSLog("saveItem Asset: \(record.recordID.recordName)");
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
                     var fromFilePath =  docDirPath.stringByAppendingPathComponent((record as Asset).FileName)
-                    let toPath = docDirPath.stringByAppendingPathComponent(record.recordID!.recordName + ".png")
+                    let toPath = docDirPath.stringByAppendingPathComponent(record.recordID.recordName + ".png")
                     filemanager.moveItemAtPath(fromFilePath, toPath: toPath, error: nil)
 
                     // Create the message object that represents the asset
@@ -323,10 +322,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                     message.ToLastName = self.chatWithLastName
                     message.Text = "<foto>"
                     message.MessageType = MessageTypeEnum.Picture.rawValue
-                    message.setAsset(record.recordID!.recordName)
+                    message.setAsset(record.recordID.recordName)
 
                     EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                        NSLog("saveItem Message: \(record.recordID!.recordName)");
+                        NSLog("saveItem Message: \(record.recordID.recordName)");
                         self.finishSendingMessage()
                     }, errorHandler: {error in
                         NSLog("<--- ERROR saveItem asset");
@@ -534,6 +533,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             }
             if id < count {
                 data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as Message
+            } else {
+                data = Message()
             }
         }
         return (data, count)
@@ -571,7 +572,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             var location = CLLocation(latitude: CLLocationDegrees(data.Latitude), longitude: CLLocationDegrees(data.Longitude))
             var locationItem = JSQLocationMediaItem()
             locationItem.setLocation(location, withCompletionHandler: {
-                self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: id as Int, inSection: 0 as Int)])
+                self.collectionView.reloadData()
+//                self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: id as Int, inSection: 0 as Int)])
+//                self.collectionView.reloadItemsAtIndexPaths(self.collectionView.indexPathsForVisibleItems())
+                
             })
             message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: locationItem)
         } else if data.MessageType == MessageTypeEnum.Picture.rawValue {
