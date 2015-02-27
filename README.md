@@ -87,9 +87,10 @@ You do have to use cocoapods version 0.36. At this moment this can be installed 
 [sudo] gem install cocoapods --pre
 ```
 
-If you have installed cocoapods version 0.36 or later, then you can just add EVCloudKitDao to your workspace by adding the folowin linge to your Podfile:
+If you have installed cocoapods version 0.36 or later, then you can just add EVCloudKitDao to your workspace by adding the folowing 2 lines to your Podfile:
 
 ```
+use_frameworks!
 pod "EVCloudKitDao"
 ```
 
