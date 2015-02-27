@@ -4,7 +4,7 @@ pod 'RESideMenu'
 pod 'JSQMessagesViewController'
 pod 'CRToast'
 pod 'UIImage-Resize'
-pod 'WhereAmI'
+pod 'WhereAmI' use_frameworks!
 pod 'UzysAssetsPickerController'
 pod 'VIPhotoView'
 
