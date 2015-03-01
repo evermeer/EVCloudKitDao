@@ -130,12 +130,11 @@ class TestsViewController : UIViewController {
             })
         
         // Get all users containing some words
-        //TODO: Since beta 3 this does not work anymore.
-//        dao.query(Message(), tokens: "this the", completionHandler: { results in
-//                NSLog("query : result count = \(results.count)")
-//            }, errorHandler: { error in
-//                NSLog("<--- ERROR query Message for words")
-//            })
+        dao.query(Message(), tokens: "test the", completionHandler: { results in
+                NSLog("query tokens: result count = \(results.count)")
+            }, errorHandler: { error in
+                NSLog("<--- ERROR query Message for words")
+            })
         
         // Unsubscribe for update notifications
         dao.unsubscribe(Message(), errorHandler:{ error in

@@ -459,7 +459,6 @@ public class EVCloudKitDao {
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
-    // TODO: Was in the 208 lab, since beta 3 it does not work anymore. also tried the "self contains '\(tokens)'"
     /**
     Query a recordType for some tokens
     
@@ -470,8 +469,8 @@ public class EVCloudKitDao {
     :return: No return value
     */
     public func query<T:EVCloudKitDataObject>(type:T, tokens:String ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
-        var recordType = EVReflection.swiftStringFromClass(T())
-        var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "ALL tokenize('\(tokens)', ‘Cdl') IN allTokens"))
+        var recordType = EVReflection.swiftStringFromClass(type)
+        var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
