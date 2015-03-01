@@ -28,7 +28,7 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     /**
     The ID of the user who created the record.
     */
-    public var creatorUserRecordID: CKRecordID = EVCloudKitDao.publicDB.activeUser.userRecordID
+    public var creatorUserRecordID: CKRecordID?
     
     /**
     The time when the record was last saved to the server.
@@ -38,7 +38,7 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     /**
     The ID of the user who last modified the record.
     */
-    public var lastModifiedUserRecordID: CKRecordID = EVCloudKitDao.publicDB.activeUser.userRecordID
+    public var lastModifiedUserRecordID: CKRecordID?
 
     /**
     A string containing the server change token for the record.
@@ -51,6 +51,10 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     */
     public override init() {
         super.init()
+        if let user = EVCloudKitDao.publicDB.activeUser {
+            creatorUserRecordID = user.userRecordID
+            lastModifiedUserRecordID = user.userRecordID
+        }        
         recordType = EVReflection.swiftStringFromClass(self)
     }
     
