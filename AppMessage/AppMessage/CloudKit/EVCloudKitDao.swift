@@ -474,6 +474,30 @@ public class EVCloudKitDao {
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
+    
+    /**
+    Query a recordType for a location and sort on distance
+    
+    :param: type An instance of the Object for what we want to query the record type
+    :param: fieldname The field that contains the location data
+    :param: latitude The latitude that will be used to query
+    :param: longitude The longitude that will be used to query
+    :param: distance The maximum distance to the location that will be returned
+    :param: completionHandler The function that will be called with an array of the requested objects
+    :param: errorHandler The function that will be called when there was an error
+    :return: No return value
+    */
+    public func query<T:EVCloudKitDataObject>(type:T, fieldname:String, latitude:Double, longitude:Double, distance:Int ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
+        var recordType:String = EVReflection.swiftStringFromClass(type)
+        var location:CLLocation = CLLocation(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
+        var predecate: NSPredicate =  NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %@", fieldname, location, distance)!
+        var query = CKQuery(recordType:recordType, predicate:predecate)
+        query.sortDescriptors = [CKLocationSortDescriptor(key: fieldname, relativeLocation: location)]
+        queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
+    }
+
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - Data methods - Subscriptions
     // ------------------------------------------------------------------------
