@@ -46,7 +46,7 @@ s.social_media_url   = "http://twitter.com/evermeer"
 #  the deployment target. You can optionally include the target after the platform.
 #
 
-s.platform     = :ios, "7.0"
+s.platform     = :ios, "8.0"
 
 # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
