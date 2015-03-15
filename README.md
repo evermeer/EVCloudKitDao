@@ -12,21 +12,32 @@ EVCloudKitDao
 [![Twitter](https://img.shields.io/badge/twitter-@evermeer-blue.svg?style=flat)](http://twitter.com/evermeer)
 [![LinkedIn](https://img.shields.io/badge/linkedin-Edwin Vermeer-blue.svg?style=flat)](http://nl.linkedin.com/in/evermeer/en)
 [![Website](https://img.shields.io/badge/website-evict.nl-blue.svg?style=flat)](http://evict.nl)
+[![eMail](https://img.shields.io/badge/email-edwin@evict.nl-blue.svg?style=flat)](mailto:edwin@evict.nl?SUBJECT=About EVCloudKitDao)
 
 
 ## What is this
-This is a library for simplified access to  Apple's CloudKit data. You can use the EVCloudKitDao.swift class if you want control over your in app data and notifications. The EVCloudKitData.swift class will let you handle CloudKit data as easy as possible. As a bonus you can use the EVReflection.swift class if you want easy to use reflection methods.
+With Apple CloudKit, you can focus on your client-side app development and let iCloud eliminate the need to write server-side application logic. CloudKit provides you with Authentication, private and public database, structured and asset storage services - all for free with very high [limits](https://developer.apple.com/icloud/documentation/cloudkit-storage/). For more information see [Apple CloudKit documentation](https://developer.apple.com/icloud/index.html)
 
-See TestsViewController.swift for a complete overview of the functionality. See the Quick Help info for method descriptions. The AppMessage demo will be a complete functional messaging app based on CloudKit.
+This is a library to simplify the access to Apple's CloudKit data and notifications (see a more detailed description below)
+ 
+- EVCloudKitDao.swift for if you want control over your in app data and notifications. 
+- EVCloudKitData.swift will let you handle CloudKit data as easy as possible. 
+- EVReflection.swift for if you want easy to use reflection methods. (not only for CloudKit)
 
-The Dao, Data and Reflection classes are complete, the demo is progressing. It has support for:
+See the Quick Help info for method descriptions or the documentation at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
+
+The AppMessage demo is a complete functional messaging app based on CloudKit:
+
 - News items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. 
-- A Contacts list based on your contacts that also have installed the app. 
+- The Contacts list based on your phone contacts that also have installed the app. 
 - Chat with someone using text messages, pictures and sending your location
+- It also has TestViewController.swift for an overview of the functionality
+
+I'm looking for feedback. Please let me know if you want something changed or added to the library or the demo.
+
 
 ## A picture says more than 1000 words
-Here is a screenshot of the included demo app chat functionality. It's already functional but there is still some work to do. 
-
+Here is a screenshot of the included demo app chat functionality:
 ![Screenshot0](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png?raw=true)
 ![Screenshot1](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true)
 
@@ -35,8 +46,8 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 
 
 ## Main features of EVCloudKitDao:
-- simple singleton access to your public or private database and containers (defauld and named)
-- Object mapping: You do not have to parse from and to CKRecord (is based on reflection)
+- simple singleton access to your public or private database and containers (default and named)
+- Object mapping: You do not have to parse from and to CKRecord (mapping is based on reflection)
 - Generic and simplified query handling
 - Error handling (separate completionHandler and errorHandler code blocks)
 - Storing CKReference objects
@@ -52,22 +63,23 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
 - since all data is processed all callback events will be executed on the mainQueue
-- caching of the results to file for speady app restart. (You can set the caching strategy) 
+- caching of the results to a file for speedy app restart. (You can set the caching strategy) 
 
 ## Main features of EVReflection:
 - Parsing objects based on NSObject to a dictionary. (except for nullable fields)
 - Parsing a dictionary back to an object.
 - Creating a class from a string value and get the string value for a class.
 - Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
-- Supporting Printable, Hashable and Equatable while using all properties. (Support for Set in Swift 1.2?)
+- Supporting Printable, Hashable and Equatable while using all properties. (Support for Set in Swift 1.2)
 
 ## Known issues (Swift limitations) ##
-- If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter that would populate both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
+- If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter for populating both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
 - Optional objects properties can now be used. Optional type properties not. Swift is not able to do a .setValue forKey on an optional like Int? or Double? As a workaround for this you could use a NSNumber?
 
 ## External components for the demo
 The AppMessage demo is using the following components which can be installed using CocoaPods. See instructions below.
+Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or later.
 
 - [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
@@ -81,10 +93,10 @@ The AppMessage demo is using the following components which can be installed usi
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 
 'EVCloudKitDao' is now available through the dependency manager [CocoaPods](http://cocoapods.org). 
-You do have to use cocoapods version 0.36. At this moment this can be installed as a pre release by executing:
+You do have to use cocoapods version 0.36. At this moment this can be installed by executing:
 
 ```
-[sudo] gem install cocoapods --pre
+[sudo] gem install cocoapods
 ```
 
 If you have installed cocoapods version 0.36 or later, then you can just add EVCloudKitDao to your workspace by adding the folowing 2 lines to your Podfile:
@@ -100,7 +112,7 @@ Version 0.36 of cocoapods will make a dynamic framework of all the pods that you
 import EVCloudKitDao
 ```
 
-If you want to wait for the official release of cocoapods 0.36 of if you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. 
+If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. 
 
 When you have added EVCloudKitDao to your project, then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 

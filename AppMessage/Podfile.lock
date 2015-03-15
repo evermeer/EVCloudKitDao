@@ -7,7 +7,7 @@ PODS:
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.7)
   - VIPhotoView (0.1)
-  - WhereAmI (1.1.0)
+  - WhereAmI (1.2.0)
 
 DEPENDENCIES:
   - CRToast
@@ -26,6 +26,6 @@ SPEC CHECKSUMS:
   UIImage-Resize: fc57263eed2cd98f74e5ba4848bedae979a0bdf0
   UzysAssetsPickerController: eed407c2ddf5a40c48bd492914c1ff9e1cc479ed
   VIPhotoView: 2a74e6d385f3424677741eeb6cdf7b0e110bf585
-  WhereAmI: a1a9c85b7c924d30868cccb2197a2b3fbd66239d
+  WhereAmI: 2dcc2faeccfd2628273f98d34f8511863b2e62f0
 
-COCOAPODS: 0.36.0.rc.1
+COCOAPODS: 0.36.0
