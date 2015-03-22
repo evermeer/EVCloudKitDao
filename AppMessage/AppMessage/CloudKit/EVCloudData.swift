@@ -548,14 +548,15 @@ public class EVCloudData:NSObject {
     :return: No return value
     */
 
-    public func connect<T:EVCloudKitDataObject>(type:T,
+    public func connect<T:EVCloudKitDataObject>(
+        type:T,
         predicate: NSPredicate,
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
         completionHandler: (results: [T]) -> Void,
-        insertedHandler:(item: EVCloudKitDataObject) -> Void,
-        updatedHandler:(item: EVCloudKitDataObject, dataIndex:Int) -> Void,
+        insertedHandler:(item: T) -> Void,
+        updatedHandler:(item: T, dataIndex:Int) -> Void,
         deletedHandler:(recordId: String, dataIndex:Int) -> Void,
         errorHandler:(error: NSError) -> Void
         ) -> Void {
@@ -566,8 +567,15 @@ public class EVCloudData:NSObject {
                 self.data[filterId] = [T]()
             }
             self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
-            self.insertedHandlers[filterId] = insertedHandler
-            self.updateHandlers[filterId] = updatedHandler
+            // Wrapping the generic function so that we can add it to the collection
+            func insertedHandlerWrapper(item:EVCloudKitDataObject) -> Void {
+                insertedHandler(item: item as T)
+            }
+            func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void {
+                updatedHandler(item: item as T, dataIndex: dataIndex)
+            }
+            self.insertedHandlers[filterId] = insertedHandlerWrapper
+            self.updateHandlers[filterId] = updatedHandlerWrapper
             self.deletedHandlers[filterId] = deletedHandler
             self.predicates[filterId] = predicate
             self.cachingLastWrite[filterId] = NSDate()

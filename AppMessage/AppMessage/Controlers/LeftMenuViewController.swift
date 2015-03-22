@@ -135,7 +135,8 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func connectToNews() {
         
-        EVCloudData.publicDB.connect(News()
+        EVCloudData.publicDB.connect(
+            News()
             , predicate: NSPredicate(value: true)
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in
@@ -153,10 +154,10 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 NSLog("There are \(results.count) existing news items")
                 self.newsController.tableView.reloadData()
             }, insertedHandler: {item in
-                Helper.showStatus("New News item: '\((item as News).Subject)'")
+                Helper.showStatus("New News item: '\(item.Subject)'")
                 self.newsController.tableView.reloadData()
             }, updatedHandler: {item, dataIndex in
-                Helper.showStatus("Updated News item:'\((item as News).Subject)'")
+                Helper.showStatus("Updated News item:'\(item.Subject)'")
                 self.newsController.tableView.reloadData()
             }, deletedHandler: {recordId, dataIndex in
                 Helper.showStatus("News item was removed")
@@ -179,7 +180,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 NSLog("Message to me results = \(results.count)")
             }, insertedHandler: { item in
                 NSLog("Message to me inserted \(item)")
-                self.startChat((item as Message).From_ID, firstName: (item as Message).ToFirstName, lastName: (item as Message).ToLastName)
+                self.startChat(item.From_ID, firstName: item.ToFirstName, lastName: item.ToLastName)
             }, updatedHandler: { item, dataIndex in
                 NSLog("Message to me updated \(item)")
             }, deletedHandler: { recordId, dataIndex in

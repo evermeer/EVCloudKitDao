@@ -105,7 +105,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             }, insertedHandler: { item in
                 NSLog("Conversation message inserted \(item)")
                 self.localData.insert(nil, atIndex: 0)
-                if (item as Message).MessageType == MessageTypeEnum.Picture.rawValue {
+                if item.MessageType == MessageTypeEnum.Picture.rawValue {
                     self.getAttachment((item as Message).Asset_ID)
                 }
                 JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
