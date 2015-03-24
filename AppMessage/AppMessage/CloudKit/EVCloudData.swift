@@ -211,6 +211,10 @@ public class EVCloudData:NSObject {
     */
     public var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject, dataIndex:Int) -> Void>()
     /**
+    A dictionary of dataChanged event handlers. Each filterId is a dictionary entry containing a dataChanged event handler
+    */
+    public var dataChangedHandlers = Dictionary<String, () -> Void>()
+    /**
     A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
     */
     public var deletedHandlers = Dictionary<String, (recordId: String, dataIndex:Int) -> Void>()
@@ -410,12 +414,14 @@ public class EVCloudData:NSObject {
                         data[filter]!.insert(item, atIndex: itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.updateHandlers[filter]!)(item: item, dataIndex:itemID!)
+                            (self.dataChangedHandlers[filter]!)()
                         }
                         dataIsUpdated(filter)
                     } else {
                         data[filter]!.insert(item, atIndex: 0)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.insertedHandlers[filter]!)(item: item)
+                            (self.dataChangedHandlers[filter]!)()
                         }
                         dataIsUpdated(filter)
                     }
@@ -425,6 +431,7 @@ public class EVCloudData:NSObject {
                         data[filter]!.removeAtIndex(itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
+                            (self.dataChangedHandlers[filter]!)()
                         }
                         dataIsUpdated(filter)
                     }
@@ -447,6 +454,7 @@ public class EVCloudData:NSObject {
                 data[filter]!.removeAtIndex(itemID!)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
+                    (self.dataChangedHandlers[filter]!)()
                 }
                 dataIsUpdated(filter)
             }
@@ -531,7 +539,7 @@ public class EVCloudData:NSObject {
     // ------------------------------------------------------------------------
     // MARK: - Query and subscribe
     // ------------------------------------------------------------------------
-
+    
     /**
     Create a data connection between your app and CloudKit. Execute a query, create a subscription, process notifications, maintain an in memory dictionary of objects and execute apropriate events. The connection will be based on a predicate.
     
@@ -544,45 +552,78 @@ public class EVCloudData:NSObject {
     :param: insertedHandler Executed if the notification was for an inserted object
     :param: updatedHandler Executed if the notification was for an updated object pasing on the data object plus the index in the data array
     :param: deletedHandler Executed if the notification was for an deleted object passing on the recordId plus the index it had in the data array
+    :param: dataChangedHandler Executed on all data modifications (completion, inserted, updated and deleted)
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-
     public func connect<T:EVCloudKitDataObject>(
         type:T,
         predicate: NSPredicate,
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
-        completionHandler: (results: [T]) -> Void,
-        insertedHandler:(item: T) -> Void,
-        updatedHandler:(item: T, dataIndex:Int) -> Void,
-        deletedHandler:(recordId: String, dataIndex:Int) -> Void,
-        errorHandler:(error: NSError) -> Void
+        completionHandler: ((results: [T]) -> Void)? = nil,
+        insertedHandler:((item: T) -> Void)? = nil,
+        updatedHandler:((item: T, dataIndex:Int) -> Void)? = nil,
+        deletedHandler:((recordId: String, dataIndex:Int) -> Void)? = nil,
+        dataChangedHandler:(() -> Void)? = nil,
+        errorHandler:((error: NSError) -> Void)? = nil
         ) -> Void {
+            // If we have a cache for this filter, then first return that.
             if restoreDataForFilter(filterId) {
-                completionHandler(results: self.data[filterId] as [T])
+                if let handler = completionHandler {
+                    handler(results: self.data[filterId] as [T])
+                }
             }
+            
+            // setting the connection properties
             if data[filterId] == nil {
                 self.data[filterId] = [T]()
             }
             self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
-            // Wrapping the generic function so that we can add it to the collection
-            func insertedHandlerWrapper(item:EVCloudKitDataObject) -> Void {
-                insertedHandler(item: item as T)
-            }
-            func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void {
-                updatedHandler(item: item as T, dataIndex: dataIndex)
-            }
-            self.insertedHandlers[filterId] = insertedHandlerWrapper
-            self.updateHandlers[filterId] = updatedHandlerWrapper
-            self.deletedHandlers[filterId] = deletedHandler
             self.predicates[filterId] = predicate
             self.cachingLastWrite[filterId] = NSDate()
             self.cachingChangesCount[filterId] = 0
             self.cachingStrategies[filterId] = cachingStrategy
             
+            // Wrapping (Type and optional) the generic function so that we can add it to the collection and prevent nil reference exceptions
+            if let handler = insertedHandler {
+                func insertedHandlerWrapper(item:EVCloudKitDataObject) -> Void {
+                    handler(item: item as T)
+                }
+                self.insertedHandlers[filterId] = insertedHandlerWrapper
+            } else {
+                func insertedHandlerWrapper(item:EVCloudKitDataObject) -> Void { }
+                self.insertedHandlers[filterId] = insertedHandlerWrapper
+            }
+            
+            if let handler = updatedHandler {
+                func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void {
+                    handler(item: item as T, dataIndex: dataIndex)
+                }
+                self.updateHandlers[filterId] = updatedHandlerWrapper
+            } else {
+                func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void { }
+                self.updateHandlers[filterId] = updatedHandlerWrapper
+                
+            }
+            
+            if let handler = deletedHandler {
+                self.deletedHandlers[filterId] = handler
+            } else {
+                func emptyDeletedHandler(recordId: String, dataIndex:Int) -> Void {}
+                self.deletedHandlers[filterId] = emptyDeletedHandler
+            }
+
+            if let handler = dataChangedHandler {
+                self.dataChangedHandlers[filterId] = handler
+            } else {
+                func emptyDataChangedHandler() -> Void {}
+                self.dataChangedHandlers[filterId] = emptyDataChangedHandler
+            }
+
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
+            
             var recordType = EVReflection.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in
@@ -592,14 +633,18 @@ public class EVCloudData:NSObject {
                 
                 self.data[filterId] = results
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    completionHandler(results: results)
+                    if let handler = completionHandler {
+                        handler(results: results)
+                    }
                 }
                 if self.cachingStrategies[filterId]! != CachingStrategy.None {
                     self.backupDataForFilter(filterId)
                 }
             }, errorHandler: {error in
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    errorHandler(error: error)
+                    if let handler = errorHandler {
+                        handler(error: error)
+                    }
                 }
             })
     }
@@ -613,6 +658,7 @@ public class EVCloudData:NSObject {
         insertedHandlers.removeValueForKey(filterId)
         updateHandlers.removeValueForKey(filterId)
         deletedHandlers.removeValueForKey(filterId)
+        dataChangedHandlers.removeValueForKey(filterId)
         predicates.removeValueForKey(filterId)
         data.removeValueForKey(filterId)
     }

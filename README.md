@@ -58,7 +58,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 
 ## Main features of EVCloudKitData:
 - Use just one predicate for a query, subscription and processing incoming notifications.
-- it's only one method call with a couple of callback events
+- it's only one method call with a couple of callback events (optional which to use)
 - it will store the fetched data collection in memory.
 - notifications will update the data collections and call the appropriate events.
 - local updates will also update the data collection and call the appropriate events
@@ -215,6 +215,8 @@ class LeftMenuViewController: UIViewController {
         }, deletedHandler: {recordId in
             Helper.showStatus("News item was removed")
             self.newsController.tableView.reloadData()
+        }, dataChangedHandler : {
+            NSLog("Some News data was changed")
         }, errorHandler: {error in
             Helper.showError("Could not load news: \(error.description)")
         })

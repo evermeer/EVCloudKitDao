@@ -190,10 +190,12 @@ public class EVCloudKitDao {
     :param: completionHandler The function that will be called if ther is no error
     :return: No return value
     */
-    internal func handleCallback(error: NSError?, errorHandler: () -> Void, completionHandler: () -> Void) {
+    internal func handleCallback(error: NSError?, errorHandler: ((error: NSError) -> Void)? = nil, completionHandler: () -> Void) {
         if (error != nil) {
             NSLog("CloudKit Error : \(error?.code) = \(error?.description) \n\(error?.userInfo)")
-            errorHandler()
+            if let handler = errorHandler {
+                handler(error: error!)
+            }
         } else {
             completionHandler()
         }
@@ -209,7 +211,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    internal func queryRecords<T:EVCloudKitDataObject>(type:T, query: CKQuery, completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
+    internal func queryRecords<T:EVCloudKitDataObject>(type:T, query: CKQuery, completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         // Not sortable anymore!?
         if !(query.sortDescriptors != nil) {
             query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -220,9 +222,7 @@ public class EVCloudKitDao {
             results.append(self.fromCKRecord(record) as T)
         }
         operation.queryCompletionBlock = { cursor, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
-                completionHandler(results: results);
-                })
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: { completionHandler(results: results) })
         }
         operation.resultsLimit = CKQueryOperationMaximumResults;
         database.addOperation(operation)
@@ -277,9 +277,9 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func requestDiscoverabilityPermission(completionHandler: (granted: Bool) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func requestDiscoverabilityPermission(completionHandler: (granted: Bool) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
     container.requestApplicationPermission(CKApplicationPermissions.PermissionUserDiscoverability, completionHandler: { applicationPermissionStatus, error in
-        self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+        self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 completionHandler(granted: applicationPermissionStatus == CKApplicationPermissionStatus.Granted)
             })
         })
@@ -292,11 +292,11 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func discoverUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:(error:NSError) -> Void) {
+    public func discoverUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
         container.fetchUserRecordIDWithCompletionHandler({recordID, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 self.container.discoverUserInfoWithUserRecordID(recordID, { user, error in
-                    self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+                    self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                         completionHandler(user: user)
                     })
                 })
@@ -311,24 +311,26 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func getUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:(error:NSError) -> Void) {
+    public func getUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
         self.requestDiscoverabilityPermission({ discoverable in
             if discoverable {
                 self.discoverUserInfo({user in
                         self.activeUser = user
                         completionHandler(user: user)
                     }, errorHandler: { error in
-                        errorHandler(error: error)
+                        if let handler = errorHandler {
+                            handler(error: error)
+                        }
                     })
             } else
             {
                 NSLog("requestDiscoverabilityPermission : No permissions")
                 var error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
-                errorHandler(error: error)
+                if let handler = errorHandler {
+                    handler(error: error)
+                }
             }
-        }, errorHandler: { error in
-            errorHandler(error: error)
-        })
+        }, errorHandler: errorHandler)
     }
     
     /**
@@ -338,9 +340,9 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:(error:NSError) -> Void) {
+    public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
         container.discoverAllContactUserInfosWithCompletionHandler({users, error in
-            self.handleCallback(error, errorHandler:{errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler:errorHandler, completionHandler: {
                 var returnData = users as [CKDiscoveredUserInfo]
                 if returnData.count == 0 {
                     if let restoreData = EVCloudData.publicDB.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
@@ -366,9 +368,9 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         database.fetchRecordWithID(CKRecordID(recordName: recordId), completionHandler: {record, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 completionHandler(result: self.fromCKRecord(record));
             })
         })
@@ -382,10 +384,10 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func saveItem(item: EVCloudKitDataObject, completionHandler: (record: CKRecord) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func saveItem(item: EVCloudKitDataObject, completionHandler: (record: CKRecord) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var theRecord = self.toCKRecord(item)
         database.saveRecord(theRecord, completionHandler: { record, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 completionHandler(record: record);
             })
         })
@@ -399,9 +401,9 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func deleteItem(recordId: String, completionHandler: (recordID: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func deleteItem(recordId: String, completionHandler: (recordID: CKRecordID) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         database.deleteRecordWithID(CKRecordID(recordName: recordId), completionHandler: {recordID, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 completionHandler(recordID: recordID);
             })
         })
@@ -419,7 +421,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -435,7 +437,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, referenceRecordName:String, referenceField:String ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func query<T:EVCloudKitDataObject>(type:T, referenceRecordName:String, referenceField:String ,completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
@@ -453,7 +455,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void){
+    public func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil){
         var recordType = EVReflection.swiftStringFromClass(type)
         var query = CKQuery(recordType: recordType, predicate: predicate)
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -468,7 +470,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, tokens:String ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func query<T:EVCloudKitDataObject>(type:T, tokens:String ,completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -487,7 +489,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, fieldname:String, latitude:Double, longitude:Double, distance:Int ,completionHandler: (results: [T]) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func query<T:EVCloudKitDataObject>(type:T, fieldname:String, latitude:Double, longitude:Double, distance:Int ,completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType:String = EVReflection.swiftStringFromClass(type)
         var location:CLLocation = CLLocation(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
         var predecate: NSPredicate =  NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %@", fieldname, location, distance)!
@@ -511,7 +513,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type:EVCloudKitDataObject, predicate:NSPredicate, filterId:String, configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func subscribe(type:EVCloudKitDataObject, predicate:NSPredicate, filterId:String, configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         if defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
@@ -522,13 +524,13 @@ public class EVCloudKitDao {
         subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
         configureNotificationInfo(notificationInfo: subscription.notificationInfo)
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 var key = "subscriptionFor_\(recordType)_\(filterId)"
                 NSLog("Subscription created for key \(key)")
                 defaults.setBool(true, forKey: key)
                 defaults.setObject(subscription.subscriptionID, forKey: key)
-                })
             })
+        })
     }
     
     /**
@@ -539,7 +541,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type:EVCloudKitDataObject, filterId:String, errorHandler:(error: NSError) -> Void) {
+    public func unsubscribe(type:EVCloudKitDataObject, filterId:String, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         if !defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
@@ -549,9 +551,9 @@ public class EVCloudKitDao {
         if (subscriptionID != nil) {
             modifyOperation.subscriptionIDsToDelete = [subscriptionID!]
             modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
-                self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+                self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                     defaults.removeObjectForKey("subscriptionFor_\(recordType)_\(filterId)")
-                    })
+                })
             }
             database.addOperation(modifyOperation)
         }
@@ -567,7 +569,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, configureNotificationInfo:(notificationInfo:CKNotificationInfo) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func subscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, configureNotificationInfo:(notificationInfo:CKNotificationInfo) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
@@ -584,7 +586,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, errorHandler:(error: NSError) -> Void) {
+    public func unsubscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, errorHandler:((error: NSError) -> Void)? = nil) {
         unsubscribe(type, filterId:"reference_\(referenceField)_\(referenceRecordName)", errorHandler: errorHandler)
     }
 
@@ -596,7 +598,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type:EVCloudKitDataObject, configureNotificationInfo:(notificationInfo:CKNotificationInfo) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func subscribe(type:EVCloudKitDataObject, configureNotificationInfo:(notificationInfo:CKNotificationInfo) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         subscribe(type, predicate:NSPredicate(value: true), filterId: "all", configureNotificationInfo: configureNotificationInfo ,errorHandler: errorHandler)
     }
 
@@ -607,7 +609,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type:EVCloudKitDataObject, errorHandler:(error: NSError) -> Void) {
+    public func unsubscribe(type:EVCloudKitDataObject, errorHandler:((error: NSError) -> Void)? = nil) {
         unsubscribe(type, filterId:"all", errorHandler:errorHandler)
     }
 
@@ -618,7 +620,7 @@ public class EVCloudKitDao {
     :param: completionHandler The function that will be called with a number which is the count of messages removed.
     :return: No return value
     */
-    public func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void , errorHandler:(error: NSError) -> Void) {
+    public func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void , errorHandler:((error: NSError) -> Void)? = nil) {
         
         for (key, value) in NSUserDefaults.standardUserDefaults().dictionaryRepresentation() {
             if key.description.hasPrefix("subscriptionFor_") {
@@ -627,11 +629,11 @@ public class EVCloudKitDao {
         }
         
         database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
-            self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 for subscriptionObject in subscriptions {
                     var subscription: CKSubscription = subscriptionObject as CKSubscription
                     self.database.deleteSubscriptionWithID(subscription.subscriptionID, completionHandler: {subscriptionId, error in
-                        self.handleCallback(error, errorHandler: {errorHandler(error: error)}, completionHandler: {
+                        self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                             NSLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
                         })
                     })
@@ -759,10 +761,11 @@ public class EVCloudKitDao {
     
     public func setBadgeCounter(count:Int) {
         let badgeResetOperation = CKModifyBadgeOperation(badgeValue: count)
-        badgeResetOperation.modifyBadgeCompletionBlock = { (error) -> Void in
-            self.handleCallback(error, errorHandler: {
-                    NSLog("Error resetting badge: \(error)")
-                }, completionHandler: {
+        badgeResetOperation.modifyBadgeCompletionBlock = { (error) -> Void in            
+            func handleError(error: NSError) -> Void {
+                NSLog("Error resetting badge: \(error)")
+            }
+            self.handleCallback(error, errorHandler: handleError, completionHandler: {
                     UIApplication.sharedApplication().applicationIconBadgeNumber = count
                 })
         }

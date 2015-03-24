@@ -116,6 +116,8 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             }, deletedHandler: { recordId, dataIndex in
                 NSLog("Conversation message deleted : \(recordId)")
                 self.localData.removeAtIndex(dataIndex)
+            }, dataChangedHandler : {
+                NSLog("Some conversation data was changed")
             }, errorHandler: { error in
                 Helper.showError("Could not load messages: \(error.description)")
         })
