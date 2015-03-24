@@ -513,7 +513,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type:EVCloudKitDataObject, predicate:NSPredicate, filterId:String, configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func subscribe(type:EVCloudKitDataObject, predicate:NSPredicate, filterId:String, configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         if defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
@@ -522,7 +522,9 @@ public class EVCloudKitDao {
         subscription.notificationInfo = CKNotificationInfo()
         subscription.notificationInfo.shouldSendContentAvailable = true
         subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
-        configureNotificationInfo(notificationInfo: subscription.notificationInfo)
+        if let configure = configureNotificationInfo {
+            configure(notificationInfo: subscription.notificationInfo)
+        }
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 var key = "subscriptionFor_\(recordType)_\(filterId)"
@@ -569,7 +571,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, configureNotificationInfo:(notificationInfo:CKNotificationInfo) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func subscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, configureNotificationInfo:((notificationInfo:CKNotificationInfo) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
@@ -598,7 +600,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type:EVCloudKitDataObject, configureNotificationInfo:(notificationInfo:CKNotificationInfo) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func subscribe(type:EVCloudKitDataObject, configureNotificationInfo:((notificationInfo:CKNotificationInfo) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         subscribe(type, predicate:NSPredicate(value: true), filterId: "all", configureNotificationInfo: configureNotificationInfo ,errorHandler: errorHandler)
     }
 

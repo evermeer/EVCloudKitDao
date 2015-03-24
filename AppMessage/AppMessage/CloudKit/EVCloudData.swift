@@ -561,7 +561,7 @@ public class EVCloudData:NSObject {
         predicate: NSPredicate,
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
-        configureNotificationInfo:(notificationInfo:CKNotificationInfo ) -> Void,
+        configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil,
         completionHandler: ((results: [T]) -> Void)? = nil,
         insertedHandler:((item: T) -> Void)? = nil,
         updatedHandler:((item: T, dataIndex:Int) -> Void)? = nil,

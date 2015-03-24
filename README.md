@@ -7,12 +7,14 @@ EVCloudKitDao
 [![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![License](https://img.shields.io/cocoapods/l/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 [![Platform](https://img.shields.io/cocoapods/p/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
+[![Documentation](https://img.shields.io/badge/documented-99%-brightgreen.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
 
 [![Git](https://img.shields.io/badge/GitHub-evermeer-blue.svg?style=flat)](https://github.com/evermeer)
 [![Twitter](https://img.shields.io/badge/twitter-@evermeer-blue.svg?style=flat)](http://twitter.com/evermeer)
 [![LinkedIn](https://img.shields.io/badge/linkedin-Edwin Vermeer-blue.svg?style=flat)](http://nl.linkedin.com/in/evermeer/en)
 [![Website](https://img.shields.io/badge/website-evict.nl-blue.svg?style=flat)](http://evict.nl)
 [![eMail](https://img.shields.io/badge/email-edwin@evict.nl-blue.svg?style=flat)](mailto:edwin@evict.nl?SUBJECT=About EVCloudKitDao)
+
 
 
 ## What is this
