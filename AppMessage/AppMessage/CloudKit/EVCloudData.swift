@@ -636,6 +636,9 @@ public class EVCloudData:NSObject {
                     if let handler = completionHandler {
                         handler(results: results)
                     }
+                    if let handler = dataChangedHandler {
+                        handler()
+                    }
                 }
                 if self.cachingStrategies[filterId]! != CachingStrategy.None {
                     self.backupDataForFilter(filterId)
