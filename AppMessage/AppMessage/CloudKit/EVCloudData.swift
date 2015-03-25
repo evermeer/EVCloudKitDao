@@ -574,6 +574,9 @@ public class EVCloudData:NSObject {
                 if let handler = completionHandler {
                     handler(results: self.data[filterId] as [T])
                 }
+                if let handler = dataChangedHandler {
+                    handler()
+                }
             }
             
             // setting the connection properties
