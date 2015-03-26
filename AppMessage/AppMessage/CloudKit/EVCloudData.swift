@@ -590,9 +590,9 @@ public class EVCloudData:NSObject {
             self.cachingStrategies[filterId] = cachingStrategy
             
             // Wrapping (Type and optional) the generic function so that we can add it to the collection and prevent nil reference exceptions
-            if let handler = insertedHandler {
+            if insertedHandler != nil {
                 func insertedHandlerWrapper(item:EVCloudKitDataObject) -> Void {
-                    handler(item: item as T)
+                    insertedHandler!(item: item as T)
                 }
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             } else {
@@ -600,31 +600,30 @@ public class EVCloudData:NSObject {
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             }
             
-            if let handler = updatedHandler {
+            if updatedHandler != nil {
                 func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void {
-                    handler(item: item as T, dataIndex: dataIndex)
+                    updatedHandler!(item: item as T, dataIndex: dataIndex)
                 }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
             } else {
                 func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void { }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
-                
             }
             
-            if let handler = deletedHandler {
-                self.deletedHandlers[filterId] = handler
+            if deletedHandler != nil {
+                self.deletedHandlers[filterId] = deletedHandler!
             } else {
                 func emptyDeletedHandler(recordId: String, dataIndex:Int) -> Void {}
                 self.deletedHandlers[filterId] = emptyDeletedHandler
             }
-
-            if let handler = dataChangedHandler {
-                self.dataChangedHandlers[filterId] = handler
+            
+            if dataChangedHandler != nil {
+                self.dataChangedHandlers[filterId] = dataChangedHandler!
             } else {
                 func emptyDataChangedHandler() -> Void {}
                 self.dataChangedHandlers[filterId] = emptyDataChangedHandler
             }
-
+            
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
             
             var recordType = EVReflection.swiftStringFromClass(type)
@@ -636,25 +635,25 @@ public class EVCloudData:NSObject {
                 
                 self.data[filterId] = results
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    if let handler = completionHandler {
-                        handler(results: results)
+                    if completionHandler != nil {
+                        completionHandler!(results: results)
                     }
-                    if let handler = dataChangedHandler {
-                        handler()
+                    if dataChangedHandler != nil {
+                        dataChangedHandler!()
                     }
                 }
                 if self.cachingStrategies[filterId]! != CachingStrategy.None {
                     self.backupDataForFilter(filterId)
                 }
-            }, errorHandler: {error in
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    if let handler = errorHandler {
-                        handler(error: error)
+                }, errorHandler: {error in
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        if errorHandler != nil {
+                            errorHandler!(error: error)
+                        }
                     }
-                }
             })
     }
-
+    
     /**
     Disconnect an existing connection. When a connect is made, then at least in the deinit you must do a disconnect for that same filterId.
     
