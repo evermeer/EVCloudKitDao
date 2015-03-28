@@ -523,7 +523,10 @@ public class EVCloudKitDao {
     public func subscribe(type:EVCloudKitDataObject, predicate:NSPredicate, filterId:String, configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
-        if defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
+        var key = "subscriptionFor_\(recordType)_\(filterId)"
+        if defaults.boolForKey(key) {
+            unsubscribe(type, filterId: filterId, errorHandler: errorHandler)
+        }
         
         var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
         subscription.notificationInfo = CKNotificationInfo()
@@ -534,7 +537,6 @@ public class EVCloudKitDao {
         }
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                var key = "subscriptionFor_\(recordType)_\(filterId)"
                 EVLog("Subscription created for key \(key)")
                 defaults.setBool(true, forKey: key)
                 defaults.setObject(subscription.subscriptionID, forKey: key)
@@ -553,15 +555,16 @@ public class EVCloudKitDao {
     public func unsubscribe(type:EVCloudKitDataObject, filterId:String, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
-        if !defaults.boolForKey("subscriptionFor_\(recordType)_\(filterId)") { return }
+        var key = "subscriptionFor_\(recordType)_\(filterId)"
+        if !defaults.boolForKey(key) { return }
         
         var modifyOperation = CKModifySubscriptionsOperation()
-        var subscriptionID : String? = defaults.objectForKey("subscriptionIDFor\(recordType)") as? String
+        var subscriptionID : String? = defaults.objectForKey(key) as? String
         if (subscriptionID != nil) {
             modifyOperation.subscriptionIDsToDelete = [subscriptionID!]
             modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
                 self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                    defaults.removeObjectForKey("subscriptionFor_\(recordType)_\(filterId)")
+                    defaults.removeObjectForKey(key)
                 })
             }
             database.addOperation(modifyOperation)
