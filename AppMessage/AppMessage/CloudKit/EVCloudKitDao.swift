@@ -7,6 +7,13 @@
 
 import CloudKit
 
+func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
+    var dateFormatter = NSDateFormatter()
+    dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
+    var process = NSProcessInfo.processInfo()
+    var threadId = "." //NSThread.currentThread().threadDictionary
+    println("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \(filename.lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
+}
 
 /**
 Wrapper class for being able to use a class instance Dictionary
@@ -150,13 +157,13 @@ public class EVCloudKitDao {
         database = container.publicCloudDatabase
         container.accountStatusWithCompletionHandler({status, error in
             if (error != nil) {
-                NSLog("Error = \(error.description)")
+                EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error.description)")
             } else {
                 self.accountStatus = status
             }
-            NSLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
+            EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
         })
-        NSLog("Container identifier = \(container.containerIdentifier)")
+        EVLog("Container identifier = \(container.containerIdentifier)")
     }
 
     
@@ -168,13 +175,13 @@ public class EVCloudKitDao {
         database = container.publicCloudDatabase
         container.accountStatusWithCompletionHandler({status, error in
             if (error != nil) {
-                NSLog("Error = \(error.description)")
+                EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error.description)")
             } else {
                 self.accountStatus = status
             }
-            NSLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
+            EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
         })
-        NSLog("Container identifier = \(container.containerIdentifier)")
+        EVLog("Container identifier = \(container.containerIdentifier)")
     }
     
     // ------------------------------------------------------------------------
@@ -192,7 +199,7 @@ public class EVCloudKitDao {
     */
     internal func handleCallback(error: NSError?, errorHandler: ((error: NSError) -> Void)? = nil, completionHandler: () -> Void) {
         if (error != nil) {
-            NSLog("CloudKit Error : \(error?.code) = \(error?.description) \n\(error?.userInfo)")
+            EVLog("Error: \(error?.code) = \(error?.description) \n\(error?.userInfo)")
             if let handler = errorHandler {
                 handler(error: error!)
             }
@@ -254,10 +261,10 @@ public class EVCloudKitDao {
         for item in types {
             var sema = dispatch_semaphore_create(0);
             saveItem(item, completionHandler: {record in
-                    NSLog("saveItem \(item): \(record.recordID.recordName)");
+                    EVLog("saveItem \(item): \(record.recordID.recordName)");
                     dispatch_semaphore_signal(sema);
                 }, errorHandler: {error in
-                    NSLog("<--- ERROR saveItem");
+                    EVLog("ERROR: saveItem\n\(error.description)");
                     dispatch_semaphore_signal(sema);
                 })
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
@@ -324,7 +331,7 @@ public class EVCloudKitDao {
                     })
             } else
             {
-                NSLog("requestDiscoverabilityPermission : No permissions")
+                EVLog("requestDiscoverabilityPermission : No permissions")
                 var error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
                 if let handler = errorHandler {
                     handler(error: error)
@@ -528,7 +535,7 @@ public class EVCloudKitDao {
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 var key = "subscriptionFor_\(recordType)_\(filterId)"
-                NSLog("Subscription created for key \(key)")
+                EVLog("Subscription created for key \(key)")
                 defaults.setBool(true, forKey: key)
                 defaults.setObject(subscription.subscriptionID, forKey: key)
             })
@@ -636,7 +643,7 @@ public class EVCloudKitDao {
                     var subscription: CKSubscription = subscriptionObject as CKSubscription
                     self.database.deleteSubscriptionWithID(subscription.subscriptionID, completionHandler: {subscriptionId, error in
                         self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                            NSLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
+                            EVLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
                         })
                     })
                 }
@@ -662,20 +669,19 @@ public class EVCloudKitDao {
     */
     public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject]!, executeIfNonQuery:() -> Void, inserted:(recordID:String, item: EVCloudKitDataObject) -> Void, updated:(recordID:String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void) {
         var cloudNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
-        //var alertBody: String = cloudNotification.alertBody
-        //NSLog("Notification alert body : \(alertBody)")
+        //EVLog("Notification alert body : \(cloudNotification.alertBody)")
         
         // Handle CloudKit subscription notifications
         var recordID:CKRecordID?
         if cloudNotification.notificationType == CKNotificationType.Query {
             var queryNotification: CKQueryNotification = cloudNotification as CKQueryNotification
             recordID = queryNotification.recordID
-            NSLog("recordID = \(recordID)")
+            EVLog("recordID of notified record = \(recordID)")
             if(queryNotification.queryNotificationReason == .RecordDeleted) {
                 deleted(recordId: recordID!.recordName)
             } else {
                 EVCloudKitDao.publicDB.getItem(recordID!.recordName, completionHandler: { item in
-                    NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
+                    EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                     EVReflection.logObject(item)
                     if (queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated ) {
                         inserted(recordID: recordID!.recordName, item: item)
@@ -683,7 +689,7 @@ public class EVCloudKitDao {
                         updated(recordID: recordID!.recordName, item: item)
                     }
                     }, errorHandler: { error in
-                        NSLog("<--- ERROR getItem")
+                        EVLog("ERROR: getItem for notification.\n\(error.description)")
                     })
             }
         } else {
@@ -715,7 +721,7 @@ public class EVCloudKitDao {
                         deleted(recordId: queryNotification.recordID.recordName)
                     } else {
                         EVCloudKitDao.publicDB.getItem(queryNotification.recordID.recordName, completionHandler: { item in
-                            NSLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
+                            EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                             EVReflection.logObject(item)
                             if (queryNotification.queryNotificationReason == .RecordCreated) {
                                 inserted(recordID: queryNotification.recordID.recordName, item: item)
@@ -723,7 +729,7 @@ public class EVCloudKitDao {
                                 updated(recordID: queryNotification.recordID.recordName, item: item)
                             }
                             }, errorHandler: { error in
-                                NSLog("<--- ERROR getItem")
+                                EVLog("ERROR: getItem for change notification.\n\(error.description)")
                             })
                     }
                 }
@@ -732,7 +738,7 @@ public class EVCloudKitDao {
         operation.fetchNotificationChangesCompletionBlock = { changetoken, error in
             var op = CKMarkNotificationsReadOperation(notificationIDsToMarkRead: array)
             op.start()
-            NSLog("changetoken = \(changetoken)")
+            EVLog("changetoken = \(changetoken)")
             self.previousChangeToken = changetoken
             
             if(operation.moreComing) {
@@ -765,7 +771,7 @@ public class EVCloudKitDao {
         let badgeResetOperation = CKModifyBadgeOperation(badgeValue: count)
         badgeResetOperation.modifyBadgeCompletionBlock = { (error) -> Void in            
             func handleError(error: NSError) -> Void {
-                NSLog("Error resetting badge: \(error)")
+                EVLog("Error: could not reset badge: \n\(error)")
             }
             self.handleCallback(error, errorHandler: handleError, completionHandler: {
                     UIApplication.sharedApplication().applicationIconBadgeNumber = count
@@ -808,7 +814,7 @@ public class EVCloudKitDao {
         for (key: String, value: AnyObject) in fromDict {
             if !contains(["recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag"] ,key) {
                 if let t = value as? NSNull {
-//                    record.setValue(nil, forKey: key)
+//                    record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
                 } else if key != "recordID" {
                     record.setValue(value, forKey: key)
                 }

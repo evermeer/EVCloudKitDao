@@ -18,25 +18,25 @@ class TestsViewController : UIViewController {
         var userId: String = ""
         dao.getUserInfo({user in
             userId = user.userRecordID.recordName
-            NSLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
+            EVLog("discoverUserInfo : \(userId) = \(user.firstName) \(user.lastName)");
             dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
-                NSLog("<--- ERROR in getUserInfo");
+                EVLog("<--- ERROR in getUserInfo");
                 dispatch_semaphore_signal(sema);
             })
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         
         // Must be loged in to iCloud
         if userId.isEmpty {
-            NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account")
+            EVLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account")
             return
         }
         
         // Remove all subscriptions
         dao.unsubscribeAll({ subscriptionCount in
-                NSLog("unsubscribeAll removed \(subscriptionCount) subscriptions");
+                EVLog("unsubscribeAll removed \(subscriptionCount) subscriptions");
             }, errorHandler: { error in
-                NSLog("<--- ERROR in unsubscribeAll");
+                EVLog("<--- ERROR in unsubscribeAll");
         })
         
         // Look who of our contact is also using this app.
@@ -44,14 +44,14 @@ class TestsViewController : UIViewController {
         sema = dispatch_semaphore_create(0)
         var userIdTo: String = userId
         dao.allContactsUserInfo({ users in
-            NSLog("AllContactUserInfo count = \(users.count)");
+            EVLog("AllContactUserInfo count = \(users.count)");
             for user in users {
                 userIdTo = user.userRecordID!.recordName
-                NSLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
+                EVLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
             }
             dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
-                NSLog("<-- ERROR in allContactsUserInfo : \(error.description)")
+                EVLog("<-- ERROR in allContactsUserInfo : \(error.description)")
                 dispatch_semaphore_signal(sema);
             })
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
@@ -71,17 +71,17 @@ class TestsViewController : UIViewController {
         
         // Save the message
         dao.saveItem(asset, completionHandler: {record in
-            NSLog("saveItem Asset: \(record.recordID.recordName)");
+            EVLog("saveItem Asset: \(record.recordID.recordName)");
             // Save the attached image
             message.setAsset(record.recordID.recordName)
             dao.saveItem(message, completionHandler: {record in
-                NSLog("saveItem Message: \(record.recordID.recordName)");
+                EVLog("saveItem Message: \(record.recordID.recordName)");
                 }, errorHandler: {error in
-                    NSLog("<--- ERROR saveItem asset");
+                    EVLog("<--- ERROR saveItem asset");
                 })
             
             }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem message");
+                EVLog("<--- ERROR saveItem message");
             })
         
         // Save an other instance without the file, make the action synchronous so we can use the id for query and deletion
@@ -90,10 +90,10 @@ class TestsViewController : UIViewController {
         message.MessageType = MessageTypeEnum.Text.rawValue
         dao.saveItem(message, completionHandler: {record in
             createdId = record.recordID.recordName;
-            NSLog("saveItem Message: \(createdId)");
+            EVLog("saveItem Message: \(createdId)");
             dispatch_semaphore_signal(sema);
             }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem message");
+                EVLog("<--- ERROR saveItem message");
                 dispatch_semaphore_signal(sema);
             })
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
@@ -101,44 +101,44 @@ class TestsViewController : UIViewController {
         // Get the just created data item
         dao.getItem(createdId
             , completionHandler: { item in
-                NSLog("getItem: with the keys and values:")
+                EVLog("getItem: with the keys and values:")
                 EVReflection.logObject(item)
             }, errorHandler: { error in
-                NSLog("<--- ERROR getItem")
+                EVLog("<--- ERROR getItem")
             })
                 
         // Get all records of a recordType
         dao.query(Message(), completionHandler: { results in
-                NSLog("query recordType : result count = \(results.count)")
+                EVLog("query recordType : result count = \(results.count)")
             }, errorHandler: { error in
-                NSLog("<--- ERROR query Message")
+                EVLog("<--- ERROR query Message")
             })
         
         // Get all user related record of a recordType
         dao.query(Message(), referenceRecordName: userId, referenceField:"To", completionHandler: { results in
-            NSLog("query recordType reference : result count = \(results.count)")
+            EVLog("query recordType reference : result count = \(results.count)")
             }, errorHandler: { error in
-                NSLog("<--- ERROR query Message for user in To")
+                EVLog("<--- ERROR query Message for user in To")
             })
         
         // Get all records of a recordType that are created by me using a predicate
         var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
         dao.query(Message(), predicate:predicate!, completionHandler: { results in
-            NSLog("query recordType created by: result count = \(results.count)")
+            EVLog("query recordType created by: result count = \(results.count)")
             }, errorHandler: { error in
-                NSLog("<--- ERROR query Message created by user")
+                EVLog("<--- ERROR query Message created by user")
             })
         
         // Get all users containing some words
         dao.query(Message(), tokens: "test the", completionHandler: { results in
-                NSLog("query tokens: result count = \(results.count)")
+                EVLog("query tokens: result count = \(results.count)")
             }, errorHandler: { error in
-                NSLog("<--- ERROR query Message for words")
+                EVLog("<--- ERROR query Message for words")
             })
         
         // Unsubscribe for update notifications
         dao.unsubscribe(Message(), errorHandler:{ error in
-            NSLog("<--- ERROR unsubscribeForRecordType")
+            EVLog("<--- ERROR unsubscribeForRecordType")
             })
         
         // Subscribe for update notifications
@@ -146,12 +146,12 @@ class TestsViewController : UIViewController {
                 notificationInfo.alertBody = "New Message record"
                 notificationInfo.shouldSendContentAvailable = true
             }, errorHandler:{ error in
-                NSLog("<--- ERROR subscribeForRecordType")
+                EVLog("<--- ERROR subscribeForRecordType")
             })
         
         // Unsubscribe for update notifications where you are in the To field
         dao.unsubscribe(Message(), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
-            NSLog("<--- ERROR subscribeForRecordType reference")
+            EVLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Subscribe for update notifications where you are in the To field
@@ -159,14 +159,14 @@ class TestsViewController : UIViewController {
                 notificationInfo.alertBody = "New Message record where To = \(userId)"
                 notificationInfo.shouldSendContentAvailable = true
             }, errorHandler: { error in
-            NSLog("<--- ERROR subscribeForRecordType reference")
+            EVLog("<--- ERROR subscribeForRecordType reference")
             })
         
         // Delete the just created data item
         dao.deleteItem(createdId, completionHandler: { recordId in
-            NSLog("deleteItem : \(recordId)")
+            EVLog("deleteItem : \(recordId)")
             }, errorHandler: {error in
-                NSLog("<--- ERROR deleteItem")
+                EVLog("<--- ERROR deleteItem")
             })
         
         // Creating a connection to the Message recordType in the public database
@@ -177,23 +177,23 @@ class TestsViewController : UIViewController {
                 notificationInfo.alertBody = "New Message record"
                 notificationInfo.shouldSendContentAvailable = true
             }, completionHandler: { results in
-                NSLog("results = \(results.count)")
+                EVLog("results = \(results.count)")
             }, insertedHandler: { item in
-                NSLog("inserted \(item)")
+                EVLog("inserted \(item)")
             }, updatedHandler: { item in
-                NSLog("updated \(item)")
+                EVLog("updated \(item)")
             }, deletedHandler: { recordId in
-                NSLog("deleted : \(recordId)")
+                EVLog("deleted : \(recordId)")
             }, errorHandler: { error in
-                NSLog("<--- ERROR connect")
+                EVLog("<--- ERROR connect")
             })
         
         let dao2 = EVCloudKitDao.publicDBForContainer("iCloud.nl.evict.myapp")
         dao2.saveItem(message, completionHandler: {record in
             createdId = record.recordID.recordName;
-            NSLog("saveItem Message: \(createdId)");
+            EVLog("saveItem Message: \(createdId)");
             }, errorHandler: {error in
-                NSLog("<--- ERROR saveItem message, you probably need to fix the container id iCloud.nl.evict.myapp");
+                EVLog("<--- ERROR saveItem message, you probably need to fix the container id iCloud.nl.evict.myapp");
         })
         
     }

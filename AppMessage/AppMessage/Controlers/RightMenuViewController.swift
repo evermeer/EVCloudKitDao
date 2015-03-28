@@ -41,12 +41,13 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     func loadContacts() {
         // Look who of our contact is also using this app.
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
-                NSLog("AllContactUserInfo count = \(users.count)");
+                EVLog("AllContactUserInfo count = \(users.count)");
                 NSOperationQueue.mainQueue().addOperationWithBlock({
                     self.contacts = users
                     self.tableView.reloadData()
                 })
             }, errorHandler: { error in
+                EVLog("Could not load contacts: \(error.description)")
                 Helper.showError("Could not load contacts: \(error.description)")
         })
 

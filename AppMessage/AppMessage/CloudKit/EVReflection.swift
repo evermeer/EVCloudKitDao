@@ -75,7 +75,7 @@ public class EVReflection {
     :return: No return value
     */
     public class func logObject(theObject: NSObject) {
-        NSLog(description(theObject))
+        EVLog(description(theObject))
     }
 
     /**

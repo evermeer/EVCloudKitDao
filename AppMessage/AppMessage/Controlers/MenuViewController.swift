@@ -42,16 +42,16 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
     
     
     func sideMenu(sideMenu:RESideMenu, willShowMenuViewController:UIViewController) {
-        //NSLog("willShowMenuViewController: \(willShowMenuViewController)")
+        //EVLog("willShowMenuViewController: \(willShowMenuViewController)")
     }
     func sideMenu(sideMenu:RESideMenu, didShowMenuViewController:UIViewController) {
-        //NSLog("willShowMenuViewController: \(didShowMenuViewController)")
+        //EVLog("willShowMenuViewController: \(didShowMenuViewController)")
     }
     func sideMenu(sideMenu:RESideMenu, willHideMenuViewController:UIViewController) {
-        //NSLog("willShowMenuViewController: \(willHideMenuViewController)")
+        //EVLog("willShowMenuViewController: \(willHideMenuViewController)")
     }
     func sideMenu(sideMenu:RESideMenu, didHideMenuViewController:UIViewController) {
-        //NSLog("willShowMenuViewController: \(didHideMenuViewController)")
+        //EVLog("willShowMenuViewController: \(didHideMenuViewController)")
     }
     
         

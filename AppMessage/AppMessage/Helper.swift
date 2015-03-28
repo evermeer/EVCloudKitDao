@@ -29,12 +29,10 @@ class Helper {
         })
     }
     class func showError(message:String) {
-        NSLog("ERROR: \(message)")
         showMessage(message, color: UIColor.redColor())
     }
 
     class func showStatus(message:String) {
-        NSLog("STATUS: \(message)")
         showMessage(message, color: UIColor.greenColor())
     }
 }

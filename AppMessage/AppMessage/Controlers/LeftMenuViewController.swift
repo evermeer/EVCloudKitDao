@@ -151,17 +151,21 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 // notificationInfo.desiredKeys = [""]
             }
             , completionHandler: { results in
-                NSLog("There are \(results.count) existing news items")
+                EVLog("There are \(results.count) existing news items")
             }, insertedHandler: {item in
+                EVLog("New News item: '\(item.Subject)'")
                 Helper.showStatus("New News item: '\(item.Subject)'")
             }, updatedHandler: {item, dataIndex in
+                EVLog("Updated News item:'\(item.Subject)'")
                 Helper.showStatus("Updated News item:'\(item.Subject)'")
             }, deletedHandler: {recordId, dataIndex in
+                EVLog("News item was removed")
                 Helper.showStatus("News item was removed")
             }, dataChangedHandler : {
-                NSLog("Some News data was changed")
+                EVLog("Some News data was changed")
                 self.newsController.tableView.reloadData()
             }, errorHandler: {error in
+                EVLog("Could not load news: \(error.description)")
                 Helper.showError("Could not load news: \(error.description)")
         })
     }
@@ -176,15 +180,16 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 notificationInfo.alertLocalizationKey = "%1$@ %2$@ : %3$@"
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results in
-                NSLog("Message to me results = \(results.count)")
+                EVLog("Message to me results = \(results.count)")
             }, insertedHandler: { item in
-                NSLog("Message to me inserted \(item)")
+                EVLog("Message to me inserted \(item)")
                 self.startChat(item.From_ID, firstName: item.ToFirstName, lastName: item.ToLastName)
             }, updatedHandler: { item, dataIndex in
-                NSLog("Message to me updated \(item)")
+                EVLog("Message to me updated \(item)")
             }, deletedHandler: { recordId, dataIndex in
-                NSLog("Message to me deleted : \(recordId)")
+                EVLog("Message to me deleted : \(recordId)")
             }, errorHandler: { error in
+                EVLog("Could not load messages: \(error.description)")
                 Helper.showError("Could not load messages: \(error.description)")
         })
     }

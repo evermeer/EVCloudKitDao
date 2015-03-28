@@ -23,7 +23,7 @@ class RootViewController: UIViewController {
     */
     func reactToiCloudloginChanges() {
         var ubiquityIdentityDidChangeNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
-            NSLog("The user’s iCloud login changed: should refresh all user data.")
+            EVLog("The user’s iCloud login changed: should refresh all user data.")
             NSOperationQueue.mainQueue().addOperationWithBlock() {
                 self.getUser()
             }
@@ -37,7 +37,7 @@ class RootViewController: UIViewController {
     func getUser() {
         self.loginLabel.hidden = true
         EVCloudKitDao.publicDB.getUserInfo({user in
-                NSLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)");
+                EVLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)");
                         
                 NSOperationQueue.mainQueue().addOperationWithBlock(){
                     let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
@@ -45,8 +45,8 @@ class RootViewController: UIViewController {
                     self.presentViewController(viewController, animated: false, completion: nil);
                 }
             }, errorHandler: { error in
-                NSLog("<--- ERROR in getUserInfo"); 
-                NSLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account. (It could also be that your project iCloud entitlements are wrong)")
+                EVLog("ERROR in getUserInfo");
+                EVLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account. (It could also be that your project iCloud entitlements are wrong)")
                 self.loginLabel.hidden = false
                 self.contacting.hidden = true
 

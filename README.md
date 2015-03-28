@@ -74,6 +74,9 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
 - Supporting Printable, Hashable and Equatable while using all properties. (Support for Set in Swift 1.2)
 
+## Bonus features
+- You can use EVLog as a replacement for NSLog which will also output the file, function and line number.
+
 ## Known issues (Swift limitations) ##
 - If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter for populating both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
@@ -171,9 +174,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {
-        NSLog("Push received")
+        EVLog("Push received")
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, {
-            NSLog("Not a CloudKit Query notification.")            
+            EVLog("Not a CloudKit Query notification.")            
         })
     }
 
@@ -206,7 +209,7 @@ class LeftMenuViewController: UIViewController {
             notificationInfo.alertBody = "New news item"
             notificationInfo.shouldSendContentAvailable = true }
         , completionHandler: { results in
-            NSLog("There are \(results.count) existing news items")
+            EVLog("There are \(results.count) existing news items")
             self.newsController.tableView.reloadData()
         }, insertedHandler: {item in
             Helper.showStatus("New News item: '\(item.Subject)'")
@@ -218,7 +221,7 @@ class LeftMenuViewController: UIViewController {
             Helper.showStatus("News item was removed")
             self.newsController.tableView.reloadData()
         }, dataChangedHandler : {
-            NSLog("Some News data was changed")
+            EVLog("Some News data was changed")
         }, errorHandler: {error in
             Helper.showError("Could not load news: \(error.description)")
         })
@@ -263,16 +266,16 @@ message.Text = "This is the message text"
 
 dao.saveItem(message, completionHandler: {record in
         createdId = record.recordID.recordName;
-        NSLog("saveItem : \(createdId)");
+        EVLog("saveItem : \(createdId)");
     }, errorHandler: {error in
-        NSLog("<--- ERROR saveItem");
+        EVLog("<--- ERROR saveItem");
     })
 
 dao.query(Message()
     , completionHandler: { results in
-        NSLog("query : result count = \(results.count)")
+        EVLog("query : result count = \(results.count)")
     }, errorHandler: { error in
-        NSLog("<--- ERROR query Message")
+        EVLog("<--- ERROR query Message")
     })
 ```
 

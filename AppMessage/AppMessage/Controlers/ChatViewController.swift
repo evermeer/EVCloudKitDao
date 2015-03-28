@@ -97,13 +97,13 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
             }, completionHandler: { results in
-                NSLog("Conversation message results = \(results.count)")
+                EVLog("Conversation message results = \(results.count)")
                 self.localData = [JSQMessage?](count:results.count, repeatedValue:nil)
                 self.checkAttachedAssets(results)
                 self.collectionView.reloadData()
                 self.scrollToBottomAnimated(true)
             }, insertedHandler: { item in
-                NSLog("Conversation message inserted \(item)")
+                EVLog("Conversation message inserted \(item)")
                 self.localData.insert(nil, atIndex: 0)
                 if item.MessageType == MessageTypeEnum.Picture.rawValue {
                     self.getAttachment((item as Message).Asset_ID)
@@ -111,13 +111,13 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
                 self.finishReceivingMessage();
             }, updatedHandler: { item, dataIndex in
-                NSLog("Conversation message updated \(item)")
+                EVLog("Conversation message updated \(item)")
                 self.localData[dataIndex] = nil
             }, deletedHandler: { recordId, dataIndex in
-                NSLog("Conversation message deleted : \(recordId)")
+                EVLog("Conversation message deleted : \(recordId)")
                 self.localData.removeAtIndex(dataIndex)
             }, dataChangedHandler : {
-                NSLog("Some conversation data was changed")
+                EVLog("Some conversation data was changed")
             }, errorHandler: { error in
                 Helper.showError("Could not load messages: \(error.description)")
         })
@@ -150,7 +150,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             var image = (item as Asset).image()
             var myData = UIImagePNGRepresentation(image)
             myData.writeToFile(filePath, atomically:true)
-            NSLog("Image downloaded to \(id).png")
+            EVLog("Image downloaded to \(id).png")
             for (index, element) in enumerate(self.localData) {
                 if var data:Message = EVCloudData.publicDB.data[self.dataID]![index] as? Message {
                     if data.Asset_ID == id {
@@ -208,7 +208,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         case 3:
             addVideo()
         default:
-            NSLog("Can not happen")
+            EVLog("Can not happen!")
         }
     }
     
@@ -243,10 +243,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             message.Longitude = (location.coordinate.longitude as Double)
             message.Latitude = (location.coordinate.latitude as Double)
             EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                NSLog("saveItem location Message: \(record.recordID.recordName)");
+                EVLog("saveItem location Message: \(record.recordID.recordName)");
                 self.finishSendingMessage()
                 }, errorHandler: {error in
-                    NSLog("<--- ERROR saveItem location message");
+                    EVLog("ERROR: saveItem location message.\n\(error.description)");
                     Helper.showError("Could not send location message!  \(error.description)")
                     self.finishSendingMessage()
             })
@@ -307,7 +307,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 
                 // Save the asset
                 EVCloudData.publicDB.saveItem(assetC, completionHandler: {record in
-                    NSLog("saveItem Asset: \(record.recordID.recordName)");
+                    EVLog("saveItem Asset: \(record.recordID.recordName)");
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
@@ -327,16 +327,16 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                     message.setAsset(record.recordID.recordName)
 
                     EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                        NSLog("saveItem Message: \(record.recordID.recordName)");
+                        EVLog("saveItem Message: \(record.recordID.recordName)");
                         self.finishSendingMessage()
                     }, errorHandler: {error in
-                        NSLog("<--- ERROR saveItem asset");
+                        EVLog("ERROR: saveItem asset.\n\(error.description)");
                         Helper.showError("Could not send picture message!  \(error.description)")
                         self.finishSendingMessage()
                     })
                     
                 }, errorHandler: {error in
-                    NSLog("<--- ERROR saveItem message");
+                    EVLog("ERROR: saveItem message.\n\(error.description)");
                     Helper.showError("Could not send picture!  \(error.description)")
                     self.finishSendingMessage()
                 })
@@ -473,15 +473,15 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     // ------------------------------------------------------------------------
 
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
-        NSLog("Should load earlier messages.")
+        EVLog("Should load earlier messages.")
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
-        NSLog("Tapped avatar!")
+        EVLog("Tapped avatar!")
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
-        NSLog("Tapped message bubble!")
+        EVLog("Tapped message bubble!")
         var (data, count) = getDataForId(indexPath.row)
         
         var message = getMessageForId(indexPath.row)
@@ -517,7 +517,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapCellAtIndexPath indexPath: NSIndexPath!, touchLocation: CGPoint) {
-        NSLog("Tapped cel at \(indexPath.row)")
+        EVLog("Tapped cel at \(indexPath.row)")
     }
     
     // ------------------------------------------------------------------------

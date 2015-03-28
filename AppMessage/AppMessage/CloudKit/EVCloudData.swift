@@ -349,7 +349,7 @@ public class EVCloudData:NSObject {
         var filePath = fileDirectory.stringByAppendingPathComponent(toFile)
         dispatch_sync(ioQueue) {
             NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
-            NSLog("Data is written to \(filePath))")
+            EVLog("Data is written to \(filePath))")
         }
     }
     
@@ -365,7 +365,7 @@ public class EVCloudData:NSObject {
         dispatch_sync(ioQueue) {
             if self.filemanager.fileExistsAtPath(filePath) {
                 result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
-                NSLog("Data is restored from \(filePath))")
+                EVLog("Data is restored from \(filePath))")
             }
         }
         return result
@@ -400,7 +400,7 @@ public class EVCloudData:NSObject {
     :return: No return value
     */
     private func upsertObject(recordId:String, item :EVCloudKitDataObject) {
-        NSLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
+        EVLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
                 var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
@@ -410,6 +410,7 @@ public class EVCloudData:NSObject {
                         existingItem = data[filter]![itemID!]
                     }
                     if existingItem != nil  {
+                        EVLog("Update object for filter \(filter)")
                         data[filter]!.removeAtIndex(itemID!)
                         data[filter]!.insert(item, atIndex: itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -418,6 +419,7 @@ public class EVCloudData:NSObject {
                         }
                         dataIsUpdated(filter)
                     } else {
+                        EVLog("Insert object for filter \(filter)")
                         data[filter]!.insert(item, atIndex: 0)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.insertedHandlers[filter]!)(item: item)
@@ -426,7 +428,7 @@ public class EVCloudData:NSObject {
                         dataIsUpdated(filter)
                     }
                 } else { // An update of a field that is used in the predicate could trigger a delete from that set.
-                    NSLog("Object not for filter \(filter)")
+                    EVLog("Object not for filter \(filter)")
                     if (itemID != nil) {
                         data[filter]!.removeAtIndex(itemID!)
                         NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -629,7 +631,7 @@ public class EVCloudData:NSObject {
             var recordType = EVReflection.swiftStringFromClass(type)
             var query = CKQuery(recordType: recordType, predicate: predicate)
             dao.queryRecords(type, query: query, completionHandler: { results in
-                if self.data[filterId] != nil && self.data[filterId]! == results {
+                if self.data[filterId] != nil && self.data[filterId]! == results && self.data[filterId]!.count > 0 {
                     return // Result was already returned from cache
                 }
                 
