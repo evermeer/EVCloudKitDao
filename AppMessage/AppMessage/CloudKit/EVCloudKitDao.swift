@@ -556,12 +556,10 @@ public class EVCloudKitDao {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         var key = "subscriptionFor_\(recordType)_\(filterId)"
-        if !defaults.boolForKey(key) { return }
         
-        var modifyOperation = CKModifySubscriptionsOperation()
-        var subscriptionID : String? = defaults.objectForKey(key) as? String
-        if (subscriptionID != nil) {
-            modifyOperation.subscriptionIDsToDelete = [subscriptionID!]
+        if let subscriptionID: String = defaults.objectForKey(key) as? String {
+            var modifyOperation = CKModifySubscriptionsOperation()
+            modifyOperation.subscriptionIDsToDelete = [subscriptionID]
             modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
                 self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                     defaults.removeObjectForKey(key)
