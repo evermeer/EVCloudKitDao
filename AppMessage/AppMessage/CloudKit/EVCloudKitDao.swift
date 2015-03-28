@@ -524,7 +524,7 @@ public class EVCloudKitDao {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         var key = "subscriptionFor_\(recordType)_\(filterId)"
-        if defaults.boolForKey(key) {
+        if defaults.objectForKey(key) as? String != nil {
             unsubscribe(type, filterId: filterId, errorHandler: errorHandler)
         }
         
@@ -538,7 +538,6 @@ public class EVCloudKitDao {
         database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 EVLog("Subscription created for key \(key)")
-                defaults.setBool(true, forKey: key)
                 defaults.setObject(subscription.subscriptionID, forKey: key)
             })
         })
