@@ -7,7 +7,7 @@
 
 import CloudKit
 
-func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
+public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
     var dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
     var process = NSProcessInfo.processInfo()
