@@ -24,8 +24,9 @@ public class EVReflection {
         var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString)
         var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
         var nsobject: NSObject = nsobjectype()
+        var hasKeys = toDictionary(nsobject)
         for (key: String, value: AnyObject?) in dictionary {
-            if (dictionary[key] != nil) {
+            if (dictionary[key] != nil && hasKeys[key] != nil) {
                 var newValue: AnyObject? = dictionary[key]!
                 var error:NSError?
                 if nsobject.validateValue(&newValue, forKey: key, error: &error) {
