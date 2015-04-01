@@ -1,6 +1,5 @@
 EVCloudKitDao
 =============
-Code is commited for use with Xcode 6.1.1 because Travis CI is using that. On Xcode 6.2 you will get 4 easy to fix build errors (make cell.textLabel optional)
 
 [![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/evermeer/EVCloudKitDao)
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
