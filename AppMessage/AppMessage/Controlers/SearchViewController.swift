@@ -97,6 +97,7 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
         var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
                 if cell == nil {
             cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellIdentifier)
+            cell.selectedBackgroundView = UIView()
         }
         
         var item:Message = data[indexPath.row]
