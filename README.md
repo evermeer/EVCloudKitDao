@@ -46,8 +46,8 @@ Here are screenshots of the included demo app chat functionality:
 ![Screenshot1](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true)
 
 
-![Screenshot2](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.png?raw=true)
-![Screenshot3](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.png?raw=true)
+![Screenshot2](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.PNG?raw=true)
+![Screenshot3](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.PNG?raw=true)
 
 ## Documentation ##
 Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
