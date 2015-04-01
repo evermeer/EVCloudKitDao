@@ -72,11 +72,11 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         if cell == nil {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
             cell.backgroundColor = UIColor.clearColor()
-            cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 21)
-            cell.textLabel?.textColor = UIColor.whiteColor()
-            cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
+            cell.textLabel!.font = UIFont(name: "HelveticaNeue", size: 21)
+            cell.textLabel!.textColor = UIColor.whiteColor()
+            cell.textLabel!.highlightedTextColor = UIColor.lightGrayColor()
             cell.selectedBackgroundView = UIView()
-            cell.textLabel?.textAlignment = .Right
+            cell.textLabel!.textAlignment = .Right
         }
         cell.textLabel?.text = "\(contacts[indexPath.row].firstName) \(contacts[indexPath.row].lastName)" ;
         return cell;
