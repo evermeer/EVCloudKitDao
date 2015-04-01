@@ -60,9 +60,9 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     // ------------------------------------------------------------------------
 
     
-    var titles = ["Home", "News", "Settings", "Tests"]
-    var images = ["IconHome", "IconProfile", "IconSettings", "IconEmpty"]
-    var controllers = ["homeViewController", "newsViewController", "settingsViewController", "testsViewController"]
+    var titles = ["Home", "News", "Settings", "Search", "Tests"]
+    var images = ["IconHome", "IconProfile", "IconSettings", "IconEmpty", "IconEmpty"]
+    var controllers = ["homeViewController", "newsViewController", "settingsViewController", "searchViewController", "testsViewController"]
 
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return 54

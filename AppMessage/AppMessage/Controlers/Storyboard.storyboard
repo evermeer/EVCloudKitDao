@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -92,6 +92,7 @@
                         <segue destination="ezV-0U-QD4" kind="push" identifier="ToContacts" id="KhY-az-Qop"/>
                         <segue destination="3HD-e9-ogD" kind="push" id="T5H-wl-wup"/>
                         <segue destination="z4X-fz-IBd" kind="push" id="p9q-Ww-jMp"/>
+                        <segue destination="vr3-gb-k7I" kind="push" id="lqF-vY-uxw"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zTP-Op-3pJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -232,7 +233,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eal-Q4-llx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1475" y="1398"/>
+            <point key="canvasLocation" x="1475" y="1969"/>
         </scene>
         <!--Contacts-->
         <scene sceneID="kOW-eb-eFQ">
@@ -292,7 +293,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="43X-rY-gap" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1475" y="2145"/>
+            <point key="canvasLocation" x="1097" y="1980"/>
         </scene>
         <!--Settings-->
         <scene sceneID="7dQ-Ad-fBP">
@@ -331,6 +332,68 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uvD-7c-1cA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1475" y="651"/>
+        </scene>
+        <!--Search-->
+        <scene sceneID="Bcc-gS-rmM">
+            <objects>
+                <viewController restorationIdentifier="searchViewController" storyboardIdentifier="searchViewController" id="vr3-gb-k7I" userLabel="Search" customClass="SearchViewController" customModule="AppMessage" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="xG5-pf-u2g">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" showsScopeBar="YES" id="hoh-1o-vfw">
+                            <rect key="frame" x="0.0" y="64" width="320" height="88"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <scopeButtonTitles>
+                                <string>Token search</string>
+                                <string>Text search</string>
+                            </scopeButtonTitles>
+                            <connections>
+                                <outlet property="delegate" destination="vr3-gb-k7I" id="DT5-7c-zCR"/>
+                            </connections>
+                        </searchBar>
+                        <connections>
+                            <outlet property="dataSource" destination="vr3-gb-k7I" id="RKS-CI-wxP"/>
+                            <outlet property="delegate" destination="vr3-gb-k7I" id="ihW-go-FoP"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Search" id="e5x-g3-wKP" userLabel="Search">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" id="Gqw-Qh-aKZ">
+                            <connections>
+                                <action selector="presentLeftMenuViewController:" destination="vr3-gb-k7I" id="PYB-Xl-bJ2"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Contacts" id="y8t-Fr-7SW">
+                            <connections>
+                                <action selector="presentRightMenuViewController:" destination="vr3-gb-k7I" id="nQT-md-fUA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="searchDisplayController" destination="ewt-5E-9gp" id="q2m-Gp-0fN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jCF-C8-VrX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="SAu-yS-cl7">
+                    <connections>
+                        <outlet property="delegate" destination="vr3-gb-k7I" id="9sG-3u-Ld1"/>
+                        <outlet property="searchContentsController" destination="vr3-gb-k7I" id="1eY-DM-Lbc"/>
+                        <outlet property="searchResultsDataSource" destination="vr3-gb-k7I" id="IDX-ft-vNg"/>
+                        <outlet property="searchResultsDelegate" destination="vr3-gb-k7I" id="TUV-20-cfx"/>
+                    </connections>
+                </searchDisplayController>
+                <searchDisplayController id="ewt-5E-9gp">
+                    <connections>
+                        <outlet property="delegate" destination="vr3-gb-k7I" id="KgR-dd-wLQ"/>
+                        <outlet property="searchBar" destination="hoh-1o-vfw" id="DzK-DI-oRb"/>
+                        <outlet property="searchContentsController" destination="vr3-gb-k7I" id="75L-r2-rKC"/>
+                        <outlet property="searchResultsDataSource" destination="vr3-gb-k7I" id="Lye-8E-9mM"/>
+                        <outlet property="searchResultsDelegate" destination="vr3-gb-k7I" id="SdS-kQ-aUT"/>
+                    </connections>
+                </searchDisplayController>
+            </objects>
+            <point key="canvasLocation" x="1475" y="1315"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

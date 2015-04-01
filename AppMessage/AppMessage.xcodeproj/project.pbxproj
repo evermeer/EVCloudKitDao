@@ -37,6 +37,7 @@
 		7FCB04A419A8E14F00A257FE /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FCB04A319A8E14F00A257FE /* News.swift */; };
 		7FD051C119C591B2009B7FEE /* image-not-available.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FD051C019C591B2009B7FEE /* image-not-available.jpg */; };
 		7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
+		7FF11C411ACBEA6000A18FA3 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF11C401ACBEA6000A18FA3 /* SearchViewController.swift */; };
 		7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF447431A16964C0003AE91 /* ChatViewController.swift */; };
 		7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD4C0C1A222E9D00E03FAB /* Helper.swift */; };
 		EEBBFDCB1C430396CE90E894 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -84,6 +85,7 @@
 		7FED8DFA1A4A30C10071F7A9 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		7FED8E201A4B14A30071F7A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
 		7FED8E211A4B14AF0071F7A9 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; name = .travis.yml; path = ../.travis.yml; sourceTree = "<group>"; };
+		7FF11C401ACBEA6000A18FA3 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		7FF447431A16964C0003AE91 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		7FFD4C0C1A222E9D00E03FAB /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		82759452322E59420ABE0701 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				7FC46F8D19824121000A875F /* RightMenuViewController.swift */,
 				7FC46F91198242A5000A875F /* NewsViewController.swift */,
 				7FC46F971982805A000A875F /* SettingsViewController.swift */,
+				7FF11C401ACBEA6000A18FA3 /* SearchViewController.swift */,
 				7FC46F9919828082000A875F /* TestsViewController.swift */,
 				7FF447431A16964C0003AE91 /* ChatViewController.swift */,
 			);
@@ -368,6 +371,7 @@
 				7FC46F8E19824121000A875F /* RightMenuViewController.swift in Sources */,
 				7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */,
 				7F434A4C1962AE780081F35C /* Message.swift in Sources */,
+				7FF11C411ACBEA6000A18FA3 /* SearchViewController.swift in Sources */,
 				7FC2CF4619D7F82500CF3549 /* EVReflection.swift in Sources */,
 				7FC46F9A19828082000A875F /* TestsViewController.swift in Sources */,
 				7FC46F8619813D77000A875F /* RootViewController.swift in Sources */,

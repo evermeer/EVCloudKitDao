@@ -33,15 +33,21 @@ The AppMessage demo is a complete functional messaging app based on CloudKit:
 - News items are fully functional. Just try adding, deleting and updating newsitems from the CloudKit dashboard. 
 - The Contacts list based on your phone contacts that also have installed the app. 
 - Chat with someone using text messages, pictures and sending your location
+- A search window (async autocomplete) where you can search all chat messages using a tokenized or begiswith query
 - It also has TestViewController.swift for an overview of the functionality
 
 I'm looking for feedback. Please let me know if you want something changed or added to the library or the demo.
 
 
 ## A picture says more than 1000 words
-Here is a screenshot of the included demo app chat functionality:
+Here are screenshots of the included demo app chat functionality:
+
 ![Screenshot0](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png?raw=true)
 ![Screenshot1](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true)
+
+
+![Screenshot2](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.png?raw=true)
+![Screenshot3](https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.png?raw=true)
 
 ## Documentation ##
 Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
