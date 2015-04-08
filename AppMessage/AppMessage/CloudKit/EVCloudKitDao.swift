@@ -226,7 +226,9 @@ public class EVCloudKitDao {
         var operation = CKQueryOperation(query: query)
         var results = [T]()
         operation.recordFetchedBlock = { record in
-            results.append(self.fromCKRecord(record) as T)
+            if let parsed = self.fromCKRecord(record)  {
+                results.append(parsed as T)
+            }
         }
         operation.queryCompletionBlock = { cursor, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: { completionHandler(results: results) })
@@ -378,7 +380,14 @@ public class EVCloudKitDao {
     public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         database.fetchRecordWithID(CKRecordID(recordName: recordId), completionHandler: {record, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                completionHandler(result: self.fromCKRecord(record));
+                if let parsed = self.fromCKRecord(record) {
+                    completionHandler(result: parsed);
+                } else {
+                    if let handler = errorHandler {
+                        var error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
+                        handler(error: error)
+                    }
+                }
             })
         })
     }
@@ -790,16 +799,18 @@ public class EVCloudKitDao {
     :param: record The CKRecord that will be converted to an object
     :return: The object that is created from the record
     */
-    public func fromCKRecord(record: CKRecord) -> EVCloudKitDataObject {
-        var theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType) as EVCloudKitDataObject
-        theObject.recordID = record.recordID
-        theObject.recordType = record.recordType
-        theObject.creationDate = record.creationDate
-        theObject.creatorUserRecordID = record.creatorUserRecordID
-        theObject.modificationDate = record.modificationDate
-        theObject.lastModifiedUserRecordID = record.lastModifiedUserRecordID
-        theObject.recordChangeTag = record.recordChangeTag
-        return theObject
+    public func fromCKRecord(record: CKRecord) -> EVCloudKitDataObject? {
+        if var theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType) as? EVCloudKitDataObject {
+            theObject.recordID = record.recordID
+            theObject.recordType = record.recordType
+            theObject.creationDate = record.creationDate
+            theObject.creatorUserRecordID = record.creatorUserRecordID
+            theObject.modificationDate = record.modificationDate
+            theObject.lastModifiedUserRecordID = record.lastModifiedUserRecordID
+            theObject.recordChangeTag = record.recordChangeTag
+            return theObject
+        }
+        return nil
     }
     
     /**

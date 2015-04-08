@@ -502,10 +502,10 @@ public class EVCloudData:NSObject {
             self.upsertObject(item.recordID.recordName, item: item)
         }
         dao.saveItem(item, completionHandler: { record in
-            var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)
+            var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)!
             self.upsertObject(item.recordID.recordName, item: item)
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                completionHandler(item: self.dao.fromCKRecord(record))
+                completionHandler(item: self.dao.fromCKRecord(record)!)
             }
         }, errorHandler: {error in
             NSOperationQueue.mainQueue().addOperationWithBlock {
