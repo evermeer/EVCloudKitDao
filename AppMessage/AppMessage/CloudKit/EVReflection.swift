@@ -21,7 +21,7 @@ public class EVReflection {
     :return: The object that is created from the dictionary
     */
     public class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject? {
-        if var anyobjectype : AnyObject.Type? = swiftClassFromString(anyobjectTypeString) {
+        if var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString) {
             var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
             var nsobject: NSObject = nsobjectype()
             var hasKeys = toDictionary(nsobject)
