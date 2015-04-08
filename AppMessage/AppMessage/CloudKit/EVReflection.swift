@@ -20,21 +20,23 @@ public class EVReflection {
     :param: anyobjectTypeString The string representation of the object type that will be created
     :return: The object that is created from the dictionary
     */
-    public class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject {
-        var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString)
-        var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
-        var nsobject: NSObject = nsobjectype()
-        var hasKeys = toDictionary(nsobject)
-        for (key: String, value: AnyObject?) in dictionary {
-            if (dictionary[key] != nil && hasKeys[key] != nil) {
-                var newValue: AnyObject? = dictionary[key]!
-                var error:NSError?
-                if nsobject.validateValue(&newValue, forKey: key, error: &error) {
-                    nsobject.setValue(newValue, forKey: key)
+    public class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject? {
+        if var anyobjectype : AnyObject.Type? = swiftClassFromString(anyobjectTypeString) {
+            var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
+            var nsobject: NSObject = nsobjectype()
+            var hasKeys = toDictionary(nsobject)
+            for (key: String, value: AnyObject?) in dictionary {
+                if (dictionary[key] != nil && hasKeys[key] != nil) {
+                    var newValue: AnyObject? = dictionary[key]!
+                    var error:NSError?
+                    if nsobject.validateValue(&newValue, forKey: key, error: &error) {
+                        nsobject.setValue(newValue, forKey: key)
+                    }
                 }
             }
+            return nsobject
         }
-        return nsobject
+        return nil
     }
     
     /**
