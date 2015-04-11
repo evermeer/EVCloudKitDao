@@ -7,7 +7,9 @@
 
 import RESideMenu
 
-class SearchViewController  : UITableViewController, UISearchBarDelegate, UISearchDisplayDelegate, RESideMenuDelegate {
+class SearchViewController  : UITableViewController, UISearchBarDelegate, RESideMenuDelegate {
+    
+    @IBOutlet weak var searchBar: UISearchBar!
     
     var queryRunning:Int = 0
     var data:[Message] = []
@@ -15,31 +17,23 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
     // ------------------------------------------------------------------------
     // MARK: - Search filter
     // ------------------------------------------------------------------------
-    
-    
-    
-    // You should also filter if a message is from or to the activeUser by adding this to the predecate:
-    //   AND (From_ID = %@ OR To_ID = %@)
-    
-    
-    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchString searchString: String!) -> Bool {
-        if self.searchDisplayController!.searchBar.selectedScopeButtonIndex > 0 {
-            self.filterContentForSearchTextV2(searchString)
-        } else {
-            self.filterContentForSearchText(searchString)
-        }
-        return false
-    }
-    
-    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchScope searchOption: Int) -> Bool {
-        if self.searchDisplayController!.searchBar.selectedScopeButtonIndex > 0 {
-            self.filterContentForSearchTextV2(self.searchDisplayController!.searchBar.text)
-        } else {
-            self.filterContentForSearchText(self.searchDisplayController!.searchBar.text)
-        }
-        return false
-    }
 
+    func doFilter() {
+        if self.searchBar.selectedScopeButtonIndex > 0 {
+            self.filterContentForSearchText(self.searchBar.text)
+        } else {
+            self.filterContentForSearchTextV2(self.searchBar.text)
+        }
+    }
+    
+    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        doFilter()
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        doFilter()
+    }
+    
     // Token search (search for complete words in the entire record
     func filterContentForSearchText(searchText: String) {
         EVLog("Filter for \(searchText)")
@@ -48,7 +42,6 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                self.searchDisplayController!.searchResultsTableView.reloadData()
                 self.tableView.reloadData()
                 self.networkSpinner(-1)
             }
@@ -66,7 +59,6 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                self.searchDisplayController!.searchResultsTableView.reloadData()
                 self.tableView.reloadData()
                 self.networkSpinner(-1)
             }
