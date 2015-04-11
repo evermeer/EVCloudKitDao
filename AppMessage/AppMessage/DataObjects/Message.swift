@@ -17,7 +17,7 @@ class Message : EVCloudKitDataObject {
     // From which Channel is this message
     var From : CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var From_ID : String = ""
-    func setFrom(id:String) {
+    func setFromFields(id:String) {
         self.From_ID = id
         self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
     }
@@ -27,7 +27,7 @@ class Message : EVCloudKitDataObject {
     // To what Channel or Group is this message
     var To : CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var To_ID : String = ""
-    func setTo(id:String) {
+    func setToFields(id:String) {
         self.To_ID = id
         self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
     }
@@ -43,7 +43,7 @@ class Message : EVCloudKitDataObject {
     // From which Channel is this message
     var Asset : CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var Asset_ID : String = ""
-    func setAsset(id:String) {
+    func setAssetFields(id:String) {
         self.Asset_ID = id
         self.Asset = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
     }

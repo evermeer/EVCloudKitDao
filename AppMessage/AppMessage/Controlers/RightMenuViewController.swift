@@ -58,7 +58,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     // ------------------------------------------------------------------------
 
     
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 54
     }
     
@@ -82,7 +82,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         return cell;
     }
     
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView,didSelectRowAtIndexPath indexPath: NSIndexPath){
         leftMenu.startChat(contacts[indexPath.row])        
     }
 }

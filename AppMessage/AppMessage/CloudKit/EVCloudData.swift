@@ -224,7 +224,7 @@ public class EVCloudData:NSObject {
     // MARK: - Store data to local file cache
     // ------------------------------------------------------------------------
     
-    private let fileDirectory =  (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString)
+    private let fileDirectory =  (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString)
     private let filemanager = NSFileManager.defaultManager()
     private let ioQueue: dispatch_queue_t = dispatch_queue_create("NL.EVICT.CloudKit.ioQueue", DISPATCH_QUEUE_SERIAL)
     
@@ -574,7 +574,7 @@ public class EVCloudData:NSObject {
             // If we have a cache for this filter, then first return that.
             if restoreDataForFilter(filterId) {
                 if let handler = completionHandler {
-                    handler(results: self.data[filterId] as [T])
+                    handler(results: self.data[filterId] as! [T])
                 }
                 if let handler = dataChangedHandler {
                     handler()
@@ -594,7 +594,7 @@ public class EVCloudData:NSObject {
             // Wrapping (Type and optional) the generic function so that we can add it to the collection and prevent nil reference exceptions
             if insertedHandler != nil {
                 func insertedHandlerWrapper(item:EVCloudKitDataObject) -> Void {
-                    insertedHandler!(item: item as T)
+                    insertedHandler!(item: item as! T)
                 }
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             } else {
@@ -604,7 +604,7 @@ public class EVCloudData:NSObject {
             
             if updatedHandler != nil {
                 func updatedHandlerWrapper(item:EVCloudKitDataObject, dataIndex:Int) -> Void {
-                    updatedHandler!(item: item as T, dataIndex: dataIndex)
+                    updatedHandler!(item: item as! T, dataIndex: dataIndex)
                 }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
             } else {
@@ -681,7 +681,7 @@ public class EVCloudData:NSObject {
     :param: executeIfNonQuery Will be called if the notification is not for a CloudKit subscription
     :return: No return value
     */
-    public func didReceiveRemoteNotification(userInfo: [NSObject : NSObject]!, executeIfNonQuery:() -> Void) {
+    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject], executeIfNonQuery:() -> Void) {
         dao.didReceiveRemoteNotification(userInfo, executeIfNonQuery: executeIfNonQuery, inserted: {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated: {recordId, item in
@@ -697,7 +697,7 @@ public class EVCloudData:NSObject {
     :return: No return value
     */
     public func fetchChangeNotifications() {
-        dao.fetchChangeNotifications(nil, {recordId, item in
+        dao.fetchChangeNotifications(nil, inserted: {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated : {recordId, item in
                 self.upsertObject(recordId, item: item)

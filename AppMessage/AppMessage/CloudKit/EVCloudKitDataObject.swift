@@ -83,7 +83,7 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     
     :return: The pritty description
     */
-    public func description() -> String {
+    public func description2() -> String {
         return EVReflection.description(self)
     }
     
@@ -103,7 +103,7 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     
     :return: The hashvalue of this object
     */
-    public func hash() -> Int {
+    public func hash2() -> Int {
         return self.hashValue
     }
     

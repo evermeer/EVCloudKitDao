@@ -22,7 +22,7 @@ public class EVReflection {
     */
     public class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject? {
         if var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString) {
-            var nsobjectype : NSObject.Type = anyobjectype as NSObject.Type
+            var nsobjectype : NSObject.Type = anyobjectype as! NSObject.Type
             var nsobject: NSObject = nsobjectype()
             var hasKeys = toDictionary(nsobject)
             for (key: String, value: AnyObject?) in dictionary {
@@ -115,7 +115,7 @@ public class EVReflection {
     :return: The Class type
     */
     public class func swiftClassFromString(className: String) -> AnyClass! {
-        if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
+        if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as! String? {
             appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName = "\(appName).\(className)"
             return NSClassFromString(classStringName)
@@ -131,7 +131,7 @@ public class EVReflection {
     :return: The string representation of the class (name of the bundle dot name of the class)
     */
     public class func swiftStringFromClass(theObject: NSObject) -> String! {
-        if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as String? {
+        if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as! String? {
             appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName: String = NSStringFromClass(theObject.dynamicType)
             return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)

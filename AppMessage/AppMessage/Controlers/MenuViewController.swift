@@ -16,7 +16,7 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
         super.viewDidLoad()
         
         //TODO: Why need to reload in order to show the navigationbar?
-        self.setContentViewController(UINavigationController(rootViewController: self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController), animated: true)
+        self.setContentViewController(UINavigationController(rootViewController: self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as! UIViewController), animated: true)
     }
     
     func setupMenu() {
@@ -32,10 +32,10 @@ class MenuViewController: RESideMenu, RESideMenuDelegate {
         self.backgroundImage = UIImage(named:"Default-568h")
         
         // Setting the views
-        self.contentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as UIViewController
-        var leftMenu:LeftMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as LeftMenuViewController
+        self.contentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as! UIViewController
+        var leftMenu:LeftMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as! LeftMenuViewController
         self.leftMenuViewController = leftMenu as UIViewController
-        var rightMenu:RightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController")! as RightMenuViewController
+        var rightMenu:RightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController")! as! RightMenuViewController
         self.rightMenuViewController = rightMenu as UIViewController
         rightMenu.leftMenu = leftMenu
     }

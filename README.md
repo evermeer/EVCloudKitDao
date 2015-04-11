@@ -1,7 +1,7 @@
 EVCloudKitDao
 =============
 
-Travis-ci build failure because it's running Xcode 6.1.1 instead of 6.2? 
+Version 7.0 is for Xcode 6.3. Travis-ci build is failing because it's running Xcode 6.1.1
 
 [![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/evermeer/EVCloudKitDao)
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)

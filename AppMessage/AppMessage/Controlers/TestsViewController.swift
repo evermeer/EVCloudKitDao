@@ -73,7 +73,7 @@ class TestsViewController : UIViewController {
         dao.saveItem(asset, completionHandler: {record in
             EVLog("saveItem Asset: \(record.recordID.recordName)");
             // Save the attached image
-            message.setAsset(record.recordID.recordName)
+            message.setAssetFields(record.recordID.recordName)
             dao.saveItem(message, completionHandler: {record in
                 EVLog("saveItem Message: \(record.recordID.recordName)");
                 }, errorHandler: {error in
@@ -123,7 +123,7 @@ class TestsViewController : UIViewController {
         
         // Get all records of a recordType that are created by me using a predicate
         var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
-        dao.query(Message(), predicate:predicate!, completionHandler: { results in
+        dao.query(Message(), predicate:predicate, completionHandler: { results in
             EVLog("query recordType created by: result count = \(results.count)")
             }, errorHandler: { error in
                 EVLog("<--- ERROR query Message created by user")

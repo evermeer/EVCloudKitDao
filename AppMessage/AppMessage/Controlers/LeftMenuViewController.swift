@@ -64,11 +64,11 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     var images = ["IconHome", "IconProfile", "IconSettings", "IconEmpty", "IconEmpty"]
     var controllers = ["homeViewController", "newsViewController", "settingsViewController", "searchViewController", "testsViewController"]
 
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 54
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
 
@@ -96,7 +96,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         return cell;
     }
     
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.row < controllers.count {
             var controllerName:String = controllers[indexPath.row]
             
@@ -174,7 +174,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     func connectToMessagesToMe() {
         var recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
         EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)!
+            , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)
             , filterId: "Message_ToMe"
             , configureNotificationInfo:{ notificationInfo in
                 notificationInfo.alertLocalizationKey = "%1$@ %2$@ : %3$@"

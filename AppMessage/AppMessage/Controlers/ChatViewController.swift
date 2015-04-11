@@ -91,9 +91,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         senderLastName = "\(EVCloudData.publicDB.dao.activeUser!.lastName)"
         self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
         
+        
         // The data connection to the conversation
         EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])!
+            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [[recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection]])
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
             }, completionHandler: { results in
@@ -131,7 +132,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     // Make sure that all Message attachments are saved in a local file
     func checkAttachedAssets(results:[Message]) {
         let filemanager = NSFileManager.defaultManager()
-        var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+        var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
         for item in results {
             if item.MessageType == MessageTypeEnum.Picture.rawValue {
                 var filePath =  docDirPath.stringByAppendingPathComponent("\(item.Asset_ID).png")
@@ -145,9 +146,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     // Get an asset and save it as a file
     func getAttachment(id : String) {
         EVCloudData.publicDB.getItem(id, completionHandler: {item in
-            var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+            var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
             var filePath =  docDirPath.stringByAppendingPathComponent("\(id).png")
-            var image = (item as Asset).image()
+            var image = (item as! Asset).image()
             var myData = UIImagePNGRepresentation(image)
             myData.writeToFile(filePath, atomically:true)
             EVLog("Image downloaded to \(id).png")
@@ -172,10 +173,10 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         var message = Message()
-        message.setFrom(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
+        message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
         message.FromFirstName = self.senderFirstName
         message.FromLastName = self.senderLastName
-        message.setTo(chatWithId)
+        message.setToFields(chatWithId)
         message.ToFirstName = chatWithFirstName
         message.ToLastName = chatWithLastName
         message.Text = text
@@ -229,9 +230,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     func addLocation() {
         WhereAmI.sharedInstance.whereAmI({ location in
             var message = Message()
-            message.setFrom(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
+            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
             message.FromFirstName = self.senderDisplayName
-            message.setTo(self.chatWithId)
+            message.setToFields(self.chatWithId)
             message.ToFirstName = self.chatWithFirstName
             message.ToLastName = self.chatWithLastName
             if location.course < 0 {
@@ -287,14 +288,14 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         var i:Int = 0
         for asset in assets {
             i = i++
-            let mediaType = (asset as ALAsset).valueForProperty("ALAssetPropertyType") as String
+            let mediaType = (asset as! ALAsset).valueForProperty("ALAssetPropertyType") as! String
             if mediaType == "ALAssetTypePhoto" {
                 JSQSystemSoundPlayer.jsq_playMessageSentSound()
                 
                 // make sure we have a file with url
-                var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+                var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
                 var filePath =  docDirPath.stringByAppendingPathComponent("Image_\(i).png")
-                var image = getUIImageFromCTAsset(asset as ALAsset)
+                var image = getUIImageFromCTAsset(asset as! ALAsset)
                 var myData = UIImagePNGRepresentation(image)
                 myData.writeToFile(filePath, atomically:true)
                 
@@ -311,20 +312,20 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
-                    var fromFilePath =  docDirPath.stringByAppendingPathComponent((record as Asset).FileName)
+                    var fromFilePath =  docDirPath.stringByAppendingPathComponent((record as! Asset).FileName)
                     let toPath = docDirPath.stringByAppendingPathComponent(record.recordID.recordName + ".png")
                     filemanager.moveItemAtPath(fromFilePath, toPath: toPath, error: nil)
 
                     // Create the message object that represents the asset
                     var message = Message()
-                    message.setFrom(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
+                    message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID.recordName)
                     message.FromFirstName = self.senderDisplayName
-                    message.setTo(self.chatWithId)
+                    message.setToFields(self.chatWithId)
                     message.ToFirstName = self.chatWithFirstName
                     message.ToLastName = self.chatWithLastName
                     message.Text = "<foto>"
                     message.MessageType = MessageTypeEnum.Picture.rawValue
-                    message.setAsset(record.recordID.recordName)
+                    message.setAssetFields(record.recordID.recordName)
 
                     EVCloudData.publicDB.saveItem(message, completionHandler: {record in
                         EVLog("saveItem Message: \(record.recordID.recordName)");
@@ -370,7 +371,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        var cell : JSQMessagesCollectionViewCell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as JSQMessagesCollectionViewCell
+        var cell : JSQMessagesCollectionViewCell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         var message = getMessageForId(indexPath.row)
         if !message.isMediaMessage {
             if message.senderId == self.senderId {
@@ -512,7 +513,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
     }
     
     func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
-        mapView.setRegion(MKCoordinateRegionMakeWithDistance((views[0] as MKAnnotationView).annotation.coordinate, 1000, 1000), animated: true)
+        mapView.setRegion(MKCoordinateRegionMakeWithDistance((views[0] as! MKAnnotationView).annotation.coordinate, 1000, 1000), animated: true)
     }
     
     
@@ -534,7 +535,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
                 self.localData = [JSQMessage?](count:count, repeatedValue:nil)
             }
             if id < count {
-                data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as Message
+                data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as! Message
             } else {
                 data = Message()
             }
@@ -581,7 +582,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
             })
             message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: locationItem)
         } else if data.MessageType == MessageTypeEnum.Picture.rawValue {
-            var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+            var docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! NSString
             var filePath =  docDirPath.stringByAppendingPathComponent(data.Asset_ID + ".png")
             var url = NSURL(fileURLWithPath: filePath)
             if var mediaData = NSData(contentsOfURL: url!) {

@@ -227,7 +227,7 @@ public class EVCloudKitDao {
         var results = [T]()
         operation.recordFetchedBlock = { record in
             if let parsed = self.fromCKRecord(record)  {
-                results.append(parsed as T)
+                results.append(parsed as! T)
             }
         }
         operation.queryCompletionBlock = { cursor, error in
@@ -304,7 +304,7 @@ public class EVCloudKitDao {
     public func discoverUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
         container.fetchUserRecordIDWithCompletionHandler({recordID, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                self.container.discoverUserInfoWithUserRecordID(recordID, { user, error in
+                self.container.discoverUserInfoWithUserRecordID(recordID, completionHandler: { user, error in
                     self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                         completionHandler(user: user)
                     })
@@ -352,7 +352,7 @@ public class EVCloudKitDao {
     public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
         container.discoverAllContactUserInfosWithCompletionHandler({users, error in
             self.handleCallback(error, errorHandler:errorHandler, completionHandler: {
-                var returnData = users as [CKDiscoveredUserInfo]
+                var returnData = users as! [CKDiscoveredUserInfo]
                 if returnData.count == 0 {
                     if let restoreData = EVCloudData.publicDB.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
                         returnData = restoreData
@@ -508,7 +508,7 @@ public class EVCloudKitDao {
     public func query<T:EVCloudKitDataObject>(type:T, fieldname:String, latitude:Double, longitude:Double, distance:Int ,completionHandler: (results: [T]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType:String = EVReflection.swiftStringFromClass(type)
         var location:CLLocation = CLLocation(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
-        var predecate: NSPredicate =  NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %@", fieldname, location, distance)!
+        var predecate: NSPredicate =  NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %@", [fieldname, location, distance])
         var query = CKQuery(recordType:recordType, predicate:predecate)
         query.sortDescriptors = [CKLocationSortDescriptor(key: fieldname, relativeLocation: location)]
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -592,7 +592,7 @@ public class EVCloudKitDao {
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
         var predicate = NSPredicate(format: "%K == %@", referenceField ,parent)
-        subscribe(type, predicate:predicate!, filterId: "reference_\(referenceField)_\(referenceRecordName)",configureNotificationInfo: configureNotificationInfo ,errorHandler: errorHandler)
+        subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)_\(referenceRecordName)",configureNotificationInfo: configureNotificationInfo ,errorHandler: errorHandler)
     }
     
     /**
@@ -642,14 +642,14 @@ public class EVCloudKitDao {
         
         for (key, value) in NSUserDefaults.standardUserDefaults().dictionaryRepresentation() {
             if key.description.hasPrefix("subscriptionFor_") {
-                NSUserDefaults.standardUserDefaults().removeObjectForKey(key as String)
+                NSUserDefaults.standardUserDefaults().removeObjectForKey(key as! String)
             }
         }
         
         database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 for subscriptionObject in subscriptions {
-                    var subscription: CKSubscription = subscriptionObject as CKSubscription
+                    var subscription: CKSubscription = subscriptionObject as! CKSubscription
                     self.database.deleteSubscriptionWithID(subscription.subscriptionID, completionHandler: {subscriptionId, error in
                         self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                             EVLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
@@ -683,7 +683,7 @@ public class EVCloudKitDao {
         // Handle CloudKit subscription notifications
         var recordID:CKRecordID?
         if cloudNotification.notificationType == CKNotificationType.Query {
-            var queryNotification: CKQueryNotification = cloudNotification as CKQueryNotification
+            var queryNotification: CKQueryNotification = cloudNotification as! CKQueryNotification
             recordID = queryNotification.recordID
             EVLog("recordID of notified record = \(recordID)")
             if(queryNotification.queryNotificationReason == .RecordDeleted) {
@@ -704,7 +704,7 @@ public class EVCloudKitDao {
         } else {
             executeIfNonQuery()
         }
-        fetchChangeNotifications(recordID, inserted , updated: updated, deleted: deleted)
+        fetchChangeNotifications(recordID, inserted: inserted , updated: updated, deleted: deleted)
     }
     
     /**
@@ -723,23 +723,25 @@ public class EVCloudKitDao {
         var operation = CKFetchNotificationChangesOperation(previousServerChangeToken: self.previousChangeToken)
         operation.notificationChangedBlock = { notification in
             if(notification.notificationType == .Query) {
-                var queryNotification:CKQueryNotification = notification as CKQueryNotification
-                array.append(notification.notificationID)
-                if(skipRecordID != nil && skipRecordID?.recordName != queryNotification.recordID.recordName) {
-                    if (queryNotification.queryNotificationReason == .RecordDeleted) {
-                        deleted(recordId: queryNotification.recordID.recordName)
-                    } else {
-                        EVCloudKitDao.publicDB.getItem(queryNotification.recordID.recordName, completionHandler: { item in
-                            EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
-                            EVReflection.logObject(item)
-                            if (queryNotification.queryNotificationReason == .RecordCreated) {
-                                inserted(recordID: queryNotification.recordID.recordName, item: item)
-                            } else if (queryNotification.queryNotificationReason == .RecordUpdated) {
-                                updated(recordID: queryNotification.recordID.recordName, item: item)
-                            }
-                            }, errorHandler: { error in
-                                EVLog("ERROR: getItem for change notification.\n\(error.description)")
-                            })
+                var x:CKNotification
+                if var queryNotification = notification as? CKQueryNotification {
+                    array.append(notification.notificationID)
+                    if(skipRecordID != nil && skipRecordID?.recordName != queryNotification.recordID.recordName) {
+                        if (queryNotification.queryNotificationReason == .RecordDeleted) {
+                            deleted(recordId: queryNotification.recordID.recordName)
+                        } else {
+                            EVCloudKitDao.publicDB.getItem(queryNotification.recordID.recordName, completionHandler: { item in
+                                EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
+                                EVReflection.logObject(item)
+                                if (queryNotification.queryNotificationReason == .RecordCreated) {
+                                    inserted(recordID: queryNotification.recordID.recordName, item: item)
+                                } else if (queryNotification.queryNotificationReason == .RecordUpdated) {
+                                    updated(recordID: queryNotification.recordID.recordName, item: item)
+                                }
+                                }, errorHandler: { error in
+                                    EVLog("ERROR: getItem for change notification.\n\(error.description)")
+                                })
+                        }
                     }
                 }
             }
@@ -751,7 +753,7 @@ public class EVCloudKitDao {
             self.previousChangeToken = changetoken
             
             if(operation.moreComing) {
-                self.fetchChangeNotifications(skipRecordID, inserted, updated, deleted)
+                self.fetchChangeNotifications(skipRecordID, inserted: inserted, updated: updated, deleted: deleted)
             }
         }
         operation.start()
@@ -843,7 +845,7 @@ public class EVCloudKitDao {
     public func CKRecordToDictionary(record:CKRecord) -> Dictionary<String, AnyObject?> {
         var dictionary = Dictionary<String, AnyObject>()
         for field in record.allKeys() {
-            dictionary[field as NSString] = record.objectForKey(field as NSString)
+            dictionary[(field as! String)] = record.objectForKey(field as! String)
         }
         return dictionary
     }

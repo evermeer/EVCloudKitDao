@@ -9,6 +9,5 @@ pod 'WhereAmI', '1.1'
 pod 'UzysAssetsPickerController'
 pod 'VIPhotoView'
 
-# Will not work using a pod becauese public extensions are not supported in a framework. Just added the files to the project.
-#pod 'ExSwift'
+
 

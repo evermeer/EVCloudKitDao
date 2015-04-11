@@ -13,13 +13,12 @@ class Asset : EVCloudKitDataObject {
     var FileName : String = ""
     var FileType : String = ""
     
-    func image() -> UIImage {
-        if File != nil {
-            var data = NSData(contentsOfURL: File!.fileURL)
-            if data != nil {
-                return UIImage(data: data!)!
+    func image() -> UIImage? {
+        if let file = File {
+            if let data = NSData(contentsOfURL: file.fileURL) {
+                return UIImage(data: data)
             }
         }
-        return UIImage()
+        return nil
     }
 }

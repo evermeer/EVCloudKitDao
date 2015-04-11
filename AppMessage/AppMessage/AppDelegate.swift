@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             
     var window: UIWindow?
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         // Make sure we receive subscription notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
         application.registerForRemoteNotifications()
@@ -31,10 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-    
-    func application(application: UIApplication!, didReceiveRemoteNotification userInfo: [NSObject : NSObject]!) {
+
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         EVLog("Push received")
-        EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, {
+        EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
             EVLog("Not a CloudKit Query notification.")
         })
     }

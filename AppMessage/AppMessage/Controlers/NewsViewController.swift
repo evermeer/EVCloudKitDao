@@ -41,11 +41,11 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
     // ------------------------------------------------------------------------
     
     
-    func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 54
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
@@ -68,7 +68,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
         }
         
         //This line all you need to get the correct data for the cell
-        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as News
+        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as! News
 
         cell.textLabel?.text = news.Subject
         cell.detailTextLabel?.text = news.Body
@@ -76,9 +76,9 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
         return cell;
     }
     
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         //This line all you need to get the correct data for cell that is selected
-        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as News
+        var news:News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as! News
 
         let url:NSURL! = NSURL(string: news.ActionUrl)
         UIApplication.sharedApplication().openURL(url)

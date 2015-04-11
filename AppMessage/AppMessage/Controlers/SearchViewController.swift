@@ -22,7 +22,7 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
     //   AND (From_ID = %@ OR To_ID = %@)
     
     
-    func searchDisplayController(controller: UISearchDisplayController!, shouldReloadTableForSearchString searchString: String!) -> Bool {
+    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchString searchString: String!) -> Bool {
         if self.searchDisplayController!.searchBar.selectedScopeButtonIndex > 0 {
             self.filterContentForSearchTextV2(searchString)
         } else {
@@ -31,7 +31,7 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
         return false
     }
     
-    func searchDisplayController(controller: UISearchDisplayController!, shouldReloadTableForSearchScope searchOption: Int) -> Bool {
+    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchScope searchOption: Int) -> Bool {
         if self.searchDisplayController!.searchBar.selectedScopeButtonIndex > 0 {
             self.filterContentForSearchTextV2(self.searchDisplayController!.searchBar.text)
         } else {
@@ -62,7 +62,7 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, UISear
     func filterContentForSearchTextV2(searchText: String) {
         EVLog("Filter for \(searchText)")
         networkSpinner(1)
-        EVCloudKitDao.publicDB.query(Message(), predicate: NSPredicate(format: "Text BEGINSWITH %@", searchText)!, completionHandler: { results in
+        EVCloudKitDao.publicDB.query(Message(), predicate: NSPredicate(format: "Text BEGINSWITH %@", searchText), completionHandler: { results in
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
             NSOperationQueue.mainQueue().addOperationWithBlock {

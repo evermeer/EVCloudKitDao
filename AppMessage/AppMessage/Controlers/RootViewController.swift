@@ -41,7 +41,7 @@ class RootViewController: UIViewController {
                         
                 NSOperationQueue.mainQueue().addOperationWithBlock(){
                     let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
-                    let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as UIViewController;
+                    let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as! UIViewController;
                     self.presentViewController(viewController, animated: false, completion: nil);
                 }
             }, errorHandler: { error in
