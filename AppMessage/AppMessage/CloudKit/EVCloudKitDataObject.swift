@@ -83,8 +83,10 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     
     :return: The pritty description
     */
-    public func description2() -> String {
-        return EVReflection.description(self)
+    public override var description : String {
+        get {
+            return EVReflection.description(self)
+        }
     }
     
     /**
@@ -103,9 +105,12 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     
     :return: The hashvalue of this object
     */
-    public func hash2() -> Int {
-        return self.hashValue
+    public override var hash:Int {
+        get {
+            return self.hashValue
+        }
     }
+    
     
     /**
     Implementation of the NSObject isEqual comparisson method
