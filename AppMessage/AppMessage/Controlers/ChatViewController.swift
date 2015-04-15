@@ -94,7 +94,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         
         // The data connection to the conversation
         EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [[recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection]])
+            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
             }, completionHandler: { results in

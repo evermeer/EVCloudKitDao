@@ -14,6 +14,10 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate, RESide
     var queryRunning:Int = 0
     var data:[Message] = []
     
+    override func viewDidAppear(animated: Bool) {
+        doFilter()
+    }
+    
     // ------------------------------------------------------------------------
     // MARK: - Search filter
     // ------------------------------------------------------------------------

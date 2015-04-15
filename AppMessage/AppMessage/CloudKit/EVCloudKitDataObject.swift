@@ -45,7 +45,11 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     */
     public var recordChangeTag: String?
     
-
+    /**
+    Encoding the system fields so that we can create a new CKRecord based on this
+    */
+    public var encodedSystemFields : NSData?
+    
     /**
     Initialize and make sure we have a valid recordType
     */

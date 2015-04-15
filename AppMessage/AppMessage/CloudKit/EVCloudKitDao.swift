@@ -810,6 +810,12 @@ public class EVCloudKitDao {
             theObject.modificationDate = record.modificationDate
             theObject.lastModifiedUserRecordID = record.lastModifiedUserRecordID
             theObject.recordChangeTag = record.recordChangeTag
+
+            var data = NSMutableData()
+            var coder = NSKeyedArchiver(forWritingWithMutableData: data)
+            record.encodeSystemFieldsWithCoder(coder)
+            theObject.encodedSystemFields = data
+            coder.finishEncoding()
             return theObject
         }
         return nil
@@ -822,10 +828,18 @@ public class EVCloudKitDao {
     :return: The CKRecord that is created from theObject
     */
     public func toCKRecord(theObject: EVCloudKitDataObject) -> CKRecord {
-        var record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
+        var record:CKRecord!
+        if theObject.encodedSystemFields != nil {
+            var coder = NSKeyedUnarchiver(forReadingWithData: theObject.encodedSystemFields!)
+            record = CKRecord(coder: coder)
+            coder.finishDecoding()
+        }
+        if record == nil {
+            record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
+        }
         var fromDict = EVReflection.toDictionary(theObject)
         for (key: String, value: AnyObject) in fromDict {
-            if !contains(["recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag"] ,key) {
+            if !contains(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"] ,key) {
                 if let t = value as? NSNull {
 //                    record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
                 } else if key != "recordID" {
