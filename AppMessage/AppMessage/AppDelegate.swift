@@ -26,8 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // During development we will probably play around with subscriptins. To be sure we do not have any old subscriptions left over, we just clear them all on startup.
         EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in EVLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
-
-        EVCloudKitDao.publicDB.setBadgeCounter(0)
         
         return true
     }
@@ -36,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EVLog("Push received")
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
             EVLog("Not a CloudKit Query notification.")
+        }, completed: {
+            EVLog("All notifications are processed")
         })
     }
     

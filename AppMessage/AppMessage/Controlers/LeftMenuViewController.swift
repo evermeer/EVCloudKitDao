@@ -29,7 +29,10 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         connectToMessagesToMe()
         
         // Only already setup CloudKit connect's will receive these notifications (like the News above)
-        EVCloudData.publicDB.fetchChangeNotifications()
+        EVCloudData.publicDB.fetchChangeNotifications({
+            EVLog("All change notifications are processed")
+            EVCloudKitDao.publicDB.setBadgeCounter(0)
+        })
     }
     
     func setupMenuTableViewLayout() {

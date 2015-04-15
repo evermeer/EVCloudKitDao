@@ -674,9 +674,10 @@ public class EVCloudKitDao {
     :param: inserted Executed if the notification was for an inserted object
     :param: updated Executed if the notification was for an updated object
     :param: deleted Executed if the notification was for an deleted object
+    :param: completed Executed if all notifications are processed
     :return: No return value
     */
-    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject]!, executeIfNonQuery:() -> Void, inserted:(recordID:String, item: EVCloudKitDataObject) -> Void, updated:(recordID:String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void) {
+    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject]!, executeIfNonQuery:() -> Void, inserted:(recordID:String, item: EVCloudKitDataObject) -> Void, updated:(recordID:String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void, completed:()-> Void) {
         var cloudNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
         //EVLog("Notification alert body : \(cloudNotification.alertBody)")
         
@@ -704,7 +705,7 @@ public class EVCloudKitDao {
         } else {
             executeIfNonQuery()
         }
-        fetchChangeNotifications(recordID, inserted: inserted , updated: updated, deleted: deleted)
+        fetchChangeNotifications(recordID, inserted: inserted , updated: updated, deleted: deleted, completed:completed)
     }
     
     /**
@@ -715,9 +716,10 @@ public class EVCloudKitDao {
     :param: inserted Executed if the notification was for an inserted object
     :param: updated Executed if the notification was for an updated object
     :param: deleted Executed if the notification was for an deleted object
+    :param: completed Executed if all notifications are processed
     :return: No return value
     */
-    public func fetchChangeNotifications(skipRecordID:CKRecordID?, inserted:(recordID:String, item: EVCloudKitDataObject) -> Void, updated:(recordID:String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void) {
+    public func fetchChangeNotifications(skipRecordID:CKRecordID?, inserted:(recordID:String, item: EVCloudKitDataObject) -> Void, updated:(recordID:String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void, completed:()-> Void) {
         var defaults = NSUserDefaults.standardUserDefaults()
         var array: [NSObject] = [NSObject]()
         var operation = CKFetchNotificationChangesOperation(previousServerChangeToken: self.previousChangeToken)
@@ -753,7 +755,9 @@ public class EVCloudKitDao {
             self.previousChangeToken = changetoken
             
             if(operation.moreComing) {
-                self.fetchChangeNotifications(skipRecordID, inserted: inserted, updated: updated, deleted: deleted)
+                self.fetchChangeNotifications(skipRecordID, inserted: inserted, updated: updated, deleted: deleted, completed:completed)
+            } else {
+                completed()
             }
         }
         operation.start()
@@ -788,7 +792,7 @@ public class EVCloudKitDao {
                     UIApplication.sharedApplication().applicationIconBadgeNumber = count
                 })
         }
-        CKContainer.defaultContainer().addOperation(badgeResetOperation)
+        container.addOperation(badgeResetOperation)
     }
     
     // ------------------------------------------------------------------------

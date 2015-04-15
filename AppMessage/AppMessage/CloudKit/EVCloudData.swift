@@ -679,31 +679,37 @@ public class EVCloudData:NSObject {
     
     :param: userInfo CKNotification dictionary
     :param: executeIfNonQuery Will be called if the notification is not for a CloudKit subscription
+    :param: completed Executed when all notifications are processed
     :return: No return value
     */
-    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject], executeIfNonQuery:() -> Void) {
+    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject], executeIfNonQuery:() -> Void, completed:()-> Void) {
         dao.didReceiveRemoteNotification(userInfo, executeIfNonQuery: executeIfNonQuery, inserted: {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated: {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, deleted: {recordId in
                 self.deleteObject(recordId)
-            })
+            }, completed: {
+                completed()
+        })
     }
     
     /**
     Call this in the AppDelegate didFinishLaunchingWithOptions to handle not yet handled notifications.
     
+    :param: completed Executed when all notifications are processed
     :return: No return value
     */
-    public func fetchChangeNotifications() {
+    public func fetchChangeNotifications(completed:()-> Void) {
         dao.fetchChangeNotifications(nil, inserted: {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, updated : {recordId, item in
                 self.upsertObject(recordId, item: item)
             }, deleted : {recordId in
                 self.deleteObject(recordId)
-            })
+            }, completed: {
+                completed()
+        })
     }
     
 }
