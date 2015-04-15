@@ -1,7 +1,7 @@
 EVCloudKitDao
 =============
 
-Version 7.0 and later are for Xcode 6.3. Travis-ci build is failing because it's running Xcode 6.1.1 Have to wait for the build to pass again when Travis-ci adds Xcode 6.3 as an option
+Version 0.7.0 and later are for Xcode 6.3. Travis-ci build is failing because it's running Xcode 6.1.1 Have to wait for the build to pass again when Travis-ci adds Xcode 6.3 as an option (planned for end May?)
 
 [![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/evermeer/EVCloudKitDao)
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
@@ -57,7 +57,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 
 ## Main features of EVCloudKitDao:
 - simple singleton access to your public or private database and containers (default and named)
-- Object mapping: You do not have to parse from and to CKRecord (mapping is based on reflection)
+- Object mapping: You do not have to parse from and to CKRecord (mapping is based on reflection, including system fields)
 - Generic and simplified query handling
 - Error handling (separate completionHandler and errorHandler code blocks)
 - Storing CKReference objects
