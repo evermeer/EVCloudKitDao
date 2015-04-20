@@ -7,6 +7,15 @@
 
 import CloudKit
 
+
+/**
+Replacement function for NSLog that will also output the filename, linenumber and function name.
+
+:param: object What you want to log
+:param: filename Will be auto populated by the name of the file from where this function is called
+:param: line Will be auto populated by the line number in the file from where this function is called
+:param: funcname Will be auto populated by the function name from where this function is called
+*/
 public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
     var dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"

@@ -56,6 +56,13 @@ func ==(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
     }
 }
 
+/**
+Strange enough by default Swift does not implement the not Equality operator for enums. So we just made one ourselves.
+
+:param: leftPart The CachingStrategy value at the left of the equality operator.
+:param: rightPart The CachingStrategy value at the right of the equality operator.
+*/
+
 func !=(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
     return !(leftPart == rightPart)
 }
@@ -164,6 +171,9 @@ public class EVCloudData:NSObject {
         return cloudData
     }
 
+    /**
+    Overriding the default innit so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
+    */
     override init() {
         super.init()
         NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
@@ -403,7 +413,7 @@ public class EVCloudData:NSObject {
         EVLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
-                var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
+                var itemID:Int? = data[filter]!.EVindexOf {i in return i.recordID.recordName == recordId}
                 if predicate.evaluateWithObject(item) {
                     var existingItem:EVCloudKitDataObject?
                     if itemID != nil && itemID < data[filter]!.count {
@@ -480,6 +490,7 @@ public class EVCloudData:NSObject {
     public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
         dao.getItem(recordId, completionHandler: { result in
             NSOperationQueue.mainQueue().addOperationWithBlock {
+                self.upsertObject(result.recordID.recordName, item: result)
                 completionHandler(result: result)
             }
         }, errorHandler: {error in
@@ -497,15 +508,15 @@ public class EVCloudData:NSObject {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func saveItem(item: EVCloudKitDataObject, completionHandler: (item: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
+    public func saveItem<T:EVCloudKitDataObject>(item: T, completionHandler: (item: T) -> Void, errorHandler:(error: NSError) -> Void) {
         NSOperationQueue().addOperationWithBlock() {
             self.upsertObject(item.recordID.recordName, item: item)
         }
         dao.saveItem(item, completionHandler: { record in
-            var item : EVCloudKitDataObject = self.dao.fromCKRecord(record)!
+            var item = self.dao.fromCKRecord(record)! as! T
             self.upsertObject(item.recordID.recordName, item: item)
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                completionHandler(item: self.dao.fromCKRecord(record)!)
+                completionHandler(item: self.dao.fromCKRecord(record)! as! T)
             }
         }, errorHandler: {error in
             NSOperationQueue.mainQueue().addOperationWithBlock {
