@@ -63,6 +63,9 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
         var config = UzysAppearanceConfig()
         config.finishSelectionButtonColor = UIColor.greenColor()
         UzysAssetsPickerController.setUpAppearanceConfig(config)
+        
+        self.senderId = "~"
+        self.senderDisplayName = "~"
     }
     
     override func viewDidAppear(animated: Bool) {

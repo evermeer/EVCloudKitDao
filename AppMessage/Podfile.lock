@@ -1,6 +1,6 @@
 PODS:
   - CRToast (0.0.7)
-  - JSQMessagesViewController (6.1.3):
+  - JSQMessagesViewController (7.0.1):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - RESideMenu (4.0.7)
@@ -19,13 +19,13 @@ DEPENDENCIES:
   - WhereAmI
 
 SPEC CHECKSUMS:
-  CRToast: f9f2c4b29776d68ba24c4d621cba59a83fea921b
-  JSQMessagesViewController: e93a288a9662d4519c95a28a8c0eec10beae1bfc
-  JSQSystemSoundPlayer: 55528c699a283aae2220d3ae7b8b527d2ecef4b4
-  RESideMenu: a9c1cd2e64e60e1d3166ddac01a83e215a0e4d30
-  UIImage-Resize: fc57263eed2cd98f74e5ba4848bedae979a0bdf0
-  UzysAssetsPickerController: eed407c2ddf5a40c48bd492914c1ff9e1cc479ed
-  VIPhotoView: 2a74e6d385f3424677741eeb6cdf7b0e110bf585
-  WhereAmI: 2dcc2faeccfd2628273f98d34f8511863b2e62f0
+  CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
+  JSQMessagesViewController: 03fba8a3021a3ddc1c91847f180ffe549f2e8cf2
+  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  RESideMenu: f24c508404b49c667344c54aba7e590883533958
+  UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
+  UzysAssetsPickerController: eae7c24955501a80df34286b1797a2ec6f6b1ab9
+  VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
+  WhereAmI: 975cadf6511870769b4a2170882fb6422a8da398
 
-COCOAPODS: 0.36.0
+COCOAPODS: 0.36.3
