@@ -513,10 +513,14 @@ public class EVCloudData:NSObject {
             self.upsertObject(item.recordID.recordName, item: item)
         }
         dao.saveItem(item, completionHandler: { record in
-            var item = self.dao.fromCKRecord(record)! as! T
-            self.upsertObject(item.recordID.recordName, item: item)
+            var savedItem = self.dao.fromCKRecord(record)! as! T
+            self.upsertObject(savedItem.recordID.recordName, item: savedItem)
+            item.recordChangeTag = savedItem.recordChangeTag
+            item.lastModifiedUserRecordID = savedItem.lastModifiedUserRecordID
+            item.modificationDate = savedItem.modificationDate
+            item.encodedSystemFields = savedItem.encodedSystemFields
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                completionHandler(item: self.dao.fromCKRecord(record)! as! T)
+                completionHandler(item: savedItem)
             }
         }, errorHandler: {error in
             NSOperationQueue.mainQueue().addOperationWithBlock {

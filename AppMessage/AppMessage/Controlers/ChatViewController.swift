@@ -315,7 +315,7 @@ class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, Uzy
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
-                    var fromFilePath =  docDirPath.stringByAppendingPathComponent((record as! Asset).FileName)
+                    var fromFilePath =  docDirPath.stringByAppendingPathComponent(record.FileName)
                     let toPath = docDirPath.stringByAppendingPathComponent(record.recordID.recordName + ".png")
                     filemanager.moveItemAtPath(fromFilePath, toPath: toPath, error: nil)
 
