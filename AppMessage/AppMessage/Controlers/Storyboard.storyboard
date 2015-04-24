@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ljn-E3-VY4">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -69,6 +69,12 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="765-CP-PRT"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="contentViewStoryboardID" value="contentViewController"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="leftMenuViewStoryboardID" value="leftMenuViewController"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="rightMenuViewStoryboardID" value="rightMenuViewController"/>
+                        <userDefinedRuntimeAttribute type="image" keyPath="backgroundImage" value="Default.png"/>
+                    </userDefinedRuntimeAttributes>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BgV-Bt-zmQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -131,12 +137,12 @@
                     <navigationItem key="navigationItem" title="Home" id="LJF-xa-pKE">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="js5-Up-KfH">
                             <connections>
-                                <action selector="presentLeftMenuViewController:" destination="ehf-XS-QDs" id="jOr-5i-2Wd"/>
+                                <action selector="presentLeftMenuViewController" destination="ehf-XS-QDs" id="5fd-VA-fJi"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Contacts" id="Kcc-OM-C2W">
                             <connections>
-                                <action selector="presentRightMenuViewController:" destination="ehf-XS-QDs" id="MPq-8V-nIo"/>
+                                <action selector="presentRightMenuViewController" destination="ehf-XS-QDs" id="x7F-mZ-wvp"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -161,7 +167,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w26-7e-ZtO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="515" y="807"/>
+            <point key="canvasLocation" x="-229" y="383"/>
         </scene>
         <!--Right Menu View Controller-->
         <scene sceneID="RaE-yJ-qUf">
@@ -179,7 +185,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eue-pT-b6E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="515" y="1525"/>
+            <point key="canvasLocation" x="171" y="377"/>
         </scene>
         <!--Tests-->
         <scene sceneID="7pv-pU-YWg">
@@ -215,18 +221,27 @@
                                     <action selector="runTest:" destination="hE7-GG-b0k" eventType="touchUpInside" id="P2X-BQ-Uj7"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vYA-cl-SyT">
+                                <rect key="frame" x="16" y="379" width="143" height="30"/>
+                                <state key="normal" title="Show detail screen">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="hn2-Lk-hCB" kind="push" id="olY-LU-Nup"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Tests" id="EV5-6t-S64">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="L0Q-QT-5G3">
                             <connections>
-                                <action selector="presentLeftMenuViewController:" destination="hE7-GG-b0k" id="M7l-Yi-WbO"/>
+                                <action selector="presentLeftMenuViewController" destination="hE7-GG-b0k" id="Fev-VC-u2e"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Contacts" id="MyS-N7-yfK">
                             <connections>
-                                <action selector="presentRightMenuViewController:" destination="hE7-GG-b0k" id="XFg-Ps-6Iw"/>
+                                <action selector="presentRightMenuViewController" destination="hE7-GG-b0k" id="3Xi-cr-1pC"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -251,12 +266,12 @@
                     <navigationItem key="navigationItem" title="News" id="0Wy-of-kJv">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="r2W-Tc-dEP">
                             <connections>
-                                <action selector="presentLeftMenuViewController:" destination="ezV-0U-QD4" id="0mE-de-EgJ"/>
+                                <action selector="presentLeftMenuViewController" destination="ezV-0U-QD4" id="EHA-r7-KST"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Contacts" id="zMU-mM-9nF">
                             <connections>
-                                <action selector="presentRightMenuViewController:" destination="ezV-0U-QD4" id="XfT-j4-wsg"/>
+                                <action selector="presentRightMenuViewController" destination="ezV-0U-QD4" id="EUT-p7-mfH"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -281,12 +296,12 @@
                     <navigationItem key="navigationItem" title="Chat" id="Gol-lF-OoH">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="mhX-cg-w9I">
                             <connections>
-                                <action selector="presentLeftMenuViewController:" destination="z4X-fz-IBd" id="KTJ-6P-gVn"/>
+                                <action selector="presentLeftMenuViewController" destination="z4X-fz-IBd" id="Ymb-5L-NvI"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Contacts" id="1kN-7O-nfX">
                             <connections>
-                                <action selector="presentRightMenuViewController:" destination="z4X-fz-IBd" id="agn-eE-eFY"/>
+                                <action selector="presentRightMenuViewController" destination="z4X-fz-IBd" id="cQi-50-QuC"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -319,12 +334,12 @@
                     <navigationItem key="navigationItem" title="Settings" id="1g3-5x-4mG">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="ln9-Iu-Cqo">
                             <connections>
-                                <action selector="presentLeftMenuViewController:" destination="3HD-e9-ogD" id="lqr-oY-Z6x"/>
+                                <action selector="presentLeftMenuViewController" destination="3HD-e9-ogD" id="Ek5-9K-3nW"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Contacts" id="9Ca-wD-HWv">
                             <connections>
-                                <action selector="presentRightMenuViewController:" destination="3HD-e9-ogD" id="zOi-ep-Rhj"/>
+                                <action selector="presentRightMenuViewController" destination="3HD-e9-ogD" id="fYh-o7-omP"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -370,12 +385,12 @@
                     <navigationItem key="navigationItem" title="Search" id="e5x-g3-wKP" userLabel="Search">
                         <barButtonItem key="leftBarButtonItem" title="Menu" id="Gqw-Qh-aKZ">
                             <connections>
-                                <action selector="presentLeftMenuViewController:" destination="vr3-gb-k7I" id="PYB-Xl-bJ2"/>
+                                <action selector="presentLeftMenuViewController" destination="vr3-gb-k7I" id="KeM-Um-Blj"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Contacts" id="y8t-Fr-7SW">
                             <connections>
-                                <action selector="presentRightMenuViewController:" destination="vr3-gb-k7I" id="nQT-md-fUA"/>
+                                <action selector="presentRightMenuViewController" destination="vr3-gb-k7I" id="GHR-hw-2iU"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -404,7 +419,36 @@
             </objects>
             <point key="canvasLocation" x="1475" y="1315"/>
         </scene>
+        <!--Testing...-->
+        <scene sceneID="BBp-hT-C41">
+            <objects>
+                <viewController restorationIdentifier="testDetailViewController" storyboardIdentifier="testDetailViewController" id="hn2-Lk-hCB" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="v2F-3r-P34"/>
+                        <viewControllerLayoutGuide type="bottom" id="gNv-gd-chF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="4D2-fY-IiF">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Just a test" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KzI-DX-6SS">
+                                <rect key="frame" x="14" y="117" width="293" height="68"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Testing..." id="kg2-ZU-nPY"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2ve-qX-mXK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1893" y="1969"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="Default.png" width="320" height="568"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

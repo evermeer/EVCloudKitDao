@@ -5,7 +5,6 @@
 //  Copyright (c) 2014. All rights reserved.
 //
 
-#import <RESideMenu/RESideMenu.h>
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <CRToast/CRToast.h>
 #import <UzysAssetsPickerController/UzysAssetsPickerController.h>

@@ -7,9 +7,8 @@
 
 import UIKit
 import CloudKit
-import RESideMenu
 
-class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, RESideMenuDelegate {
+class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var tableView: UITableView!
     var newsController: NewsViewController!
@@ -110,10 +109,10 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 controller = self.storyboard?.instantiateViewControllerWithIdentifier(controllerName) as? UIViewController
             }
             if controller != nil {
-                self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: controller!), animated: true)
+                self.sideMenuViewController?.contentViewController = UINavigationController(rootViewController: controller!)
             }
         }
-        self.sideMenuViewController.hideMenuViewController()
+        self.sideMenuViewController?.hideMenuViewController()
     }
 
     func startChat(user:CKDiscoveredUserInfo) {
@@ -124,11 +123,11 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         if self.chatViewController == nil {
             self.chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
         }
-        self.sideMenuViewController.setContentViewController(UINavigationController(rootViewController: self.chatViewController!), animated: true)
+        self.sideMenuViewController?.contentViewController = UINavigationController(rootViewController: self.chatViewController!)
         if self.chatViewController!.chatWithId != recordId {
             chatViewController!.setContact(recordId, firstName: firstName, lastName: lastName)
         }
-        self.sideMenuViewController.hideMenuViewController()    
+        self.sideMenuViewController!.hideMenuViewController()
     }
 
     

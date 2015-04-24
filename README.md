@@ -94,7 +94,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 The AppMessage demo is using the following components which can be installed using CocoaPods. See instructions below.
 Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or later.
 
-- [ResideMenu](https://github.com/romaonthego/RESideMenu) - iOS 7/8 style side menu with parallax effect.
+- [SSASideMenu](https://github.com/SSA111/SSASideMenu) - A Swift implementation of RESideMenu
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs

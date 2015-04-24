@@ -5,9 +5,7 @@
 //  Copyright (c) 2015. All rights reserved.
 //
 
-import RESideMenu
-
-class SearchViewController  : UITableViewController, UISearchBarDelegate, RESideMenuDelegate {
+class SearchViewController  : UITableViewController, UISearchBarDelegate {
     
     @IBOutlet weak var searchBar: UISearchBar!
     

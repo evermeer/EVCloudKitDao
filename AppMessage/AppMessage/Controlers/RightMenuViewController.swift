@@ -82,7 +82,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         return cell;
     }
     
-    func tableView(tableView: UITableView,didSelectRowAtIndexPath indexPath: NSIndexPath){
-        leftMenu.startChat(contacts[indexPath.row])        
+    func tableView(tableView: UITableView,didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        leftMenu.startChat(self.contacts[indexPath.row])
     }
 }
