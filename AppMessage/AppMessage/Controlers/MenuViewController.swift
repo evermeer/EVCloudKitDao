@@ -16,9 +16,7 @@ class MenuViewController: SSASideMenu {
     
     func setupMenu() {
         // Setting menu properties
-//        self.delegate = self
         self.animationDuration = 0.2
-//        self.menuPreferredStatusBarStyle = .LightContent
         self.contentViewShadowColor = .blackColor()
         self.contentViewShadowOffset = CGSizeMake(0, 0)
         self.contentViewShadowOpacity = 0.6
@@ -26,13 +24,6 @@ class MenuViewController: SSASideMenu {
         self.contentViewShadowEnabled = true
         self.backgroundImage = UIImage(named:"Default-568h")
         
-//        // Setting the views
-//        self.contentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("homeViewController") as! HomeViewController
-//        var leftMenu = self.storyboard?.instantiateViewControllerWithIdentifier("leftMenuViewController") as! LeftMenuViewController
-//        self.leftMenuViewController = leftMenu as UIViewController
-//        var rightMenu:RightMenuViewController = self.storyboard?.instantiateViewControllerWithIdentifier("rightMenuViewController")! as! RightMenuViewController
-//        self.rightMenuViewController = rightMenu as UIViewController
-
         (self.rightMenuViewController as! RightMenuViewController).leftMenu = self.leftMenuViewController as! LeftMenuViewController
     }
     
