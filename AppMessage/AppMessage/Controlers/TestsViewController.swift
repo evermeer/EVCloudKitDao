@@ -7,9 +7,32 @@
 
 import CloudKit
 
+class TestObject:NSObject {
+    var objectValue:String = ""
+}
+
 class TestsViewController : UIViewController {
     
+
     @IBAction func runTest(sender: AnyObject) {
+        
+        // Test the EVReflection class
+        var theObject = TestObject()
+        var theObjectString:String = EVReflection.swiftStringFromClass(theObject)
+        NSLog("swiftStringFromClass = \(theObjectString)")
+        
+        if var nsobject = EVReflection.swiftClassFromString(theObjectString) {
+            NSLog("object = \(nsobject)")
+        }
+        
+        // Test the EVReflection class
+        theObject.objectValue = "testing"
+        var toDict = EVReflection.toDictionary(theObject)
+        NSLog("toDictionary = \(toDict)")
+        if var nsobject = EVReflection.fromDictionary(toDict, anyobjectTypeString: theObjectString) as? TestObject {
+            NSLog("object = \(nsobject), objectValue = \(nsobject.objectValue)")
+        }
+        
         // See AppDelegate.swift to see how to handle subscriptions
         var dao: EVCloudKitDao = EVCloudKitDao.publicDB
         

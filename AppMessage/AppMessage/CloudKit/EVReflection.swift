@@ -21,9 +21,7 @@ public class EVReflection {
     :return: The object that is created from the dictionary
     */
     public class func fromDictionary(dictionary:Dictionary<String, AnyObject?>, anyobjectTypeString: String) -> NSObject? {
-        if var anyobjectype : AnyObject.Type = swiftClassFromString(anyobjectTypeString) {
-            var nsobjectype : NSObject.Type = anyobjectype as! NSObject.Type
-            var nsobject: NSObject = nsobjectype()
+        if var nsobject = swiftClassFromString(anyobjectTypeString) {
             var hasKeys = toDictionary(nsobject)
             for (key: String, value: AnyObject?) in dictionary {
                 if (dictionary[key] != nil && hasKeys[key] != nil) {
@@ -109,12 +107,12 @@ public class EVReflection {
     
     
     /**
-    Get the swift Class from a string
+    Get the swift Class type from a string
     
     :param: className The string representation of the class (name of the bundle dot name of the class)
     :return: The Class type
     */
-    public class func swiftClassFromString(className: String) -> AnyClass! {
+    public class func swiftClassTypeFromString(className: String) -> AnyClass! {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as! String? {
             appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName = "\(appName).\(className)"
@@ -122,7 +120,22 @@ public class EVReflection {
         }
         return nil;
     }
+
     
+    /**
+    Get the swift Class from a string
+    
+    :param: className The string representation of the class (name of the bundle dot name of the class)
+    :return: The Class type
+    */
+    public class func swiftClassFromString(className: String) -> NSObject! {
+        if var anyobjectype : AnyObject.Type = swiftClassTypeFromString(className) {
+            var nsobjectype : NSObject.Type = anyobjectype as! NSObject.Type
+            var nsobject: NSObject = nsobjectype()
+            return nsobject
+        }
+        return nil
+    }
     
     /**
     Get the class name as a string from a swift class
