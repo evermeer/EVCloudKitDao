@@ -113,6 +113,9 @@ public class EVReflection {
     :return: The Class type
     */
     public class func swiftClassTypeFromString(className: String) -> AnyClass! {
+        if className.hasPrefix("_TtC") {
+            return NSClassFromString(className)
+        }
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as! String? {
             appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName = "\(appName).\(className)"
@@ -147,6 +150,7 @@ public class EVReflection {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as! String? {
             appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName: String = NSStringFromClass(theObject.dynamicType)
+            NSLog("appName = \(appName),  classStringName = \(classStringName)")
             return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
         }
         return nil;

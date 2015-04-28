@@ -7,16 +7,15 @@
 
 import CloudKit
 
+
 class TestObject:NSObject {
     var objectValue:String = ""
 }
 
 class TestsViewController : UIViewController {
-    
-
     @IBAction func runTest(sender: AnyObject) {
         
-        // Test the EVReflection class
+        // Test the EVReflection class - to and from string
         var theObject = TestObject()
         var theObjectString:String = EVReflection.swiftStringFromClass(theObject)
         NSLog("swiftStringFromClass = \(theObjectString)")
@@ -25,7 +24,7 @@ class TestsViewController : UIViewController {
             NSLog("object = \(nsobject)")
         }
         
-        // Test the EVReflection class
+        // Test the EVReflection class - to and from dictionary
         theObject.objectValue = "testing"
         var toDict = EVReflection.toDictionary(theObject)
         NSLog("toDictionary = \(toDict)")
