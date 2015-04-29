@@ -16,8 +16,8 @@ s.description  = "Simplified access to Apple’s CloudKit using reflection and g
 s.homepage     = "https://github.com/evermeer/EVCloudKitDao"
 s.screenshots  = ["https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png?raw=true",
                 "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true",
-                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.png?raw=true",
-                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.png?raw=true"]
+                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.PNG?raw=true",
+                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.PNG?raw=true"]
 
 
 # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
