@@ -8,7 +8,7 @@
 import CloudKit
 
 
-class TestObject:NSObject {
+@objc class TestObject:NSObject {
     var objectValue:String = ""
 }
 
@@ -31,6 +31,9 @@ class TestsViewController : UIViewController {
         if var nsobject = EVReflection.fromDictionary(toDict, anyobjectTypeString: theObjectString) as? TestObject {
             NSLog("object = \(nsobject), objectValue = \(nsobject.objectValue)")
         }
+        
+        //var nsobject: AnyObject! = objc_getClass("AppMessage.\(theObjectString)") as! TestObject
+        //NSLog("object \(theObjectString) = \(nsobject)")
         
         // See AppDelegate.swift to see how to handle subscriptions
         var dao: EVCloudKitDao = EVCloudKitDao.publicDB

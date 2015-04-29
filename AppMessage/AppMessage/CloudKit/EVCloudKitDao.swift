@@ -9,22 +9,6 @@ import CloudKit
 
 
 /**
-Replacement function for NSLog that will also output the filename, linenumber and function name.
-
-:param: object What you want to log
-:param: filename Will be auto populated by the name of the file from where this function is called
-:param: line Will be auto populated by the line number in the file from where this function is called
-:param: funcname Will be auto populated by the function name from where this function is called
-*/
-public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
-    var dateFormatter = NSDateFormatter()
-    dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
-    var process = NSProcessInfo.processInfo()
-    var threadId = "." //NSThread.currentThread().threadDictionary
-    println("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \(filename.lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
-}
-
-/**
 Wrapper class for being able to use a class instance Dictionary
 */
 private class DaoContainerWrapper {
@@ -778,10 +762,13 @@ public class EVCloudKitDao {
     private var previousChangeToken:CKServerChangeToken? {
         get {
             let encodedObjectData = NSUserDefaults.standardUserDefaults().objectForKey("lastFetchNotificationId") as? NSData
+            var decodedData:CKServerChangeToken? = nil
             if ((encodedObjectData) != nil) {
-                return NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData!) as? CKServerChangeToken
+                EVtry({
+                    decodedData = NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData!) as? CKServerChangeToken
+                })
             }
-            return nil
+            return decodedData
         }
         set(newToken) {
             if ((newToken) != nil) {
@@ -843,9 +830,11 @@ public class EVCloudKitDao {
     public func toCKRecord(theObject: EVCloudKitDataObject) -> CKRecord {
         var record:CKRecord!
         if theObject.encodedSystemFields != nil {
-            var coder = NSKeyedUnarchiver(forReadingWithData: theObject.encodedSystemFields!)
-            record = CKRecord(coder: coder)
-            coder.finishDecoding()
+            EVtry( {
+                var coder = NSKeyedUnarchiver(forReadingWithData: theObject.encodedSystemFields!)
+                record = CKRecord(coder: coder)
+                coder.finishDecoding()
+            })
         }
         if record == nil {
             record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)

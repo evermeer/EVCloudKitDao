@@ -3,6 +3,7 @@ PODS:
   - JSQMessagesViewController (7.0.1):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - SwiftTryCatch (0.0.1)
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.7)
   - VIPhotoView (0.1)
@@ -11,6 +12,7 @@ PODS:
 DEPENDENCIES:
   - CRToast
   - JSQMessagesViewController
+  - SwiftTryCatch
   - UIImage-Resize
   - UzysAssetsPickerController
   - VIPhotoView
@@ -20,6 +22,7 @@ SPEC CHECKSUMS:
   CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
   JSQMessagesViewController: 03fba8a3021a3ddc1c91847f180ffe549f2e8cf2
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  SwiftTryCatch: fb6d2b34abe48efd69578dac919293a44f95b481
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: eae7c24955501a80df34286b1797a2ec6f6b1ab9
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab

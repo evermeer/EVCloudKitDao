@@ -374,7 +374,9 @@ public class EVCloudData:NSObject {
         var result:AnyObject? = nil
         dispatch_sync(ioQueue) {
             if self.filemanager.fileExistsAtPath(filePath) {
-                result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
+                EVtry({
+                    result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
+                })
                 EVLog("Data is restored from \(filePath))")
             }
         }

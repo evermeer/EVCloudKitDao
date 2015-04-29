@@ -8,13 +8,16 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "EVCloudKitDao"
-s.version      = "0.8.1"
+s.version      = "0.9.0"
 s.summary      = "iOS: Simplified access to Apple’s CloudKit"
 
 s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
 
 s.homepage     = "https://github.com/evermeer/EVCloudKitDao"
-s.screenshots  = "https://github.com/evermeer/EVCloudKitDao/raw/master/Screenshot.png"
+s.screenshots  = ["https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png?raw=true",
+                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true",
+                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.png?raw=true",
+                "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.png?raw=true"]
 
 
 # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -83,5 +86,6 @@ s.frameworks = "Foundation", "UIKit", "CloudKit"
 s.requires_arc = true
 
 
+s.dependency 'SwiftTryCatch'
 
 end

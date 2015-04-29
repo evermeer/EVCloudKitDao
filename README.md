@@ -27,6 +27,7 @@ This is a library to simplify the access to Apple's CloudKit data and notificati
 - EVCloudKitDao.swift for if you want control over your in app data and notifications. 
 - EVCloudKitData.swift will let you handle CloudKit data as easy as possible. 
 - EVReflection.swift for if you want easy to use reflection methods. (not only for CloudKit)
+- EVglobal.swift for a couple of easy to use global bridging functions (EVLog and EVtry)
 
 See the Quick Help info for method descriptions or the documentation at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
 
@@ -82,8 +83,9 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
 - Supporting Printable, Hashable and Equatable while using all properties. (Support for Set in Swift 1.2)
 
-## Bonus features
+## Main features of EVglobal
 - You can use EVLog as a replacement for NSLog which will also output the file, function and line number.
+- EVtry as a bridge function to the SwiftTryCatch library
 
 ## Known issues (Swift limitations) ##
 - If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter for populating both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
@@ -102,6 +104,7 @@ Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or la
 - [WhereAmI](https://github.com/lypiut/WhereAmI) - Easy to use Core Location library in Swift
 - [UzysAssetsPickerController](https://github.com/uzysjung/UzysAssetsPickerController) - Alternative UIImagePickerController , You can take a picture with camera and choose multiple photos and videos
 - [VIPhotoView](https://github.com/vitoziv/VIPhotoView) - View a photo with simple and basic interactive gesture
+- [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 
@@ -125,9 +128,9 @@ Version 0.36 of cocoapods will make a dynamic framework of all the pods that you
 import EVCloudKitDao
 ```
 
-If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 4 classes EVCloudKitDao, EVCloudKitData, EVReflection and EVCloudKitDataObject to your app. 
+If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 5 classes EVCloudKitDao, EVCloudKitData, EVReflection, EVCloudKitDataObject and EVglobal to your app. besides that you also have to embed the [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) class 
 
-When you have added EVCloudKitDao to your project, then have a look at the ApMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
+When you have added EVCloudKitDao to your project, then have a look at the AppMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 
 
 ## Building the AppMessage demo

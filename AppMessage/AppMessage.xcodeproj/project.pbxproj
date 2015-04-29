@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F07C54D1AF0C127000DF1F3 /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; };
 		7F0992E51AEA3BAD00522AE6 /* SSASideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0992E41AEA3BAD00522AE6 /* SSASideMenu.swift */; };
 		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
@@ -48,6 +49,7 @@
 /* Begin PBXFileReference section */
 		3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CBFAD2C72A01401977EA5D7 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVglobal.swift; sourceTree = "<group>"; };
 		7F0992E41AEA3BAD00522AE6 /* SSASideMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSASideMenu.swift; sourceTree = "<group>"; };
 		7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudKitDataObject.swift; sourceTree = "<group>"; };
 		7F434A2319628D490081F35C /* AppMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -178,6 +180,7 @@
 		7F434A4519628E2D0081F35C /* CloudKit */ = {
 			isa = PBXGroup;
 			children = (
+				7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */,
 				7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */,
 				7FD41610199666F3003C2CE9 /* EVCloudData.swift */,
 				7FC2CF4519D7F82500CF3549 /* EVReflection.swift */,
@@ -391,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FC46F92198242A5000A875F /* NewsViewController.swift in Sources */,
+				7F07C54D1AF0C127000DF1F3 /* EVglobal.swift in Sources */,
 				7FC46F8E19824121000A875F /* RightMenuViewController.swift in Sources */,
 				7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */,
 				7F434A4C1962AE780081F35C /* Message.swift in Sources */,

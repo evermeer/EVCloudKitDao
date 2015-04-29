@@ -76,7 +76,7 @@ public class EVReflection {
     :return: No return value
     */
     public class func logObject(theObject: NSObject) {
-        EVLog(description(theObject))
+        NSLog(description(theObject))
     }
 
     /**
@@ -150,7 +150,6 @@ public class EVReflection {
         if  var appName: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleName") as! String? {
             appName = appName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
             let classStringName: String = NSStringFromClass(theObject.dynamicType)
-            NSLog("appName = \(appName),  classStringName = \(classStringName)")
             return classStringName.stringByReplacingOccurrencesOfString(appName + ".", withString: "", options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)
         }
         return nil;

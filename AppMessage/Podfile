@@ -7,6 +7,6 @@ pod 'UIImage-Resize'
 pod 'WhereAmI'
 pod 'UzysAssetsPickerController'
 pod 'VIPhotoView'
-
+pod 'SwiftTryCatch'
 
 
