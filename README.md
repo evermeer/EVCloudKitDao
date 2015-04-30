@@ -26,8 +26,10 @@ This is a library to simplify the access to Apple's CloudKit data and notificati
  
 - EVCloudKitDao.swift for if you want control over your in app data and notifications. 
 - EVCloudKitData.swift will let you handle CloudKit data as easy as possible. 
-- EVReflection.swift for if you want easy to use reflection methods. (not only for CloudKit)
 - EVglobal.swift for a couple of easy to use global bridging functions (EVLog and EVtry)
+
+There is a dependency with [EVReflection](https://github.com/evermeer/EVReflection) Which will automatically be setup if you are using cocoapods.
+- EVReflection.swift for if you want easy to use reflection methods. (not only for CloudKit)
 
 See the Quick Help info for method descriptions or the documentation at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
 
@@ -76,13 +78,6 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - since all data is processed all callback events will be executed on the mainQueue
 - caching of the results to a file for speedy app restart. (You can set the caching strategy) 
 
-## Main features of EVReflection:
-- Parsing objects based on NSObject to a dictionary. (except for nullable fields)
-- Parsing a dictionary back to an object.
-- Creating a class from a string value and get the string value for a class.
-- Support NSCoding methods encodeWithCoder and decodeObjectWithCoder
-- Supporting Printable, Hashable and Equatable while using all properties. (Support for Set in Swift 1.2)
-
 ## Main features of EVglobal
 - You can use EVLog as a replacement for NSLog which will also output the file, function and line number.
 - EVtry as a bridge function to the SwiftTryCatch library
@@ -90,12 +85,13 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 ## Known issues (Swift limitations) ##
 - If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter for populating both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
 
-- Optional objects properties can now be used. Optional type properties not. Swift is not able to do a .setValue forKey on an optional like Int? or Double? As a workaround for this you could use a NSNumber?
+- Optional objects properties can now be used. Optional type properties not. Swift is not able to do a .setValue forKey on an optional like Int? or Double? As a workaround for this you could use a NSNumber? This limitation is part of [EVReflection](https://github.com/evermeer/EVReflection)
 
 ## External components for the demo
 The AppMessage demo is using the following components which can be installed using CocoaPods. See instructions below.
 Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or later.
 
+- [EVReflection](https://github.com/evermeer/EVReflection) - Swift helper library with reflection functions
 - [SSASideMenu](https://github.com/SSA111/SSASideMenu) - A Swift implementation of RESideMenu
 - [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController) - An elegant messages UI library
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
@@ -105,6 +101,10 @@ Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or la
 - [UzysAssetsPickerController](https://github.com/uzysjung/UzysAssetsPickerController) - Alternative UIImagePickerController , You can take a picture with camera and choose multiple photos and videos
 - [VIPhotoView](https://github.com/vitoziv/VIPhotoView) - View a photo with simple and basic interactive gesture
 - [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
+
+Besides these the dependency to EVCloudKitDao has been skipped by just using the classes directly
+- [EVCloudKitDao](https://github.com/evermeer/EVCloudKitDao) - Simplified access to Apple's CloudKit
+
 
 ## Using EVCloudKitDao or EVCloudKitData in your own App 
 
