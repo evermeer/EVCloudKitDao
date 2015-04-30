@@ -6,9 +6,9 @@
 //
 
 import CloudKit
+import EVReflection
 
-
-@objc class TestObject:NSObject {
+class TestObject:NSObject {
     var objectValue:String = ""
 }
 

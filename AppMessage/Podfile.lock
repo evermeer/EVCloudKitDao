@@ -1,5 +1,6 @@
 PODS:
   - CRToast (0.0.7)
+  - EVReflection (1.0.0)
   - JSQMessagesViewController (7.0.1):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -11,6 +12,7 @@ PODS:
 
 DEPENDENCIES:
   - CRToast
+  - EVReflection
   - JSQMessagesViewController
   - SwiftTryCatch
   - UIImage-Resize
@@ -20,6 +22,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
+  EVReflection: aa8688bf22189ce1b92e67dd0e54f9f2f3d58362
   JSQMessagesViewController: 03fba8a3021a3ddc1c91847f180ffe549f2e8cf2
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   SwiftTryCatch: fb6d2b34abe48efd69578dac919293a44f95b481

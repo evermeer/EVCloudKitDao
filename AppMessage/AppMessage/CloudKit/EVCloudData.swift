@@ -7,6 +7,7 @@
 
 import Foundation
 import CloudKit
+import EVReflection
 
 /**
 The enum for specifying the caching strategy for the data

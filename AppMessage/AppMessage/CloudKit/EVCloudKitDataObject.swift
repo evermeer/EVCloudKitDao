@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import EVReflection
 
 /**
 */
@@ -138,6 +139,17 @@ Equality operator for comparing all fields of a class that has EVCloudKitDataObj
 */
 public func ==(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
     return EVReflection.areEqual(lhs, rhs: rhs)
+}
+
+/**
+Not Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
+
+:param: lhs Object to compare at the left side of the equation
+:param: rhs Object to compare at the right side of the equation
+:return: true if objects are equal, otherwise false
+*/
+public func !=(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
+    return !EVReflection.areEqual(lhs, rhs: rhs)
 }
 
 
