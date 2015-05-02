@@ -28,8 +28,9 @@ This is a library to simplify the access to Apple's CloudKit data and notificati
 - EVCloudKitData.swift will let you handle CloudKit data as easy as possible. 
 - EVglobal.swift for a couple of easy to use global bridging functions (EVLog and EVtry)
 
-There is a dependency with [EVReflection](https://github.com/evermeer/EVReflection) Which will automatically be setup if you are using cocoapods.
-- EVReflection.swift for if you want easy to use reflection methods. (not only for CloudKit)
+There is a dependency with [EVReflection](https://github.com/evermeer/EVReflection) and [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch). Those will automatically be setup if you are using cocoapods.
+- [EVReflection](https://github.com/evermeer/EVReflection) for if you want easy to use reflection methods. (not only for CloudKit)
+- [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
 
 See the Quick Help info for method descriptions or the documentation at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
 
@@ -79,7 +80,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - caching of the results to a file for speedy app restart. (You can set the caching strategy) 
 
 ## Main features of EVglobal
-- You can use EVLog as a replacement for NSLog which will also output the file, function and line number.
+- EVLog as a replacement for NSLog which will also output the file, function and line number.
 - EVtry as a bridge function to the SwiftTryCatch library
 
 ## Known issues (Swift limitations) ##
