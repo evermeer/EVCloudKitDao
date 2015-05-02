@@ -213,6 +213,7 @@ class TestsViewController : UIViewController {
                 EVLog("<--- ERROR connect")
             })
         
+        EVLog("===== WARNING : This will fail because you will probably not have this specific container! =====")
         let dao2 = EVCloudKitDao.publicDBForContainer("iCloud.nl.evict.myapp")
         dao2.saveItem(message, completionHandler: {record in
             createdId = record.recordID.recordName;

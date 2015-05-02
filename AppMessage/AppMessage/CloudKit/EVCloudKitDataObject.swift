@@ -10,7 +10,7 @@ import EVReflection
 
 /**
 */
-public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equatable {
+public class EVCloudKitDataObject : EVObject {
     /**
     The unique ID of the record.
     */
@@ -51,105 +51,105 @@ public class EVCloudKitDataObject : NSObject, NSCoding, Printable, Hashable, Equ
     */
     public var encodedSystemFields : NSData?
     
-    /**
-    Initialize and make sure we have a valid recordType
-    */
-    public override init() {
-        super.init()
-        if let user = EVCloudKitDao.publicDB.activeUser {
-            creatorUserRecordID = user.userRecordID
-            lastModifiedUserRecordID = user.userRecordID
-        }        
-        recordType = EVReflection.swiftStringFromClass(self)
-    }
-    
-    /**
-    Decode any object
-    
-    :param: theObject The object that we want to decode.
-    :param: aDecoder The NSCoder that will be used for decoding the object.
-    */
-    public required convenience init(coder: NSCoder) {
-        self.init()
-        EVReflection.decodeObjectWithCoder(self, aDecoder: coder)
-    }
-    
-    /**
-    Encode this object using a NSCoder
-    
-    :param: aCoder The NSCoder that will be used for encoding the object
-    */
-    public func encodeWithCoder(aCoder: NSCoder) {
-        EVReflection.encodeWithCoder(self, aCoder: aCoder)
-    }
-    
-    /**
-    Returns the pritty description of this object
-    
-    :return: The pritty description
-    */
-    public override var description : String {
-        get {
-            return EVReflection.description(self)
-        }
-    }
-    
-    /**
-    Returns the hashvalue of this object
-    
-    :return: The hashvalue of this object
-    */
-    public override var hashValue : Int {
-        get {
-            return EVReflection.hashValue(self)
-        }
-    }
-    
-    /**
-    Function for returning the hash for the NSObject based functionality
-    
-    :return: The hashvalue of this object
-    */
-    public override var hash:Int {
-        get {
-            return self.hashValue
-        }
-    }
-    
-    
-    /**
-    Implementation of the NSObject isEqual comparisson method
-    
-    :param: object The object where you want to compare with
-    :return: Returns true if the object is the same otherwise false
-    */
-    override public func isEqual(object: AnyObject?) -> Bool { // for isEqual:
-        if let dataObject = object as? EVCloudKitDataObject {
-            return dataObject == self // just use our "==" function
-        } else { return false }
-    }
+//    /**
+//    Initialize and make sure we have a valid recordType
+//    */
+//    public override init() {
+//        super.init()
+//        if let user = EVCloudKitDao.publicDB.activeUser {
+//            creatorUserRecordID = user.userRecordID
+//            lastModifiedUserRecordID = user.userRecordID
+//        }        
+//        recordType = EVReflection.swiftStringFromClass(self)
+//    }
+//    
+//    /**
+//    Decode any object
+//    
+//    :param: theObject The object that we want to decode.
+//    :param: aDecoder The NSCoder that will be used for decoding the object.
+//    */
+//    public required convenience init(coder: NSCoder) {
+//        self.init()
+//        EVReflection.decodeObjectWithCoder(self, aDecoder: coder)
+//    }
+//    
+//    /**
+//    Encode this object using a NSCoder
+//    
+//    :param: aCoder The NSCoder that will be used for encoding the object
+//    */
+//    public func encodeWithCoder(aCoder: NSCoder) {
+//        EVReflection.encodeWithCoder(self, aCoder: aCoder)
+//    }
+//    
+//    /**
+//    Returns the pritty description of this object
+//    
+//    :return: The pritty description
+//    */
+//    public override var description : String {
+//        get {
+//            return EVReflection.description(self)
+//        }
+//    }
+//    
+//    /**
+//    Returns the hashvalue of this object
+//    
+//    :return: The hashvalue of this object
+//    */
+//    public override var hashValue : Int {
+//        get {
+//            return EVReflection.hashValue(self)
+//        }
+//    }
+//    
+//    /**
+//    Function for returning the hash for the NSObject based functionality
+//    
+//    :return: The hashvalue of this object
+//    */
+//    public override var hash:Int {
+//        get {
+//            return self.hashValue
+//        }
+//    }
+//    
+//    
+//    /**
+//    Implementation of the NSObject isEqual comparisson method
+//    
+//    :param: object The object where you want to compare with
+//    :return: Returns true if the object is the same otherwise false
+//    */
+//    override public func isEqual(object: AnyObject?) -> Bool { // for isEqual:
+//        if let dataObject = object as? EVCloudKitDataObject {
+//            return dataObject == self // just use our "==" function
+//        } else { return false }
+//    }
 }
 
-/**
-Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
-
-:param: lhs Object to compare at the left side of the equation
-:param: rhs Object to compare at the right side of the equation
-:return: true if objects are equal, otherwise false
-*/
-public func ==(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
-    return EVReflection.areEqual(lhs, rhs: rhs)
-}
-
-/**
-Not Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
-
-:param: lhs Object to compare at the left side of the equation
-:param: rhs Object to compare at the right side of the equation
-:return: true if objects are equal, otherwise false
-*/
-public func !=(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
-    return !EVReflection.areEqual(lhs, rhs: rhs)
-}
+///**
+//Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
+//
+//:param: lhs Object to compare at the left side of the equation
+//:param: rhs Object to compare at the right side of the equation
+//:return: true if objects are equal, otherwise false
+//*/
+//public func ==(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
+//    return EVReflection.areEqual(lhs, rhs: rhs)
+//}
+//
+///**
+//Not Equality operator for comparing all fields of a class that has EVCloudKitDataObject as its base class
+//
+//:param: lhs Object to compare at the left side of the equation
+//:param: rhs Object to compare at the right side of the equation
+//:return: true if objects are equal, otherwise false
+//*/
+//public func !=(lhs: EVCloudKitDataObject, rhs: EVCloudKitDataObject) -> Bool {
+//    return !EVReflection.areEqual(lhs, rhs: rhs)
+//}
 
 
