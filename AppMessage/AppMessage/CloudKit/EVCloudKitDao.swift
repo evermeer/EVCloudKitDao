@@ -12,7 +12,13 @@ import EVReflection
 Wrapper class for being able to use a class instance Dictionary
 */
 private class DaoContainerWrapper {
+    /**
+    Wrapping the public containers
+    */
     var publicContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
+    /**
+    Wrapping the private containers
+    */
     var privateContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
 }
 
@@ -31,6 +37,9 @@ public class EVCloudKitDao {
     :return: The EVCLoudKitDao object
     */
     public class var publicDB : EVCloudKitDao {
+        /**
+        Singleton structure
+        */
         struct Static { static let instance : EVCloudKitDao = EVCloudKitDao() }
         return Static.instance
     }
@@ -777,7 +786,10 @@ public class EVCloudKitDao {
         }
     }
     
-    
+    /**
+    Setting the application badge count to a specific number
+    :param: count The number for the badge
+    */
     public func setBadgeCounter(count:Int) {
         let badgeResetOperation = CKModifyBadgeOperation(badgeValue: count)
         badgeResetOperation.modifyBadgeCompletionBlock = { (error) -> Void in            

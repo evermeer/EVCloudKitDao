@@ -63,7 +63,6 @@ Strange enough by default Swift does not implement the not Equality operator for
 :param: leftPart The CachingStrategy value at the left of the equality operator.
 :param: rightPart The CachingStrategy value at the right of the equality operator.
 */
-
 func !=(leftPart:CachingStrategy, rightPart:CachingStrategy) -> Bool {
     return !(leftPart == rightPart)
 }

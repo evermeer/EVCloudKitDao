@@ -25,7 +25,7 @@ With Apple CloudKit, you can focus on your client-side app development and let i
 This is a library to simplify the access to Apple's CloudKit data and notifications (see a more detailed description below)
  
 - EVCloudKitDao.swift for if you want control over your in app data and notifications. 
-- EVCloudKitData.swift will let you handle CloudKit data as easy as possible. 
+- EVCloudData.swift will let you handle CloudKit data as easy as possible. 
 - EVglobal.swift for a couple of easy to use global bridging functions (EVLog and EVtry)
 
 There is a dependency with [EVReflection](https://github.com/evermeer/EVReflection) and [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch). Those will automatically be setup if you are using cocoapods.
