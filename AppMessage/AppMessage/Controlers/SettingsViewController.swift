@@ -5,6 +5,8 @@
 //  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
+import UIKit
+
 class SettingsViewController : UIViewController {
     func pushViewController(sender: UIViewController) {
         var viewController = UIViewController()

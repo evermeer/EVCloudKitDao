@@ -9,5 +9,5 @@ pod 'WhereAmI'
 pod 'UzysAssetsPickerController'
 pod 'VIPhotoView'
 pod 'SwiftTryCatch'
-
+#pod 'SSASideMenu' --> for now included
 

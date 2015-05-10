@@ -5,6 +5,8 @@
 //  Copyright (c) 2015. All rights reserved.
 //
 
+import UIKit
+
 class SearchViewController  : UITableViewController, UISearchBarDelegate {
     
     @IBOutlet weak var searchBar: UISearchBar!

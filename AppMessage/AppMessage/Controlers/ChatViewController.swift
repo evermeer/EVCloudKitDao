@@ -12,6 +12,7 @@ import UzysAssetsPickerController
 import WhereAmI
 import VIPhotoView
 import MapKit
+import UIImage_Resize
 
 class ChatViewController : JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
     

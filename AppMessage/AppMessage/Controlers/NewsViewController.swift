@@ -5,6 +5,8 @@
 //  Copyright (c) 2014. All rights reserved.
 //
 
+import UIKit
+
 class NewsViewController : UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var tableView: UITableView = UITableView()
