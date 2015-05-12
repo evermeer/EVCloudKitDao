@@ -49,6 +49,7 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate {
                 self.tableView.reloadData()
                 self.networkSpinner(-1)
             }
+            return (self.data.count < 500)
         }, errorHandler: { error in
             EVLog("ERROR: query Message for words \(searchText)")
             self.networkSpinner(-1)
@@ -66,9 +67,10 @@ class SearchViewController  : UITableViewController, UISearchBarDelegate {
                 self.tableView.reloadData()
                 self.networkSpinner(-1)
             }
-            }, errorHandler: { error in
-                EVLog("ERROR: query Message for words \(searchText)")
-                self.networkSpinner(-1)
+            return (self.data.count < 500)
+        }, errorHandler: { error in
+            EVLog("ERROR: query Message for words \(searchText)")
+            self.networkSpinner(-1)
         })
     }
     

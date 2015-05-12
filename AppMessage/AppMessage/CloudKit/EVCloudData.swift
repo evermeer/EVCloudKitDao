@@ -463,7 +463,7 @@ public class EVCloudData:NSObject {
     */
     private func deleteObject(recordId :String) {
         for (filter, table) in self.data {
-            var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID == recordId}
+            var itemID:Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
             if (itemID != nil) {
                 data[filter]!.removeAtIndex(itemID!)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -581,7 +581,7 @@ public class EVCloudData:NSObject {
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil,
-        completionHandler: ((results: [T]) -> Void)? = nil,
+        completionHandler: ((results: [T]) -> Bool)? = nil,
         insertedHandler:((item: T) -> Void)? = nil,
         updatedHandler:((item: T, dataIndex:Int) -> Void)? = nil,
         deletedHandler:((recordId: String, dataIndex:Int) -> Void)? = nil,
@@ -645,18 +645,19 @@ public class EVCloudData:NSObject {
             
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
             
-            var recordType = EVReflection.swiftStringFromClass(type)
-            var query = CKQuery(recordType: recordType, predicate: predicate)
-            dao.queryRecords(type, query: query, completionHandler: { results in
+            dao.query(type, predicate: predicate, completionHandler: { results in
                 if self.data[filterId] != nil && self.data[filterId]! == results && self.data[filterId]!.count > 0 {
-                    return // Result was already returned from cache
+                    return false // Result was already returned from cache
                 }
                 
+                var continueReading:Bool = false
                 self.data[filterId] = results
+                var sema = dispatch_semaphore_create(0)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     if completionHandler != nil {
-                        completionHandler!(results: results)
+                        continueReading = completionHandler!(results: results)
                     }
+                    dispatch_semaphore_signal(sema);
                     if dataChangedHandler != nil {
                         dataChangedHandler!()
                     }
@@ -664,12 +665,14 @@ public class EVCloudData:NSObject {
                 if self.cachingStrategies[filterId]! != CachingStrategy.None {
                     self.backupDataForFilter(filterId)
                 }
-                }, errorHandler: {error in
-                    NSOperationQueue.mainQueue().addOperationWithBlock {
-                        if errorHandler != nil {
-                            errorHandler!(error: error)
-                        }
+                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+                return continueReading
+            }, errorHandler: {error in
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    if errorHandler != nil {
+                        errorHandler!(error: error)
                     }
+                }
             })
     }
     
