@@ -66,6 +66,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - Error handling (separate completionHandler and errorHandler code blocks)
 - Storing CKReference objects
 - Storing CKAsset objects
+- Optionally auto continue reading from cursor (batch query)
 - Organising subscription
 - Handling incoming notifications
 - (Re)setting the badge
@@ -223,6 +224,7 @@ class LeftMenuViewController: UIViewController {
         , completionHandler: { results in
             EVLog("There are \(results.count) existing news items")
             self.newsController.tableView.reloadData()
+            return results.count < 200 // Continue reading if we have less than 200 records and if there are more.
         }, insertedHandler: {item in
             Helper.showStatus("New News item: '\(item.Subject)'")
             self.newsController.tableView.reloadData()
