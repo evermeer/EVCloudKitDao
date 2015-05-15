@@ -2,7 +2,7 @@ EVCloudKitDao
 =============
 
 
-[![Circle CI](https://circleci.com/gh/evermeer/EVCloudKitDao.svg?style=svg)](https://circleci.com/gh/evermeer/EVCloudKitDao)
+[![Circle CI](https://circleci.com/gh/evermeer/EVCloudKitDao.svg?style=shield)](https://circleci.com/gh/evermeer/EVCloudKitDao)
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
 [![Stars](https://img.shields.io/github/stars/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/stargazers)
 [![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
