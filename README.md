@@ -2,7 +2,6 @@ EVCloudKitDao
 =============
 
 [![Build Status](https://img.shields.io/circleci/project/EVCloudKidDao/PHP.Gt.svg?style=flat)](https://circleci.com/gh/evermeer/EVCloudKitDao)
-
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
 [![Stars](https://img.shields.io/github/stars/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/stargazers)
 [![Version](https://img.shields.io/cocoapods/v/EVCloudKitDao.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
