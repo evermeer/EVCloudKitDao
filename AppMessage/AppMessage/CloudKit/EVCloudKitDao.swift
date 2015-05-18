@@ -547,25 +547,26 @@ public class EVCloudKitDao {
     */
     public func subscribe(type:EVCloudKitDataObject, predicate:NSPredicate, filterId:String, configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
-        var defaults = NSUserDefaults.standardUserDefaults()
-        var key = "subscriptionFor_\(recordType)_\(filterId)"
-        if defaults.objectForKey(key) as? String != nil {
-            unsubscribe(type, filterId: filterId, errorHandler: errorHandler)
+        
+        func createSubscription() {
+            var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
+            subscription.notificationInfo = CKNotificationInfo()
+            subscription.notificationInfo.shouldSendContentAvailable = true
+            subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
+            if let configure = configureNotificationInfo {
+                configure(notificationInfo: subscription.notificationInfo)
+            }
+            self.database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
+                self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                    var key = "subscriptionFor_\(recordType)_\(filterId)"
+                    EVLog("Subscription created for key \(key)")
+                    var defaults = NSUserDefaults.standardUserDefaults()
+                    defaults.setObject(subscription.subscriptionID, forKey: key)
+                })
+            })
         }
         
-        var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
-        subscription.notificationInfo = CKNotificationInfo()
-        subscription.notificationInfo.shouldSendContentAvailable = true
-        subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
-        if let configure = configureNotificationInfo {
-            configure(notificationInfo: subscription.notificationInfo)
-        }
-        database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
-            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                EVLog("Subscription created for key \(key)")
-                defaults.setObject(subscription.subscriptionID, forKey: key)
-            })
-        })
+        unsubscribe(type, filterId: filterId, completionHandler:createSubscription, errorHandler: errorHandler)
     }
     
     /**
@@ -576,7 +577,7 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type:EVCloudKitDataObject, filterId:String, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func unsubscribe(type:EVCloudKitDataObject, filterId:String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
         var defaults = NSUserDefaults.standardUserDefaults()
         var key = "subscriptionFor_\(recordType)_\(filterId)"
@@ -587,10 +588,18 @@ public class EVCloudKitDao {
             modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
                 self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                     defaults.removeObjectForKey(key)
+                    if var handler = completionHandler {
+                        handler()
+                    }
                 })
             }
             database.addOperation(modifyOperation)
+        } else {
+            if var handler = completionHandler {
+                handler()
+            }
         }
+        
     }
     
     /**
@@ -604,7 +613,6 @@ public class EVCloudKitDao {
     :return: No return value
     */
     public func subscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, configureNotificationInfo:((notificationInfo:CKNotificationInfo) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
-        var recordType = EVReflection.swiftStringFromClass(type)
         var parentId = CKRecordID(recordName: referenceRecordName)
         var parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
         var predicate = NSPredicate(format: "%K == %@", referenceField ,parent)
@@ -620,8 +628,8 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, errorHandler:((error: NSError) -> Void)? = nil) {
-        unsubscribe(type, filterId:"reference_\(referenceField)_\(referenceRecordName)", errorHandler: errorHandler)
+    public func unsubscribe(type:EVCloudKitDataObject, referenceRecordName:String, referenceField:String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+        unsubscribe(type, filterId:"reference_\(referenceField)_\(referenceRecordName)", completionHandler:completionHandler, errorHandler: errorHandler)
     }
 
     /**
@@ -643,8 +651,8 @@ public class EVCloudKitDao {
     :param: errorHandler The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type:EVCloudKitDataObject, errorHandler:((error: NSError) -> Void)? = nil) {
-        unsubscribe(type, filterId:"all", errorHandler:errorHandler)
+    public func unsubscribe(type:EVCloudKitDataObject, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+        unsubscribe(type, filterId:"all", completionHandler:completionHandler, errorHandler:errorHandler)
     }
 
     /**
