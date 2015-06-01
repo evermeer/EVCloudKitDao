@@ -708,23 +708,26 @@ public class EVCloudKitDao {
         // Handle CloudKit subscription notifications
         var recordID:CKRecordID?
         if cloudNotification.notificationType == CKNotificationType.Query {
-            var queryNotification: CKQueryNotification = cloudNotification as! CKQueryNotification
-            recordID = queryNotification.recordID
-            EVLog("recordID of notified record = \(recordID)")
-            if(queryNotification.queryNotificationReason == .RecordDeleted) {
-                deleted(recordId: recordID!.recordName)
-            } else {
-                EVCloudKitDao.publicDB.getItem(recordID!.recordName, completionHandler: { item in
-                    EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
-                    EVReflection.logObject(item)
-                    if (queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated ) {
-                        inserted(recordID: recordID!.recordName, item: item)
-                    } else if(queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordUpdated){
-                        updated(recordID: recordID!.recordName, item: item)
-                    }
+            if var queryNotification: CKQueryNotification = cloudNotification as? CKQueryNotification {
+                recordID = queryNotification.recordID
+                EVLog("recordID of notified record = \(recordID)")
+                if(queryNotification.queryNotificationReason == .RecordDeleted) {
+                    deleted(recordId: recordID!.recordName)
+                } else {
+                    EVCloudKitDao.publicDB.getItem(recordID!.recordName, completionHandler: { item in
+                        EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
+                        EVReflection.logObject(item)
+                        if (queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated ) {
+                            inserted(recordID: recordID!.recordName, item: item)
+                        } else if(queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordUpdated){
+                            updated(recordID: recordID!.recordName, item: item)
+                        }
                     }, errorHandler: { error in
                         EVLog("ERROR: getItem for notification.\n\(error.description)")
                     })
+                }
+            } else {
+                EVLog("===> Should not happen, please put this and the 2 lines below in a github issue.\n==>notificationType is Query but the notification is not a CKQueryNotification.\n===>notification = \(cloudNotification)")
             }
         } else {
             executeIfNonQuery()
