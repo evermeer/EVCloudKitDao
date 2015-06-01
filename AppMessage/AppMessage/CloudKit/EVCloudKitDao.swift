@@ -708,7 +708,7 @@ public class EVCloudKitDao {
         // Handle CloudKit subscription notifications
         var recordID:CKRecordID?
         if cloudNotification.notificationType == CKNotificationType.Query {
-            if var queryNotification: CKQueryNotification = cloudNotification as? CKQueryNotification {
+            if var queryNotification: CKQueryNotification = CKQueryNotification(fromRemoteNotificationDictionary: userInfo) {
                 recordID = queryNotification.recordID
                 EVLog("recordID of notified record = \(recordID)")
                 if(queryNotification.queryNotificationReason == .RecordDeleted) {
@@ -727,7 +727,8 @@ public class EVCloudKitDao {
                     })
                 }
             } else {
-                EVLog("===> Should not happen, please put this and the 2 lines below in a github issue.\n==>notificationType is Query but the notification is not a CKQueryNotification.\n===>notification = \(cloudNotification)")
+                executeIfNonQuery()
+                EVLog("===> Should not happen, please put this and the 2 lines below in a github issue.\n==>notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)")
             }
         } else {
             executeIfNonQuery()
