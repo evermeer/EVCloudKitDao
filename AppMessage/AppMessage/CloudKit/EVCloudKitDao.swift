@@ -708,7 +708,7 @@ public class EVCloudKitDao {
         // Handle CloudKit subscription notifications
         var recordID:CKRecordID?
         if cloudNotification.notificationType == CKNotificationType.Query {
-            if var queryNotification: CKQueryNotification = CKQueryNotification(fromRemoteNotificationDictionary: userInfo) {
+            if var queryNotification = cloudNotification as? CKQueryNotification {
                 if queryNotification.recordID != nil {
                     recordID = queryNotification.recordID
                     EVLog("recordID of notified record = \(recordID)")
@@ -727,10 +727,12 @@ public class EVCloudKitDao {
                                 EVLog("ERROR: getItem for notification.\n\(error.description)")
                         })
                     }                    
+                } else {
+                    EVLog("ERROR: CKQueryNotification without a recordID.\n===>userInfo = \(userInfo)")
                 }
             } else {
                 executeIfNonQuery()
-                EVLog("===> Should not happen, please put this and the 2 lines below in a github issue.\n==>notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)")
+                EVLog("===>notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)")
             }
         } else {
             executeIfNonQuery()
