@@ -728,11 +728,11 @@ public class EVCloudKitDao {
                         })
                     }                    
                 } else {
-                    EVLog("ERROR: CKQueryNotification without a recordID.\n===>userInfo = \(userInfo)")
+                    EVLog("WARNING: CKQueryNotification without a recordID.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification)")
                 }
             } else {
                 executeIfNonQuery()
-                EVLog("===>notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)")
+                EVLog("WARNING: notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification)")
             }
         } else {
             executeIfNonQuery()
