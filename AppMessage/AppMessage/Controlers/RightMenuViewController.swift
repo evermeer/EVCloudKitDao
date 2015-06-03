@@ -12,7 +12,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     var contacts: [CKDiscoveredUserInfo]! = []
     var tableView: UITableView!
     var leftMenu: LeftMenuViewController!
-    
+
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
     // ------------------------------------------------------------------------
@@ -22,7 +22,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         setupContactsTableViewLayout()
         loadContacts()
     }
-    
+
     func setupContactsTableViewLayout() {
         var rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
         self.tableView = UITableView(frame: rect)
@@ -37,7 +37,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         tableView.scrollsToTop = true
         self.view.addSubview(self.tableView)
     }
-    
+
     func loadContacts() {
         // Look who of our contact is also using this app.
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
@@ -52,23 +52,23 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         })
 
     }
-    
+
     // ------------------------------------------------------------------------
     // MARK: - tableView for contacts and open chat
     // ------------------------------------------------------------------------
 
-    
+
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 54
     }
-    
+
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return contacts.count
     }
-    
+
     var cellIdentifier = "RightMenuCell";
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
         if cell == nil {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
             cell.backgroundColor = UIColor.clearColor()
@@ -81,7 +81,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         cell.textLabel?.text = "\(contacts[indexPath.row].firstName) \(contacts[indexPath.row].lastName)" ;
         return cell;
     }
-    
+
     func tableView(tableView: UITableView,didSelectRowAtIndexPath indexPath: NSIndexPath) {
         leftMenu.startChat(self.contacts[indexPath.row])
     }

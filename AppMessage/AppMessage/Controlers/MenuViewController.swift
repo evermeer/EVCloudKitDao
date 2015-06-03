@@ -8,12 +8,12 @@
 import UIKit
 
 class MenuViewController: SSASideMenu {
-        
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         setupMenu()
     }
-    
+
     func setupMenu() {
         // Setting menu properties
         self.animationDuration = 0.2
@@ -23,8 +23,11 @@ class MenuViewController: SSASideMenu {
         self.contentViewShadowRadius = 12
         self.contentViewShadowEnabled = true
         self.backgroundImage = UIImage(named:"Default-568h")
-        
-        (self.rightMenuViewController as! RightMenuViewController).leftMenu = self.leftMenuViewController as! LeftMenuViewController
+
+        if let rightMenu = self.rightMenuViewController as? RightMenuViewController {
+            if let leftMenu = self.leftMenuViewController as? LeftMenuViewController {
+                rightMenu.leftMenu = leftMenu
+            }
+        }
     }
-    
 }

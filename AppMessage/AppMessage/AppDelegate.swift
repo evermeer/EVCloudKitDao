@@ -11,14 +11,14 @@ import CloudKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-                            
+
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         // Make sure we receive subscription notifications
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
         application.registerForRemoteNotifications()
-                
+
         // Only call this line once, ever. It will make sure the recordType are there in iCloud.
         // This call is here to help you play around with this code.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // During development we will probably play around with subscriptins. To be sure we do not have any old subscriptions left over, we just clear them all on startup.
         EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in EVLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
-        
+
         return true
     }
 
@@ -38,11 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             EVLog("All notifications are processed")
         })
     }
-    
+
     func applicationDidEnterBackground(application: UIApplication) {
         // Just to make sure that all updates are written do the cache.
         EVCloudData.publicDB.backupAllData()
     }
-    
-}
 
+}

@@ -10,8 +10,8 @@ import Foundation
 import CRToast
 
 class Helper {
-    
-    class func showMessage(message:String, color:UIColor) {
+
+    class func showMessage(message: String, color: UIColor) {
         var options: NSDictionary = [
             kCRToastTextKey : message,
             kCRToastNotificationTypeKey : CRToastType.NavigationBar.rawValue,
@@ -28,12 +28,12 @@ class Helper {
             CRToastManager.showNotificationWithOptions(options as [NSObject : AnyObject], completionBlock: { })
         })
     }
-    class func showError(message:String) {
+
+    class func showError(message: String) {
         showMessage(message, color: UIColor.redColor())
     }
 
-    class func showStatus(message:String) {
+    class func showStatus(message: String) {
         showMessage(message, color: UIColor.greenColor())
     }
 }
-

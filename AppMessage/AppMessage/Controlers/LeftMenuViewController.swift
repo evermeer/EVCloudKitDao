@@ -9,31 +9,31 @@ import UIKit
 import CloudKit
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
+
     var tableView: UITableView!
     var newsController: NewsViewController!
-    var chatViewController : ChatViewController?
-    
+    var chatViewController: ChatViewController?
+
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
     // ------------------------------------------------------------------------
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupMenuTableViewLayout()
 
         connectToNews()
-        
+
         connectToMessagesToMe()
-        
+
         // Only already setup CloudKit connect's will receive these notifications (like the News above)
         EVCloudData.publicDB.fetchChangeNotifications({
             EVLog("All change notifications are processed")
             EVCloudKitDao.publicDB.setBadgeCounter(0)
         })
     }
-    
+
     func setupMenuTableViewLayout() {
         var rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
         self.tableView = UITableView(frame: rect)
@@ -47,11 +47,10 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         tableView.bounces = false
         tableView.scrollsToTop = false
         self.view.addSubview(self.tableView)
-        
+
         newsController = self.storyboard?.instantiateViewControllerWithIdentifier("newsViewController") as? NewsViewController
-        
     }
-    
+
     deinit {
         EVCloudData.publicDB.disconnect("News_All")
         EVCloudData.publicDB.disconnect("Message_ToMe")
@@ -61,7 +60,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - tableView - menu items
     // ------------------------------------------------------------------------
 
-    
+
     var titles = ["Home", "News", "Settings", "Search", "Tests"]
     var images = ["IconHome", "IconProfile", "IconSettings", "IconEmpty", "IconEmpty"]
     var controllers = ["homeViewController", "newsViewController", "settingsViewController", "searchViewController", "testsViewController"]
@@ -69,7 +68,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 54
     }
-    
+
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -77,12 +76,12 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return titles.count
     }
-    
+
     var cellIdentifier = "LeftMenuCell";
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        var cell:UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
-        
+
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+
         if cell == nil {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
             cell.backgroundColor = UIColor.clearColor()
@@ -91,18 +90,18 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
             cell.selectedBackgroundView = UIView()
         }
-        
+
         cell.textLabel?.text = titles[indexPath.row]
         cell.imageView?.image = UIImage(named: images[indexPath.row])
-        
+
         return cell;
     }
-    
+
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.row < controllers.count {
-            var controllerName:String = controllers[indexPath.row]
-            
-            var controller:UIViewController?
+            var controllerName: String = controllers[indexPath.row]
+
+            var controller: UIViewController?
             if controllerName == "newsViewController" {
                 controller = newsController
             } else {
@@ -115,11 +114,11 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         self.sideMenuViewController?.hideMenuViewController()
     }
 
-    func startChat(user:CKDiscoveredUserInfo) {
+    func startChat(user: CKDiscoveredUserInfo) {
         startChat(user.userRecordID.recordName, firstName: user.firstName, lastName: user.lastName)
     }
-    
-    func startChat(recordId:String, firstName:String, lastName:String) {
+
+    func startChat(recordId: String, firstName: String, lastName: String) {
         if self.chatViewController == nil {
             self.chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
         }
@@ -130,13 +129,12 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         self.sideMenuViewController!.hideMenuViewController()
     }
 
-    
     // ------------------------------------------------------------------------
     // MARK: - News data and events
     // ------------------------------------------------------------------------
-    
+
     func connectToNews() {
-        
+
         EVCloudData.publicDB.connect(
             News()
             , predicate: NSPredicate(value: true)
@@ -172,8 +170,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 Helper.showError("Could not load news: \(error.description)")
         })
     }
-    
-    
+
     func connectToMessagesToMe() {
         var recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
         EVCloudData.publicDB.connect(Message()
@@ -197,6 +194,4 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 Helper.showError("Could not load messages: \(error.description)")
         })
     }
-    
-    
 }

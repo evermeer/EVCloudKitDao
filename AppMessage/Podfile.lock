@@ -1,7 +1,7 @@
 PODS:
   - CRToast (0.0.7)
-  - EVReflection (1.4.2)
-  - JSQMessagesViewController (7.0.2):
+  - EVReflection (1.4.3)
+  - JSQMessagesViewController (7.1.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - SwiftTryCatch (0.0.1)
@@ -22,8 +22,8 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
-  EVReflection: 2f688f41aa99fc6e12bd34de1a9b840373a4d980
-  JSQMessagesViewController: bb6649691182b1899dc52b42266ad69efc473510
+  EVReflection: b7cffcb25eaec0b76b625c0b3215be8eb15a905b
+  JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   SwiftTryCatch: fb6d2b34abe48efd69578dac919293a44f95b481
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
@@ -31,4 +31,4 @@ SPEC CHECKSUMS:
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
   WhereAmI: 550fc141f0507b575a68c34a4cf01bb067566399
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.37.2

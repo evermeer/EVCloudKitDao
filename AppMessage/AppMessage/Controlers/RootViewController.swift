@@ -11,13 +11,13 @@ class RootViewController: UIViewController {
 
     @IBOutlet weak var loginLabel: UILabel!
     @IBOutlet weak var contacting: UILabel!
-    
+
     override func viewDidLoad() {
         reactToiCloudloginChanges()
         getUser()
         super.viewDidLoad()
     }
-    
+
     /**
     Registering for iCloud availability change notifications (log in as different user, clear all user related data)
     */
@@ -30,19 +30,20 @@ class RootViewController: UIViewController {
             return
         }
     }
-    
+
     /**
     As what user are we loged in to iCloud. Then open the main app.
     */
     func getUser() {
         self.loginLabel.hidden = true
         EVCloudKitDao.publicDB.getUserInfo({user in
-                EVLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)");
-                        
+                EVLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)")
+
                 NSOperationQueue.mainQueue().addOperationWithBlock(){
                     let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
-                    let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as! UIViewController;
-                    self.presentViewController(viewController, animated: false, completion: nil);
+                    if let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as? UIViewController {
+                        self.presentViewController(viewController, animated: false, completion: nil)
+                    }
                 }
             }, errorHandler: { error in
                 EVLog("ERROR in getUserInfo");

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SettingsViewController : UIViewController {
+class SettingsViewController: UIViewController {
     func pushViewController(sender: UIViewController) {
         var viewController = UIViewController()
         viewController.title = "Pushed Controller"
