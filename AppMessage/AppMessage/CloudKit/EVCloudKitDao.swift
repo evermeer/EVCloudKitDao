@@ -539,9 +539,10 @@ public class EVCloudKitDao {
     */
     public func subscribe(type: EVCloudKitDataObject, predicate: NSPredicate, filterId: String, configureNotificationInfo:((notificationInfo: CKNotificationInfo ) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
+        var key = "type_\(recordType)_id_\(filterId)"
 
         func createSubscription() {
-            var subscription = CKSubscription(recordType: recordType, predicate: predicate, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
+            var subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
             subscription.notificationInfo = CKNotificationInfo()
             subscription.notificationInfo.shouldSendContentAvailable = true
             subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
@@ -550,10 +551,7 @@ public class EVCloudKitDao {
             }
             self.database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
                 self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                    var key = "subscriptionFor_\(recordType)_\(filterId)"
                     EVLog("Subscription created for key \(key)")
-                    var defaults = NSUserDefaults.standardUserDefaults()
-                    defaults.setObject(subscription.subscriptionID, forKey: key)
                 })
             })
         }
@@ -571,26 +569,27 @@ public class EVCloudKitDao {
     */
     public func unsubscribe(type: EVCloudKitDataObject, filterId: String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
         var recordType = EVReflection.swiftStringFromClass(type)
-        var defaults = NSUserDefaults.standardUserDefaults()
-        var key = "subscriptionFor_\(recordType)_\(filterId)"
+        var key = "type_\(recordType)_id_\(filterId)"
 
-        if let subscriptionID: String = defaults.objectForKey(key) as? String {
-            var modifyOperation = CKModifySubscriptionsOperation()
-            modifyOperation.subscriptionIDsToDelete = [subscriptionID]
-            modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
-                self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                    defaults.removeObjectForKey(key)
-                    if var handler = completionHandler {
-                        handler()
-                    }
-                })
+        database.fetchSubscriptionWithID(key, completionHandler: { (subscription, error) in
+            if let deleteSubscription = subscription {
+                var modifyOperation = CKModifySubscriptionsOperation()
+                modifyOperation.subscriptionIDsToDelete = [key]
+                modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
+                    self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                        if var handler = completionHandler {
+                            handler()
+                        }
+                        EVLog("Subscription with id \(key) was removed : \(subscription.description)")
+                    })
+                }
+                self.database.addOperation(modifyOperation)
+            } else {
+                if var handler = completionHandler {
+                    handler()
+                }
             }
-            database.addOperation(modifyOperation)
-        } else {
-            if var handler = completionHandler {
-                handler()
-            }
-        }
+        })
     }
 
     /**
@@ -654,15 +653,6 @@ public class EVCloudKitDao {
     :return: No return value
     */
     public func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void , errorHandler:((error: NSError) -> Void)? = nil) {
-
-        for (key, value) in NSUserDefaults.standardUserDefaults().dictionaryRepresentation() {
-            if key.description.hasPrefix("subscriptionFor_") {
-                if let subscriptionKey = key as? String {
-                    NSUserDefaults.standardUserDefaults().removeObjectForKey(subscriptionKey)
-                }
-            }
-        }
-
         database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 for subscriptionObject in subscriptions {
