@@ -1,6 +1,6 @@
 PODS:
   - CRToast (0.0.7)
-  - EVReflection (1.4.3)
+  - EVReflection (1.5.1)
   - JSQMessagesViewController (7.1.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -22,7 +22,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
-  EVReflection: b7cffcb25eaec0b76b625c0b3215be8eb15a905b
+  EVReflection: cd201a082ae09585f76052200ee2cbef3201031a
   JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   SwiftTryCatch: fb6d2b34abe48efd69578dac919293a44f95b481

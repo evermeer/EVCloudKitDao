@@ -19,13 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil))
         application.registerForRemoteNotifications()
 
-        // Only call this line once, ever. It will make sure the recordType are there in iCloud.
-        // This call is here to help you play around with this code.
+
+        // The 2 commands below are only here to assist during development.
+        
+        // Only call this line once. It will make sure the recordType are there in iCloud.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News()])
 
-        // During development we will probably play around with subscriptins. To be sure we do not have any old subscriptions left over, we just clear them all on startup.
-        EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in EVLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
+        // During development you will probably play around with subscriptins. 
+        // To be sure you do not have any old subscriptions left over,  just clear them all on startup.
+//        EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in EVLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
 
         return true
     }

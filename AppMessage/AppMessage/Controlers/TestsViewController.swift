@@ -185,11 +185,6 @@ class TestsViewController: UIViewController {
     }
 
     func subscriptionsTest() {
-        // Unsubscribe for update notifications
-        dao.unsubscribe(Message(), errorHandler:{ error in
-            EVLog("<--- ERROR unsubscribeForRecordType")
-        })
-
         // Subscribe for update notifications
         dao.subscribe(Message(), configureNotificationInfo:{ notificationInfo in
             notificationInfo.alertBody = "New Message record"
@@ -198,9 +193,9 @@ class TestsViewController: UIViewController {
                 EVLog("<--- ERROR subscribeForRecordType")
         })
 
-        // Unsubscribe for update notifications where you are in the To field
-        dao.unsubscribe(Message(), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
-            EVLog("<--- ERROR subscribeForRecordType reference")
+        // Unsubscribe for update notifications
+        dao.unsubscribe(Message(), errorHandler:{ error in
+            EVLog("<--- ERROR unsubscribeForRecordType")
         })
 
         // Subscribe for update notifications where you are in the To field
@@ -209,6 +204,11 @@ class TestsViewController: UIViewController {
             notificationInfo.shouldSendContentAvailable = true
             }, errorHandler: { error in
                 EVLog("<--- ERROR subscribeForRecordType reference")
+        })
+
+        // Unsubscribe for update notifications where you are in the To field
+        dao.unsubscribe(Message(), referenceRecordName: userId, referenceField: "To", errorHandler: { error in
+            EVLog("<--- ERROR subscribeForRecordType reference")
         })
     }
 

@@ -541,7 +541,7 @@ public class EVCloudKitDao {
         var recordType = EVReflection.swiftStringFromClass(type)
         var key = "type_\(recordType)_id_\(filterId)"
 
-        func createSubscription() {
+        let createSubscription = { () -> () in
             var subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
             subscription.notificationInfo = CKNotificationInfo()
             subscription.notificationInfo.shouldSendContentAvailable = true
@@ -556,8 +556,19 @@ public class EVCloudKitDao {
             })
         }
 
-        unsubscribe(type, filterId: filterId, completionHandler:createSubscription, errorHandler: errorHandler)
+        // If the subscription exists and the predicate is the same, then we don't need to create this subscrioption. If the predicate is difrent, then we first need to delete the old
+        database.fetchSubscriptionWithID(key, completionHandler: { (subscription, error) in
+            if let deleteSubscription:CKSubscription = subscription {
+                if predicate.predicateFormat != deleteSubscription.predicate.predicateFormat {
+                    self.unsubscribeWithoutTest(key, completionHandler:createSubscription, errorHandler: errorHandler)
+                }
+            } else {
+                createSubscription()
+            }
+        })
     }
+    
+    
 
     /**
     Unsubscribe for modifications to a recordType and predicate (and unregister is under filterId)
@@ -572,18 +583,8 @@ public class EVCloudKitDao {
         var key = "type_\(recordType)_id_\(filterId)"
 
         database.fetchSubscriptionWithID(key, completionHandler: { (subscription, error) in
-            if let deleteSubscription = subscription {
-                var modifyOperation = CKModifySubscriptionsOperation()
-                modifyOperation.subscriptionIDsToDelete = [key]
-                modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
-                    self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                        if var handler = completionHandler {
-                            handler()
-                        }
-                        EVLog("Subscription with id \(key) was removed : \(subscription.description)")
-                    })
-                }
-                self.database.addOperation(modifyOperation)
+            if let deleteSubscription:CKSubscription = subscription {
+                self.unsubscribeWithoutTest(key, completionHandler: completionHandler, errorHandler: errorHandler)
             } else {
                 if var handler = completionHandler {
                     handler()
@@ -591,7 +592,29 @@ public class EVCloudKitDao {
             }
         })
     }
-
+    
+    /**
+    Unsubscribe for modifications to a recordType while assuming the subscription exists and predicate (and unregister is under filterId)
+    
+    :param: type An instance of the Object for what we want to query the record type
+    :param: filterId The id of the filter that you want to unsubscibe
+    :param: errorHandler The function that will be called when there was an error
+    :return: No return value
+    */
+    private func unsubscribeWithoutTest(key: String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+        var modifyOperation = CKModifySubscriptionsOperation()
+        modifyOperation.subscriptionIDsToDelete = [key]
+        modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                if var handler = completionHandler {
+                    handler()
+                }
+                EVLog("Subscription with id \(key) was removed : \(savedSubscriptions.description)")
+            })
+        }
+        self.database.addOperation(modifyOperation)
+    }
+    
     /**
     Subscribe for modifications to child object of a record
 
