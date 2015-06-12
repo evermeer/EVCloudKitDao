@@ -357,10 +357,11 @@ public class EVCloudData: NSObject {
         var filePath = fileDirectory.stringByAppendingPathComponent(toFile)
         dispatch_sync(ioQueue) {
             NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
+            addSkipBackupAttributeToItemAtPath(filePath)
             EVLog("Data is written to \(filePath))")
         }
     }
-
+    
     /**
     Read a backup file and return it as an unarchived object
 

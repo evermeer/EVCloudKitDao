@@ -42,3 +42,17 @@ public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE_
     var threadId = "." //NSThread.currentThread().threadDictionary
     println("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \(filename.lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
 }
+
+/**
+Make sure the file is not backed up to iCloud
+
+:param: filePath the url of the file we want to set the attribute for
+*/
+public func addSkipBackupAttributeToItemAtPath(filePath:String) {
+    if let url:NSURL = NSURL(fileURLWithPath: filePath) {
+        var error:NSError?
+        if !url.setResourceValue(NSNumber(bool: true), forKey: NSURLIsExcludedFromBackupKey, error: &error) {
+            EVLog("ERROR: Could not set 'exclude from backup' attribute for file \(filePath)\n\\tERROR:(error?.description)")
+        }
+    }
+}
