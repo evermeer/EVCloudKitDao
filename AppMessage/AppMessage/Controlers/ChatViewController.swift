@@ -13,6 +13,7 @@ import WhereAmI
 import VIPhotoView
 import MapKit
 import UIImage_Resize
+import Async
 
 class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
 
@@ -78,7 +79,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     // MARK: - Handle Message data plus attached Assets
     // ------------------------------------------------------------------------
 
-    func initializeCommunication() {
+    func initializeCommunication(retryCount:Double = 1) {
         if !viewAppeared || (recordIdMeForConnection == EVCloudData.publicDB.dao.activeUser.userRecordID.recordName && recordIdOtherForConnection == chatWithId) {
             return //Already connected or not ready yet
         }
@@ -122,7 +123,16 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             }, dataChangedHandler : {
                 EVLog("Some conversation data was changed")
             }, errorHandler: { error in
-                Helper.showError("Could not load messages: \(error.description)")
+                switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
+                case .Retry(let timeToWait):
+                    Async.background(after: timeToWait) {
+                        self.initializeCommunication(retryCount: retryCount + 1)
+                    }
+                case .Fail:
+                    Helper.showError("Could not load messages: \(error.localizedDescription)")
+                default: // For here there is no need to handle the .Success, and .RecoverableError
+                    break
+                }
         })
     }
 
@@ -253,7 +263,6 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 EVLog("saveItem location Message: \(record.recordID.recordName)");
                 self.finishSendingMessage()
                 }, errorHandler: {error in
-                    EVLog("ERROR: saveItem location message.\n\(error.description)");
                     Helper.showError("Could not send location message!  \(error.description)")
                     self.finishSendingMessage()
             })
@@ -336,13 +345,11 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                         EVLog("saveItem Message: \(record.recordID.recordName)");
                         self.finishSendingMessage()
                     }, errorHandler: {error in
-                        EVLog("ERROR: saveItem asset.\n\(error.description)");
                         Helper.showError("Could not send picture message!  \(error.description)")
                         self.finishSendingMessage()
                     })
 
                 }, errorHandler: {error in
-                    EVLog("ERROR: saveItem message.\n\(error.description)");
                     Helper.showError("Could not send picture!  \(error.description)")
                     self.finishSendingMessage()
                 })

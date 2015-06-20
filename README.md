@@ -102,6 +102,7 @@ Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or la
 - [UzysAssetsPickerController](https://github.com/uzysjung/UzysAssetsPickerController) - Alternative UIImagePickerController , You can take a picture with camera and choose multiple photos and videos
 - [VIPhotoView](https://github.com/vitoziv/VIPhotoView) - View a photo with simple and basic interactive gesture
 - [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
+- [Async](https://github.com/duemunk/Async) Syntactic sugar in Swift for asynchronous dispatches in Grand Central Dispatch
 
 Besides these the dependency to EVCloudKitDao has been skipped by just using the classes directly
 - [EVCloudKitDao](https://github.com/evermeer/EVCloudKitDao) - Simplified access to Apple's CloudKit
@@ -346,6 +347,28 @@ override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:
 }
 
 ```
+
+##Error handling
+All cloudkit function have an errorHandler codeblock. You should handle the error appropriate. There is a helper function for getting a functional error status. In most cases you would get something like the code below. When you are doing data manupilations you should also handle the .RecoverableError
+
+```
+func initializeCommunication(retryCount: Double = 1) {
+    ...
+    }, errorHandler: { error in
+        switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
+            case .Retry(let timeToWait):
+                Async.background(after: timeToWait) {
+                    self.initializeCommunication(retryCount: retryCount + 1)
+                }
+            case .Fail:
+                Helper.showError("Could not load messages: \(error.localizedDescription)")
+            default: // For here there is no need to handle the .Success, and .RecoverableError
+                break
+        }
+    })
+}
+```
+
 
 
 ## License

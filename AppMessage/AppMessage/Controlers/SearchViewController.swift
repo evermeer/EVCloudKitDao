@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Async
 
 class SearchViewController: UITableViewController, UISearchBarDelegate {
 
@@ -45,7 +46,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         EVCloudKitDao.publicDB.query(Message(), tokens: searchText, completionHandler: { results in
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            Async.main {
                 self.tableView.reloadData()
                 self.networkSpinner(-1)
             }
@@ -63,7 +64,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         EVCloudKitDao.publicDB.query(Message(), predicate: NSPredicate(format: "Text BEGINSWITH %@", searchText), completionHandler: { results in
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            Async.main {
                 self.tableView.reloadData()
                 self.networkSpinner(-1)
             }

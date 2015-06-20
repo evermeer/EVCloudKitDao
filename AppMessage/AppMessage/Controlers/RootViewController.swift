@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Async
 
 class RootViewController: UIViewController {
 
@@ -24,7 +25,7 @@ class RootViewController: UIViewController {
     func reactToiCloudloginChanges() {
         var ubiquityIdentityDidChangeNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
             EVLog("The user’s iCloud login changed: should refresh all user data.")
-            NSOperationQueue.mainQueue().addOperationWithBlock() {
+            Async.main {
                 self.getUser()
             }
             return
@@ -39,7 +40,7 @@ class RootViewController: UIViewController {
         EVCloudKitDao.publicDB.getUserInfo({user in
                 EVLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)")
 
-                NSOperationQueue.mainQueue().addOperationWithBlock(){
+                Async.main {
                     let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
                     if let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as? UIViewController {
                         self.presentViewController(viewController, animated: false, completion: nil)

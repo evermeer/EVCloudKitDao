@@ -23,6 +23,16 @@ private class DaoContainerWrapper {
 }
 
 /**
+The functional statuses for a CloudKit error
+*/
+public enum HandleCloudKitErrorAs {
+    case Success,
+    Retry(afterSeconds:Double),
+    RecoverableError,
+    Fail
+}
+
+/**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
 public class EVCloudKitDao {
@@ -202,7 +212,49 @@ public class EVCloudKitDao {
             completionHandler()
         }
     }
-
+    
+    /**
+    Categorise CloudKit errors into a functional status that will tell you how it should be handled.
+    
+    :param: error The CloudKit error for which you want a functional status.
+    :param: retryAttempt In case we are retrying a function this parameter has to be incremented each time.
+    */
+    public static func handleCloudKitErrorAs(error:NSError?, retryAttempt:Double = 1) -> HandleCloudKitErrorAs {
+        if error == nil {
+            return .Success
+        }
+        let errorCode:CKErrorCode = CKErrorCode(rawValue: error!.code)!
+        switch errorCode {
+        case .NetworkUnavailable, .NetworkFailure, .ServiceUnavailable, .RequestRateLimited, .ZoneBusy, .ResultsTruncated:
+            // Use an exponential retry delay which maxes out at half an hour.
+            var seconds = Double(pow(2, Double(retryAttempt)))
+            if seconds > 1800 {
+                seconds = 1800
+            }
+            // Or if there is a retry delay specified in the error, then use that.
+            if let userInfo = error?.userInfo {
+                if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
+                    seconds = Double(retry)
+                }
+            }
+            NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
+            return .Retry(afterSeconds: seconds)
+        case .UnknownItem, .InvalidArguments, .IncompatibleVersion, .BadContainer, .MissingEntitlement, .PermissionFailure, .BadDatabase, .AssetFileNotFound, .OperationCancelled, .NotAuthenticated, .AssetFileModified, .BatchRequestFailed, .ZoneNotFound, .UserDeletedZone, .InternalError, .ServerRejectedRequest, .ConstraintViolation:
+            NSLog("Error: \(error)")
+            return .Fail;
+        case .QuotaExceeded, .LimitExceeded:
+            NSLog("Warning: \(error)")
+            return .Fail;
+        case .ChangeTokenExpired,  .ServerRecordChanged:
+            NSLog("Info: \(error)")
+            return .RecoverableError
+        default:
+            NSLog("Error: \(error)") //New error introduced in iOS...?
+            return .Fail;
+        }
+    }
+    
+    
     /**
     Generic query handling
 
@@ -545,7 +597,6 @@ public class EVCloudKitDao {
             var subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: .FiresOnRecordCreation | .FiresOnRecordUpdate | .FiresOnRecordDeletion)
             subscription.notificationInfo = CKNotificationInfo()
             subscription.notificationInfo.shouldSendContentAvailable = true
-            subscription.notificationInfo.soundName = UILocalNotificationDefaultSoundName
             if let configure = configureNotificationInfo {
                 configure(notificationInfo: subscription.notificationInfo)
             }
@@ -848,7 +899,10 @@ public class EVCloudKitDao {
     :param: record The CKRecord that will be converted to an object
     :return: The object that is created from the record
     */
-    public func fromCKRecord(record: CKRecord) -> EVCloudKitDataObject? {
+    public func fromCKRecord(record: CKRecord!) -> EVCloudKitDataObject? {
+        if record == nil {
+            return nil
+        }
         if var theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType) as? EVCloudKitDataObject {
             theObject.recordID = record.recordID
             theObject.recordType = record.recordType

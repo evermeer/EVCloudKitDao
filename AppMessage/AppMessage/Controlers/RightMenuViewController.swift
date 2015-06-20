@@ -7,6 +7,7 @@
 
 import UIKit
 import CloudKit
+import Async
 
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var contacts: [CKDiscoveredUserInfo]! = []
@@ -38,17 +39,23 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         self.view.addSubview(self.tableView)
     }
 
-    func loadContacts() {
+    func loadContacts(retryCount:Double = 1) {        
         // Look who of our contact is also using this app.
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
                 EVLog("AllContactUserInfo count = \(users.count)");
-                NSOperationQueue.mainQueue().addOperationWithBlock({
+                Async.main{
                     self.contacts = users
                     self.tableView.reloadData()
-                })
+                }
             }, errorHandler: { error in
-                EVLog("Could not load contacts: \(error.description)")
-                Helper.showError("Could not load contacts: \(error.description)")
+                switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
+                case .Retry(let timeToWait):
+                    Async.background(after: timeToWait) {
+                        self.loadContacts(retryCount: retryCount + 1)
+                    }
+                default: // For here there is no need to handle the .Success, .Fail and .RecoverableError
+                    break
+                }
         })
 
     }

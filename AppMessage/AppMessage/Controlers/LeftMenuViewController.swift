@@ -7,6 +7,7 @@
 
 import UIKit
 import CloudKit
+import Async
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -133,7 +134,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - News data and events
     // ------------------------------------------------------------------------
 
-    func connectToNews() {
+    func connectToNews(retryCount: Double = 1) {
 
         EVCloudData.publicDB.connect(
             News()
@@ -166,12 +167,20 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 EVLog("Some News data was changed")
                 self.newsController.tableView.reloadData()
             }, errorHandler: {error in
-                EVLog("Could not load news: \(error.description)")
-                Helper.showError("Could not load news: \(error.description)")
+                switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
+                case .Retry(let timeToWait):
+                    Async.background(after: timeToWait) {
+                        self.connectToNews(retryCount: retryCount + 1)
+                    }
+                case .Fail:
+                    Helper.showError("Could not load news: \(error.description)")
+                default: // For here there is no need to handle the .Success and .RecoverableError
+                    break
+                }
         })
     }
 
-    func connectToMessagesToMe() {
+    func connectToMessagesToMe(retryCount:Double = 1) {
         var recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
         EVCloudData.publicDB.connect(Message()
             , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)
@@ -190,8 +199,18 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             }, deletedHandler: { recordId, dataIndex in
                 EVLog("Message to me deleted : \(recordId)")
             }, errorHandler: { error in
-                EVLog("Could not load messages: \(error.description)")
-                Helper.showError("Could not load messages: \(error.description)")
+                switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
+                case .Retry(let timeToWait):
+                    Helper.showError("Could not load messages: \(error.description)")
+                    Async.background(after: timeToWait) {
+                        self.connectToMessagesToMe(retryCount: retryCount + 1)
+                    }
+                case .Fail:
+                    Helper.showError("Could not load messages: \(error.description)")
+                default: // For here there is no need to handle the .Success and .RecoverableError
+                    break
+                }
+                
         })
     }
 }

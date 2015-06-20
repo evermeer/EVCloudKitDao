@@ -8,6 +8,7 @@
 
 import Foundation
 import CRToast
+import Async
 
 class Helper {
 
@@ -24,16 +25,18 @@ class Helper {
             kCRToastAnimationInDirectionKey : CRToastAnimationDirection.Top.rawValue,
             kCRToastAnimationOutDirectionKey : CRToastAnimationDirection.Bottom.rawValue,
         ]
-        NSOperationQueue.mainQueue().addOperationWithBlock({
+        Async.main {
             CRToastManager.showNotificationWithOptions(options as [NSObject : AnyObject], completionBlock: { })
-        })
+        }
     }
 
     class func showError(message: String) {
+        EVLog("ERROR: \(message)")
         showMessage(message, color: UIColor.redColor())
     }
 
     class func showStatus(message: String) {
+        EVLog("\(message)")
         showMessage(message, color: UIColor.greenColor())
     }
 }
