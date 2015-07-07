@@ -23,7 +23,7 @@ class RootViewController: UIViewController {
     Registering for iCloud availability change notifications (log in as different user, clear all user related data)
     */
     func reactToiCloudloginChanges() {
-        var ubiquityIdentityDidChangeNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
+        _ = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
             EVLog("The user’s iCloud login changed: should refresh all user data.")
             Async.main {
                 self.getUser()
@@ -38,13 +38,13 @@ class RootViewController: UIViewController {
     func getUser() {
         self.loginLabel.hidden = true
         EVCloudKitDao.publicDB.getUserInfo({user in
-                EVLog("discoverUserInfo : \(user.userRecordID.recordName) = \(user.firstName) \(user.lastName)")
+                EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.firstName) \(user.lastName)")
 
                 Async.main {
                     let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
-                    if let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController") as? UIViewController {
+                    let viewController = storyboard.instantiateViewControllerWithIdentifier("menuViewController")
                         self.presentViewController(viewController, animated: false, completion: nil)
-                    }
+                    
                 }
             }, errorHandler: { error in
                 EVLog("ERROR in getUserInfo");

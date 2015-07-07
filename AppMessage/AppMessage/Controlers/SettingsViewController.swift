@@ -9,7 +9,7 @@ import UIKit
 
 class SettingsViewController: UIViewController {
     func pushViewController(sender: UIViewController) {
-        var viewController = UIViewController()
+        let viewController = UIViewController()
         viewController.title = "Pushed Controller"
         viewController.view.backgroundColor = UIColor.whiteColor()
         self.navigationController?.pushViewController(viewController, animated: true)

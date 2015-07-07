@@ -1,14 +1,14 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
-pod 'EVReflection'
+pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift2'
+pod 'WhereAmI', :git => 'https://github.com/evermeer/WhereAmI.git', :branch => 'patch-2'
+pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
+
 pod 'JSQMessagesViewController'
 pod 'CRToast'
 pod 'UIImage-Resize'
-pod 'WhereAmI'
 pod 'UzysAssetsPickerController'
 pod 'VIPhotoView'
-pod 'SwiftTryCatch'
-pod 'Async', :git => 'https://github.com/duemunk/Async.git'
 #pod 'SSASideMenu' --> for now included
 

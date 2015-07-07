@@ -36,9 +36,9 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func setupMenuTableViewLayout() {
-        var rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
+        let rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
         self.tableView = UITableView(frame: rect)
-        tableView.autoresizingMask = .FlexibleTopMargin | .FlexibleBottomMargin | .FlexibleWidth
+        tableView.autoresizingMask = [.FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleWidth]
         tableView.delegate = self
         tableView.dataSource = self
         tableView.opaque = false
@@ -81,7 +81,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     var cellIdentifier = "LeftMenuCell";
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
 
         if cell == nil {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
@@ -100,13 +100,13 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.row < controllers.count {
-            var controllerName: String = controllers[indexPath.row]
+            let controllerName: String = controllers[indexPath.row]
 
             var controller: UIViewController?
             if controllerName == "newsViewController" {
                 controller = newsController
             } else {
-                controller = self.storyboard?.instantiateViewControllerWithIdentifier(controllerName) as? UIViewController
+                controller = self.storyboard?.instantiateViewControllerWithIdentifier(controllerName)
             }
             if controller != nil {
                 self.sideMenuViewController?.contentViewController = UINavigationController(rootViewController: controller!)
@@ -116,7 +116,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func startChat(user: CKDiscoveredUserInfo) {
-        startChat(user.userRecordID.recordName, firstName: user.firstName, lastName: user.lastName)
+        startChat(user.userRecordID!.recordName, firstName: user.firstName ?? "", lastName: user.lastName ?? "")
     }
 
     func startChat(recordId: String, firstName: String, lastName: String) {
@@ -170,7 +170,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
                 case .Retry(let timeToWait):
                     Async.background(after: timeToWait) {
-                        self.connectToNews(retryCount: retryCount + 1)
+                        self.connectToNews(retryCount + 1)
                     }
                 case .Fail:
                     Helper.showError("Could not load news: \(error.description)")
@@ -181,7 +181,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func connectToMessagesToMe(retryCount:Double = 1) {
-        var recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID.recordName
+        let recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName
         EVCloudData.publicDB.connect(Message()
             , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)
             , filterId: "Message_ToMe"
@@ -203,7 +203,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 case .Retry(let timeToWait):
                     Helper.showError("Could not load messages: \(error.description)")
                     Async.background(after: timeToWait) {
-                        self.connectToMessagesToMe(retryCount: retryCount + 1)
+                        self.connectToMessagesToMe(retryCount + 1)
                     }
                 case .Fail:
                     Helper.showError("Could not load messages: \(error.description)")

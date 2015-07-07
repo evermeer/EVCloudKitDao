@@ -25,9 +25,9 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     func setupContactsTableViewLayout() {
-        var rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
+        let rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
         self.tableView = UITableView(frame: rect)
-        tableView.autoresizingMask = .FlexibleTopMargin | .FlexibleBottomMargin | .FlexibleWidth
+        tableView.autoresizingMask = [.FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleWidth]
         tableView.delegate = self
         tableView.dataSource = self
         tableView.opaque = false
@@ -51,7 +51,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
                 switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
                 case .Retry(let timeToWait):
                     Async.background(after: timeToWait) {
-                        self.loadContacts(retryCount: retryCount + 1)
+                        self.loadContacts(retryCount + 1)
                     }
                 default: // For here there is no need to handle the .Success, .Fail and .RecoverableError
                     break
@@ -75,7 +75,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
 
     var cellIdentifier = "RightMenuCell";
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
         if cell == nil {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
             cell.backgroundColor = UIColor.clearColor()
