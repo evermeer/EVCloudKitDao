@@ -940,13 +940,13 @@ public class EVCloudKitDao {
         if record == nil {
             record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
         }
-        var fromDict = EVReflection.toDictionary(theObject)
-        for (key: String, value: AnyObject) in fromDict {
-            if !contains(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"] ,key) {
+        var (fromDict, _) = EVReflection.toDictionary(theObject)
+        for (key, value) in fromDict {
+            if !contains(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"] ,key as! String) {
                 if let t = value as? NSNull {
 //                    record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
-                } else if key != "recordID" {
-                    record.setValue(value, forKey: key)
+                } else if key as! String != "recordID" {
+                    record.setValue(value, forKey: key as! String)
                 }
             }
         }
@@ -959,11 +959,11 @@ public class EVCloudKitDao {
     :param: record The CKRecord that will be converted to a dictionary
     :return: The dictionary that is created from the record
     */
-    public func CKRecordToDictionary(record: CKRecord) -> Dictionary<String, AnyObject?> {
-        var dictionary = Dictionary<String, AnyObject>()
+    public func CKRecordToDictionary(record: CKRecord) -> NSDictionary {
+        var dictionary = NSDictionary()
         for field in record.allKeys() {
             if let key = field as? String {
-                dictionary[key] = record.objectForKey(key)
+                dictionary.setValue(record.objectForKey(key), forKey: key)
             }
         }
         return dictionary

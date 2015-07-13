@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "EVCloudKitDao"
-s.version      = "2.5.0"
+s.version      = "2.6.0"
 s.summary      = "iOS: Simplified access to Apple’s CloudKit"
 
 s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
