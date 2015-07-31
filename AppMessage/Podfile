@@ -11,5 +11,5 @@ pod 'UIImage-Resize'
 pod 'UzysAssetsPickerController'
 pod 'VIPhotoView'
 pod 'SwiftTryCatch'
+pod 'Chivy'
 #pod 'SSASideMenu' --> for now included
-

@@ -14,6 +14,7 @@ import VIPhotoView
 import MapKit
 import UIImage_Resize
 import Async
+import Chivy
 
 class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
 
@@ -391,6 +392,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             }
             cell.textView.linkTextAttributes = [NSForegroundColorAttributeName : cell.textView.textColor,
                 NSUnderlineStyleAttributeName : NSUnderlineStyle.StyleSingle.rawValue]
+            cell.textView.delegate = self
         }
         return cell
     }
@@ -607,5 +609,12 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         return message;
     }
 
+    override func textView(textView: UITextView, shouldInteractWithURL URL: NSURL, inRange characterRange: NSRange) -> Bool {
+        
+        if let controller: UIViewController = CHWebBrowserViewController.webBrowserControllerWithDefaultNibAndHomeUrl(URL) as? UIViewController {
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+        return false
+    }
 
 }

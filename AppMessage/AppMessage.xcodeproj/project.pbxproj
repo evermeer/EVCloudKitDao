@@ -325,6 +325,7 @@
 		7F434A1B19628D490081F35C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = mirabeau;
 				TargetAttributes = {

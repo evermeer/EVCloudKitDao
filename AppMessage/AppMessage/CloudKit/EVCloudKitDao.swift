@@ -960,10 +960,10 @@ public class EVCloudKitDao {
     :return: The dictionary that is created from the record
     */
     public func CKRecordToDictionary(record: CKRecord) -> NSDictionary {
-        var dictionary = NSDictionary()
+        var dictionary = Dictionary<String, AnyObject>()
         for field in record.allKeys() {
             if let key = field as? String {
-                dictionary.setValue(record.objectForKey(key), forKey: key)
+                dictionary[key] = record.objectForKey(key)
             }
         }
         return dictionary

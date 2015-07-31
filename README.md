@@ -103,6 +103,7 @@ Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or la
 - [VIPhotoView](https://github.com/vitoziv/VIPhotoView) - View a photo with simple and basic interactive gesture
 - [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
 - [Async](https://github.com/duemunk/Async) Syntactic sugar in Swift for asynchronous dispatches in Grand Central Dispatch
+- [Chivy](https://github.com/DZamataev/Chivy) Customizable iOS web browser control which looks and behaves like modern Safari 
 
 Besides these the dependency to EVCloudKitDao has been skipped by just using the classes directly
 - [EVCloudKitDao](https://github.com/evermeer/EVCloudKitDao) - Simplified access to Apple's CloudKit
