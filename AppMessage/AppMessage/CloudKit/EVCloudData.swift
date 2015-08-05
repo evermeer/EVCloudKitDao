@@ -311,7 +311,7 @@ public class EVCloudData: NSObject {
             removeBackupForFilter(key)
         }
     }
-
+    
     /**
     Write the data for a specific filter to a file
 
@@ -682,14 +682,27 @@ public class EVCloudData: NSObject {
     :param: filterId The filterId
     */
     public func disconnect(filterId: String) {
+        let changed = dataChangedHandlers[filterId]
         insertedHandlers.removeValueForKey(filterId)
         updateHandlers.removeValueForKey(filterId)
         deletedHandlers.removeValueForKey(filterId)
         dataChangedHandlers.removeValueForKey(filterId)
         predicates.removeValueForKey(filterId)
         data.removeValueForKey(filterId)
+        if changed != nil {
+            changed!()
+        }
     }
 
+    /**
+    Remove the backup files for all the initialized connections.
+    */
+    public func disconnectAll() {
+        for (key, value) in data {
+            disconnect(key)
+        }
+    }
+    
     // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications
     // ------------------------------------------------------------------------
