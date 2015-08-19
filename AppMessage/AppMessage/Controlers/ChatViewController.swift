@@ -9,7 +9,7 @@ import Foundation
 import CloudKit
 import JSQMessagesViewController
 import UzysAssetsPickerController
-import WhereAmI
+//import WhereAmI
 import VIPhotoView
 import MapKit
 import UIImage_Resize
@@ -148,7 +148,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         if docDirPaths.count > 0 {
             for item in results {
                 if item.MessageType == MessageTypeEnum.Picture.rawValue {
-                    let filePath =  docDirPaths[0].stringByAppendingPathComponent("\(item.Asset_ID).png")
+                    let filePath =  (docDirPaths[0] as NSString).stringByAppendingPathComponent("\(item.Asset_ID).png")
                     if !filemanager.fileExistsAtPath(filePath) {
                         self.getAttachment(item.Asset_ID)
                     }
@@ -162,7 +162,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         EVCloudData.publicDB.getItem(id, completionHandler: {item in
             let docDirPaths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
             if docDirPaths.count > 0 {
-                let filePath =  docDirPaths[0].stringByAppendingPathComponent("\(id).png")
+                let filePath =  (docDirPaths[0] as NSString).stringByAppendingPathComponent("\(id).png")
                 if let asset = item as? Asset {
                     if let image = asset.image() {
                         if let myData = UIImagePNGRepresentation(image) {
@@ -248,31 +248,31 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     }
 
     func addLocation() {
-        WhereAmI.sharedInstance.whereAmI({ location in
-            let message = Message()
-            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
-            message.FromFirstName = self.senderDisplayName
-            message.setToFields(self.chatWithId)
-            message.ToFirstName = self.chatWithFirstName
-            message.ToLastName = self.chatWithLastName
-            if location.course < 0 {
-                message.Text = "±\(location.verticalAccuracy)m"
-            } else {
-                message.Text = "±\(location.verticalAccuracy)m, \(Int(location.speed/0.36)/10)kmh \(self.direction(Int(location.course))) \(location.course)°"
-            }
-            message.MessageType = MessageTypeEnum.Location.rawValue
-            message.Longitude = (location.coordinate.longitude as Double)
-            message.Latitude = (location.coordinate.latitude as Double)
-            EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                EVLog("saveItem location Message: \(record.recordID.recordName)");
-                self.finishSendingMessage()
-                }, errorHandler: {error in
-                    Helper.showError("Could not send location message!  \(error.description)")
-                    self.finishSendingMessage()
-            })
-        }, locationRefusedHandler: {
-            Helper.showError("Location authorization has been refused, unable to  send location")
-        });
+//        WhereAmI.sharedInstance.whereAmI({ location in
+//            let message = Message()
+//            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
+//            message.FromFirstName = self.senderDisplayName
+//            message.setToFields(self.chatWithId)
+//            message.ToFirstName = self.chatWithFirstName
+//            message.ToLastName = self.chatWithLastName
+//            if location.course < 0 {
+//                message.Text = "±\(location.verticalAccuracy)m"
+//            } else {
+//                message.Text = "±\(location.verticalAccuracy)m, \(Int(location.speed/0.36)/10)kmh \(self.direction(Int(location.course))) \(location.course)°"
+//            }
+//            message.MessageType = MessageTypeEnum.Location.rawValue
+//            message.Longitude = (location.coordinate.longitude as Double)
+//            message.Latitude = (location.coordinate.latitude as Double)
+//            EVCloudData.publicDB.saveItem(message, completionHandler: {record in
+//                EVLog("saveItem location Message: \(record.recordID.recordName)");
+//                self.finishSendingMessage()
+//                }, errorHandler: {error in
+//                    Helper.showError("Could not send location message!  \(error.description)")
+//                    self.finishSendingMessage()
+//            })
+//        }, locationRefusedHandler: {
+//            Helper.showError("Location authorization has been refused, unable to  send location")
+//        });
     }
 
     // Get the direction indicator for a degree

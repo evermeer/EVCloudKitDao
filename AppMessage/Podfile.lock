@@ -1,14 +1,13 @@
 PODS:
-  - Async (1.2.1)
+  - Async (1.3.1)
   - CRToast (0.0.7)
-  - EVReflection (2.2.0)
+  - EVReflection (2.5.4)
   - JSQMessagesViewController (7.1.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - UIImage-Resize (1.0.1)
-  - UzysAssetsPickerController (0.9.7)
+  - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
-  - WhereAmI (1.2.1)
 
 DEPENDENCIES:
   - Async (from `https://github.com/duemunk/Async.git`, branch `feature/Swift_2.0`)
@@ -18,7 +17,6 @@ DEPENDENCIES:
   - UIImage-Resize
   - UzysAssetsPickerController
   - VIPhotoView
-  - WhereAmI (from `https://github.com/evermeer/WhereAmI.git`, branch `patch-2`)
 
 EXTERNAL SOURCES:
   Async:
@@ -27,30 +25,23 @@ EXTERNAL SOURCES:
   EVReflection:
     :branch: Swift2
     :git: https://github.com/evermeer/EVReflection.git
-  WhereAmI:
-    :branch: patch-2
-    :git: https://github.com/evermeer/WhereAmI.git
 
 CHECKOUT OPTIONS:
   Async:
-    :commit: 23aaf8d7f2e4dc593e87db739b68c58ecb9d19ac
+    :commit: abe23c18d8d3a708a325b5db10231388e1ca5b88
     :git: https://github.com/duemunk/Async.git
   EVReflection:
-    :commit: f3dd265853296d858bbbadd9fcdf41eeae3b3a4e
+    :commit: 3b7178c8fb495f586a526d1e80638daae5cc9aae
     :git: https://github.com/evermeer/EVReflection.git
-  WhereAmI:
-    :commit: d3fe8fb0a689ca5fc17eb5fcabf30bd9e3711575
-    :git: https://github.com/evermeer/WhereAmI.git
 
 SPEC CHECKSUMS:
-  Async: d9ee6fc9c415d44fcb892f4c289d1e79ce8ae92d
+  Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
   CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
-  EVReflection: 2bc64f71b70acaba5d61e88b8f3c0e3aee7b9efc
+  EVReflection: c544dcee660d789bba62b1a22a416e177a58d2f6
   JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
-  UzysAssetsPickerController: eae7c24955501a80df34286b1797a2ec6f6b1ab9
+  UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
-  WhereAmI: 550fc141f0507b575a68c34a4cf01bb067566399
 
-COCOAPODS: 0.37.2
+COCOAPODS: 0.38.2

@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift2'
-pod 'WhereAmI', :git => 'https://github.com/evermeer/WhereAmI.git', :branch => 'patch-2'
+#pod 'WhereAmI'
 pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
 
 pod 'JSQMessagesViewController'

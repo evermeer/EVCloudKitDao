@@ -20,7 +20,7 @@ public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE_
     dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
     let process = NSProcessInfo.processInfo()
     let threadId = "." //NSThread.currentThread().threadDictionary
-    print("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \(filename.lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
+    print("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \((filename as NSString).lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
 }
 
 /**

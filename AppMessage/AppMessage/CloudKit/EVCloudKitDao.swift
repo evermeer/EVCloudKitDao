@@ -371,9 +371,10 @@ public class EVCloudKitDao {
     :return: No return value
     */
     public func requestDiscoverabilityPermission(completionHandler: (granted: Bool) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-    container.requestApplicationPermission(CKApplicationPermissions.PermissionUserDiscoverability, completionHandler: { applicationPermissionStatus, error in
-        self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                completionHandler(granted: applicationPermissionStatus == CKApplicationPermissionStatus.Granted)
+        container.requestApplicationPermission(CKApplicationPermissions.UserDiscoverability, completionHandler: { (status:CKApplicationPermissionStatus, error:NSError?) -> Void in
+
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                completionHandler(granted: status == CKApplicationPermissionStatus.Granted)
             })
         })
     }
