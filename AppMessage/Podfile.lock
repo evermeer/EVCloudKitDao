@@ -31,7 +31,7 @@ CHECKOUT OPTIONS:
     :commit: abe23c18d8d3a708a325b5db10231388e1ca5b88
     :git: https://github.com/duemunk/Async.git
   EVReflection:
-    :commit: 3b7178c8fb495f586a526d1e80638daae5cc9aae
+    :commit: d59f36ba2439254711dd9a8a9207a4ba02d43191
     :git: https://github.com/evermeer/EVReflection.git
 
 SPEC CHECKSUMS:
