@@ -76,15 +76,15 @@ class RootViewController: UIViewController {
                     
                 }
             }, errorHandler: { error in
-                EVLog("ERROR in getUserInfo: \(error.description)");
-                EVLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account. (It could also be that your project iCloud entitlements are wrong)")
-
                 switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
                 case .Retry(let timeToWait):
+                    EVLog("ERROR in getUserInfo: Can retry after \(timeToWait)")
                     Async.background(after: timeToWait) {
                         self.getUser(retryCount + 1)
                     }
                 case .Fail:
+                    EVLog("ERROR in getUserInfo: \(error.description)");
+                    EVLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account. (It could also be that your project iCloud entitlements are wrong)")
                     Helper.showError("Could not get user: \(error.localizedDescription)")
                 default: // For here there is no need to handle the .Success, and .RecoverableError
                     break
