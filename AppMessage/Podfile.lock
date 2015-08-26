@@ -5,6 +5,7 @@ PODS:
   - JSQMessagesViewController (7.1.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - PermissionScope (0.7)
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
@@ -14,6 +15,7 @@ DEPENDENCIES:
   - CRToast
   - EVReflection (from `https://github.com/evermeer/EVReflection.git`, branch `Swift2`)
   - JSQMessagesViewController
+  - PermissionScope (from `https://github.com/bre7/PermissionScope.git`, branch `wip/cloudkit`)
   - UIImage-Resize
   - UzysAssetsPickerController
   - VIPhotoView
@@ -25,6 +27,9 @@ EXTERNAL SOURCES:
   EVReflection:
     :branch: Swift2
     :git: https://github.com/evermeer/EVReflection.git
+  PermissionScope:
+    :branch: wip/cloudkit
+    :git: https://github.com/bre7/PermissionScope.git
 
 CHECKOUT OPTIONS:
   Async:
@@ -33,6 +38,9 @@ CHECKOUT OPTIONS:
   EVReflection:
     :commit: d59f36ba2439254711dd9a8a9207a4ba02d43191
     :git: https://github.com/evermeer/EVReflection.git
+  PermissionScope:
+    :commit: 24d61ded0020d5e1164e738c58fb04d1f2ff804c
+    :git: https://github.com/bre7/PermissionScope.git
 
 SPEC CHECKSUMS:
   Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
@@ -40,6 +48,7 @@ SPEC CHECKSUMS:
   EVReflection: c544dcee660d789bba62b1a22a416e177a58d2f6
   JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  PermissionScope: 1d27791185cca10c26f84d1aab905117dde50f39
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab

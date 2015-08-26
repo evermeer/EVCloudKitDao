@@ -4,6 +4,8 @@ use_frameworks!
 pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift2'
 #pod 'WhereAmI'
 pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
+pod 'PermissionScope', :git => 'https://github.com/bre7/PermissionScope.git', :branch => 'wip/cloudkit'
+
 
 pod 'JSQMessagesViewController'
 pod 'CRToast'
