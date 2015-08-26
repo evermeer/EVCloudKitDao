@@ -20,7 +20,7 @@ class RootViewController: UIViewController {
         pscope.headerLabel.text = "Setting permissions"
         pscope.bodyLabel.text = "For optimal usage we need some permissions."
         
-        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Required, message: "For if you want to receive notifications that people send directly to you"))
+        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "For if you want to receive notifications that people send directly to you"))
         pscope.addPermission(PermissionConfig(type: .CloudKit, demands: .Required, message: "So that other users can find you"))
         
         showPermissionScope()
@@ -30,14 +30,16 @@ class RootViewController: UIViewController {
 
     func showPermissionScope() {
         pscope.show({ (finished, results) -> Void in
-            print("TODO: results is a PermissionsResult for each config")
             if finished {
                 Async.main {
                     self.pscope.hide()
                 }
                 self.getUser()
             }
-        }, cancelled: { (results) -> Void in
+            }, cancelled: { (results: [PermissionResult]) -> Void in
+                if (results.filter {$0.type == .CloudKit && $0.status == .Authorized}).count > 0  {
+                    self.getUser()
+                }
             print("WARNING: PermissionScope was cancelled")
         })
     }
@@ -62,7 +64,7 @@ class RootViewController: UIViewController {
     /**
     As what user are we loged in to iCloud. Then open the main app.
     */
-    func getUser() {
+    func getUser(retryCount:Double = 1) {
         self.loginLabel.hidden = true
         EVCloudKitDao.publicDB.getUserInfo({user in
                 EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.firstName) \(user.lastName)")
@@ -76,8 +78,18 @@ class RootViewController: UIViewController {
             }, errorHandler: { error in
                 EVLog("ERROR in getUserInfo: \(error.description)");
                 EVLog("You have to log in to your iCloud account. Open the Settings app, Go to iCloud and sign in with your account. (It could also be that your project iCloud entitlements are wrong)")
-                self.loginLabel.hidden = false
 
+                switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
+                case .Retry(let timeToWait):
+                    Async.background(after: timeToWait) {
+                        self.getUser(retryCount + 1)
+                    }
+                case .Fail:
+                    Helper.showError("Could not get user: \(error.localizedDescription)")
+                default: // For here there is no need to handle the .Success, and .RecoverableError
+                    break
+                }
+                
         })
     }
 }
