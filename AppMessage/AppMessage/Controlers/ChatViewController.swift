@@ -14,6 +14,7 @@ import VIPhotoView
 import MapKit
 import UIImage_Resize
 import Async
+import PermissionScope
 
 class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
 
@@ -32,6 +33,8 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     var recordIdMeForConnection: String = ""
     var recordIdOtherForConnection: String = ""
     var viewAppeared = false
+
+    var pscope:PermissionScope = PermissionScope()
 
     // Start the conversation
     func setContact(recordId: String, firstName: String, lastName: String) {
@@ -66,6 +69,12 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
         self.senderId = "~"
         self.senderDisplayName = "~"
+    
+        pscope.headerLabel.text = "Setting permissions"
+        pscope.bodyLabel.text = "For optimal usage we need some permissions."
+        
+        pscope.addPermission(PermissionConfig(type: .Photos, demands: .Required, message: "For if you want to send a photo"))
+        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "For if you want to send your location"))
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -210,10 +219,51 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     }
 
     override func didPressAccessoryButton(sender: UIButton!) {
-        let sheet = UIActionSheet(title: "Media", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Send photo", "Send location", "Send video")
-        sheet.showFromToolbar(self.inputToolbar!)
+        showPermissionScope()
     }
+    
 
+    func hasPermissions() -> Bool {
+        let statusses = pscope.permissionStatuses([.Photos, .LocationInUse])
+        for (_, status) in statusses {
+            if status == .Authorized {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func showPermissionScope() {
+        if hasPermissions() {
+            self.showActionSheet()
+            return
+        }
+    
+        pscope.show({ (finished, results) -> Void in
+
+            if finished {
+                Async.main {
+                    self.pscope.hide()
+                }
+                self.showActionSheet()
+            }
+            }, cancelled: { (results: [PermissionResult]) -> Void in
+                if (results.filter {$0.status == .Authorized}).count > 0  {
+                    self.showActionSheet()
+                } else {
+                    Helper.showStatus("You should enable permissions for photos or location in the Settings")
+                }
+                print("WARNING: PermissionScope was cancelled")
+        })
+    }
+    
+    func showActionSheet() {
+        Async.main {
+            let sheet = UIActionSheet(title: "Media", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Send photo", "Send location", "Send video")
+            sheet.showFromToolbar(self.inputToolbar!)
+        }
+    }
+    
     // ------------------------------------------------------------------------
     // MARK: - Accessory button actions
     // ------------------------------------------------------------------------
@@ -248,6 +298,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     }
 
     func addLocation() {
+        Helper.showError("The current version of WhereAmI is not Swift 2 compatible...")
 //        WhereAmI.sharedInstance.whereAmI({ location in
 //            let message = Message()
 //            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
