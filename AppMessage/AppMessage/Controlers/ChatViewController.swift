@@ -72,9 +72,8 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     
         pscope.headerLabel.text = "Setting permissions"
         pscope.bodyLabel.text = "For optimal usage we need some permissions."
-        
-        pscope.addPermission(PermissionConfig(type: .Photos, demands: .Required, message: "For if you want to send a photo"))
-        pscope.addPermission(PermissionConfig(type: .LocationInUse, demands: .Required, message: "For if you want to send your location"))
+        pscope.addPermission(PhotosPermission(), message: "For if you want to send a photo")
+        pscope.addPermission(LocationWhileInUsePermission(), message: "For if you want to send your location")
     }
 
     override func viewDidAppear(animated: Bool) {

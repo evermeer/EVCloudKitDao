@@ -19,10 +19,10 @@ class RootViewController: UIViewController {
     override func viewDidLoad() {
         pscope.headerLabel.text = "Setting permissions"
         pscope.bodyLabel.text = "For optimal usage we need some permissions."
-        
-        pscope.addPermission(PermissionConfig(type: .Notifications, demands: .Optional, message: "For if you want to receive notifications that people send directly to you"))
-        pscope.addPermission(PermissionConfig(type: .CloudKit, demands: .Required, message: "So that other users can find you"))
-        
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil),
+            message: "For if you want to receive notifications that people send directly to you")
+        pscope.addPermission(CloudKitPermission(),
+            message: "So that other users can find you")
         showPermissionScope()
         reactToiCloudloginChanges()
         super.viewDidLoad()
