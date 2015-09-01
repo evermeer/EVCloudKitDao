@@ -22,8 +22,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Because we always need it :)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Because we need it :)</string>
 	<key>UIBackgroundModes</key>
