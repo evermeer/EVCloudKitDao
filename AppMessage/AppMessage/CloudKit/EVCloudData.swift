@@ -683,14 +683,28 @@ public class EVCloudData: NSObject {
     - parameter filterId: The filterId
     */
     public func disconnect(filterId: String) {
+        let changed = dataChangedHandlers[filterId]
         insertedHandlers.removeValueForKey(filterId)
         updateHandlers.removeValueForKey(filterId)
         deletedHandlers.removeValueForKey(filterId)
         dataChangedHandlers.removeValueForKey(filterId)
         predicates.removeValueForKey(filterId)
         data.removeValueForKey(filterId)
+        if changed != nil {
+            changed!()
+        }
     }
 
+    /**
+    Disconnect all connections
+    */
+    public func disconnectAll() {
+        for (key, _) in data {
+            disconnect(key)
+        }
+    }
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications
     // ------------------------------------------------------------------------
