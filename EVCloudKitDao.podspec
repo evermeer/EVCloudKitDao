@@ -86,7 +86,6 @@ s.frameworks = "Foundation", "UIKit", "CloudKit"
 s.requires_arc = true
 
 
-s.dependency "SwiftTryCatch"
 s.dependency "EVReflection"
 
 end

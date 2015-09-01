@@ -9,7 +9,7 @@ import Foundation
 import CloudKit
 import JSQMessagesViewController
 import UzysAssetsPickerController
-//import WhereAmI
+import SwiftLocation
 import VIPhotoView
 import MapKit
 import UIImage_Resize
@@ -297,32 +297,35 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     }
 
     func addLocation() {
-        Helper.showError("The current version of WhereAmI is not Swift 2 compatible...")
-//        WhereAmI.sharedInstance.whereAmI({ location in
-//            let message = Message()
-//            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
-//            message.FromFirstName = self.senderDisplayName
-//            message.setToFields(self.chatWithId)
-//            message.ToFirstName = self.chatWithFirstName
-//            message.ToLastName = self.chatWithLastName
-//            if location.course < 0 {
-//                message.Text = "±\(location.verticalAccuracy)m"
-//            } else {
-//                message.Text = "±\(location.verticalAccuracy)m, \(Int(location.speed/0.36)/10)kmh \(self.direction(Int(location.course))) \(location.course)°"
-//            }
-//            message.MessageType = MessageTypeEnum.Location.rawValue
-//            message.Longitude = (location.coordinate.longitude as Double)
-//            message.Latitude = (location.coordinate.latitude as Double)
-//            EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-//                EVLog("saveItem location Message: \(record.recordID.recordName)");
-//                self.finishSendingMessage()
-//                }, errorHandler: {error in
-//                    Helper.showError("Could not send location message!  \(error.description)")
-//                    self.finishSendingMessage()
-//            })
-//        }, locationRefusedHandler: {
-//            Helper.showError("Location authorization has been refused, unable to  send location")
-//        });
+        SwiftLocation.shared.currentLocation(Accuracy.Room, timeout: 20, onSuccess: { location in
+            if location == nil {
+                return
+            }
+            print("1. Location found \(location?.description)")
+            let message = Message()
+            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
+            message.FromFirstName = self.senderDisplayName
+            message.setToFields(self.chatWithId)
+            message.ToFirstName = self.chatWithFirstName
+            message.ToLastName = self.chatWithLastName
+            if location!.course < 0 {
+                message.Text = "±\(location!.verticalAccuracy)m"
+            } else {
+                message.Text = "±\(location!.verticalAccuracy)m, \(Int(location!.speed/0.36)/10)kmh \(self.direction(Int(location!.course))) \(location!.course)°"
+            }
+            message.MessageType = MessageTypeEnum.Location.rawValue
+            message.Longitude = (location!.coordinate.longitude as Double)
+            message.Latitude = (location!.coordinate.latitude as Double)
+            EVCloudData.publicDB.saveItem(message, completionHandler: {record in
+                EVLog("saveItem location Message: \(record.recordID.recordName)");
+                self.finishSendingMessage()
+                }, errorHandler: {error in
+                    Helper.showError("Could not send location message!  \(error.description)")
+                    self.finishSendingMessage()
+            })
+        }) { (error) -> Void in
+            Helper.showError("Location authorization has been refused, unable to  send location")
+        }
     }
 
     // Get the direction indicator for a degree

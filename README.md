@@ -27,9 +27,8 @@ This is a library to simplify the access to Apple's CloudKit data and notificati
 - EVCloudData.swift will let you handle CloudKit data as easy as possible. 
 - EVglobal.swift for a couple of easy to use global bridging functions (EVLog and EVtry)
 
-There is a dependency with [EVReflection](https://github.com/evermeer/EVReflection) and [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch). Those will automatically be setup if you are using cocoapods.
+There is a dependency with [EVReflection](https://github.com/evermeer/EVReflection) This will automatically be setup if you are using cocoapods.
 - [EVReflection](https://github.com/evermeer/EVReflection) for if you want easy to use reflection methods. (not only for CloudKit)
-- [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
 
 See the Quick Help info for method descriptions or the documentation at [cocoadocs.org](http://cocoadocs.org/docsets/EVCloudKitDao/)
 
@@ -81,7 +80,6 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 
 ## Main features of EVglobal
 - EVLog as a replacement for NSLog which will also output the file, function and line number.
-- EVtry as a bridge function to the SwiftTryCatch library
 
 ## Known issues (Swift limitations) ##
 - If you add a property to your object of type CKReference, then also add a property of type String for the RecordID.recordName. You could add a setter for populating both properties. Then if you query this using a NSPredicate, then query the string field and not the CKReference field. You have to do this because a NSPredicate works difrently for NSCloudkit than for an object. The EVCloudData class needs them to function in the same way. For a sample, see the Message class.
@@ -98,10 +96,9 @@ Because of dependency compatibility the AppMessage demo requires Xcode 6.2 or la
 - [JSQSystemSoundPlayer](https://github.com/jessesquires/JSQSystemSoundPlayer) - A fancy Obj-C wrapper for iOS System Sound Services
 - [CRToast](https://github.com/cruffenach/CRToast) - A modern iOS toast view that can fit your notification needs
 - [UIImage-Resize](https://github.com/AliSoftware/UIImage-Resize) - Category to add some resizing methods to the UIImage class, to resize it to a given CGSize — or fit in a CGSize keeping aspect ratio
-- [WhereAmI](https://github.com/lypiut/WhereAmI) - Easy to use Core Location library in Swift
+- [SwiftLocation](https://github.com/malcommac/SwiftLocation) - iOS CoreLocation Wrapper made in Swift
 - [UzysAssetsPickerController](https://github.com/uzysjung/UzysAssetsPickerController) - Alternative UIImagePickerController , You can take a picture with camera and choose multiple photos and videos
 - [VIPhotoView](https://github.com/vitoziv/VIPhotoView) - View a photo with simple and basic interactive gesture
-- [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) - Adds try-catch support for Swift
 - [Async](https://github.com/duemunk/Async) Syntactic sugar in Swift for asynchronous dispatches in Grand Central Dispatch
 - [PermissionScope](https://github.com/nickoneill/PermissionScope) - Intelligent iOS permissions UI and unified API
 
@@ -131,7 +128,7 @@ Version 0.36 of cocoapods will make a dynamic framework of all the pods that you
 import EVCloudKitDao
 ```
 
-If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 5 classes EVCloudKitDao, EVCloudKitData, EVReflection, EVCloudKitDataObject and EVglobal to your app. besides that you also have to embed the [SwiftTryCatch](https://github.com/williamFalcon/SwiftTryCatch) class 
+If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 5 classes EVCloudKitDao, EVCloudKitData, EVReflection, EVCloudKitDataObject and EVglobal to your app.
 
 When you have added EVCloudKitDao to your project, then have a look at the AppMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 

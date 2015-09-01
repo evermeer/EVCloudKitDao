@@ -6,6 +6,7 @@ PODS:
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - PermissionScope (0.7)
+  - SwiftLocation (0.1.4)
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
@@ -16,7 +17,8 @@ DEPENDENCIES:
   - EVReflection (from `https://github.com/evermeer/EVReflection.git`, branch `Swift2`)
   - JSQMessagesViewController
   - PermissionScope (from `https://github.com/nickoneill/PermissionScope.git`, branch
-    `swift2`)
+    `cloudkit`)
+  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `swift-2.0`)
   - UIImage-Resize
   - UzysAssetsPickerController
   - VIPhotoView
@@ -29,8 +31,11 @@ EXTERNAL SOURCES:
     :branch: Swift2
     :git: https://github.com/evermeer/EVReflection.git
   PermissionScope:
-    :branch: swift2
+    :branch: cloudkit
     :git: https://github.com/nickoneill/PermissionScope.git
+  SwiftLocation:
+    :branch: swift-2.0
+    :git: https://github.com/malcommac/SwiftLocation.git
 
 CHECKOUT OPTIONS:
   Async:
@@ -40,8 +45,11 @@ CHECKOUT OPTIONS:
     :commit: 435644cbfd049ea20ee5e64ca3b316e42fc48a93
     :git: https://github.com/evermeer/EVReflection.git
   PermissionScope:
-    :commit: 85f2cff1f31e695863840660f6bd18ec69d3f14f
+    :commit: 6053912a1d1ef814fdb81b33aad3d50d32ca799a
     :git: https://github.com/nickoneill/PermissionScope.git
+  SwiftLocation:
+    :commit: 2c4521faf6544525005084287d3e1ce9cad5218b
+    :git: https://github.com/malcommac/SwiftLocation.git
 
 SPEC CHECKSUMS:
   Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
@@ -50,6 +58,7 @@ SPEC CHECKSUMS:
   JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   PermissionScope: 1d27791185cca10c26f84d1aab905117dde50f39
+  SwiftLocation: af451eff3babb518ffa0e8d34637ab6e6035afc5
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
