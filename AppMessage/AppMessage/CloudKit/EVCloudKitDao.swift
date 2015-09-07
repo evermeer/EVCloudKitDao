@@ -623,7 +623,7 @@ public class EVCloudKitDao {
         let key = "type_\(recordType)_id_\(filterId)"
 
         let createSubscription = { () -> () in
-            let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: CKSubscriptionOptions(rawValue:CKSubscriptionOptions.FiresOnRecordCreation.rawValue + CKSubscriptionOptions.FiresOnRecordUpdate.rawValue + CKSubscriptionOptions.FiresOnRecordDeletion.rawValue))
+            let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
             subscription.notificationInfo!.shouldSendContentAvailable = true
             if let configure = configureNotificationInfo {

@@ -42,7 +42,7 @@ CHECKOUT OPTIONS:
     :commit: abe23c18d8d3a708a325b5db10231388e1ca5b88
     :git: https://github.com/duemunk/Async.git
   EVReflection:
-    :commit: 435644cbfd049ea20ee5e64ca3b316e42fc48a93
+    :commit: fc0da00cfed74cc678ef505cf9f90c9d8a80f700
     :git: https://github.com/evermeer/EVReflection.git
   PermissionScope:
     :commit: 6053912a1d1ef814fdb81b33aad3d50d32ca799a
