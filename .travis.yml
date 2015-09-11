@@ -3,7 +3,7 @@ podfile: AppMessage/Podfile
 osx_image: xcode7
 
 before_install: 
-- gem install cocoapods --pre
+- gem install cocoapods
 - export LANG=en_US.UTF-8
 - brew update
 - if brew outdated | grep -qx xctool; then brew upgrade xctool; fi
