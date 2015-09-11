@@ -1,8 +1,9 @@
 EVCloudKitDao
 =============
 
-
+<!---
 [![Circle CI](https://img.shields.io/circleci/project/evermeer/EVCloudKitDao.svg?style=flat)](https://circleci.com/gh/evermeer/EVCloudKitDao)
+ -->
 [![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/evermeer/EVCloudKitDao)
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
 [![Stars](https://img.shields.io/github/stars/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/stargazers)
