@@ -13,7 +13,7 @@ import Async
 class Helper {
 
     class func showMessage(message: String, color: UIColor) {
-        var options: NSDictionary = [
+        let options: NSDictionary = [
             kCRToastTextKey : message,
             kCRToastNotificationTypeKey : CRToastType.NavigationBar.rawValue,
             kCRToastNotificationPresentationTypeKey : CRToastPresentationType.Cover.rawValue,

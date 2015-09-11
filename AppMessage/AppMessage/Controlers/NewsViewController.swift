@@ -22,9 +22,9 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func setupMenuTableViewLayout() {
-        var rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
+        let rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
         tableView = UITableView(frame: rect)
-        tableView.autoresizingMask = .FlexibleTopMargin | .FlexibleBottomMargin | .FlexibleWidth
+        tableView.autoresizingMask = [.FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleWidth]
         tableView.delegate = self
         tableView.dataSource = self
         tableView.opaque = false
@@ -55,7 +55,7 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     var cellIdentifier = "NewsCell";
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
 
         if cell == nil {
             cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellIdentifier)

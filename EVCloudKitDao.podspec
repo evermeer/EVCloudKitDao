@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "EVCloudKitDao"
-s.version      = "2.6.1"
+s.version      = "2.7.0"
 s.summary      = "iOS: Simplified access to Apple’s CloudKit"
 
 s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
@@ -86,7 +86,6 @@ s.frameworks = "Foundation", "UIKit", "CloudKit"
 s.requires_arc = true
 
 
-s.dependency "SwiftTryCatch"
 s.dependency "EVReflection"
 
 end

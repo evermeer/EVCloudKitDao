@@ -25,9 +25,9 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 
     func doFilter() {
         if self.searchBar.selectedScopeButtonIndex > 0 {
-            self.filterContentForSearchText(self.searchBar.text)
+            self.filterContentForSearchText(self.searchBar.text!)
         } else {
-            self.filterContentForSearchTextV2(self.searchBar.text)
+            self.filterContentForSearchTextV2(self.searchBar.text!)
         }
     }
 
@@ -90,13 +90,13 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "Folowin_Search_Cell";
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? UITableViewCell
+        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
                 if cell == nil {
             cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellIdentifier)
             cell.selectedBackgroundView = UIView()
         }
 
-        var item: Message = data[indexPath.row]
+        let item: Message = data[indexPath.row]
         cell.textLabel?.text = item.Text
         return cell;
     }

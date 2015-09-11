@@ -1,74 +1,66 @@
 PODS:
-  - ARChromeActivity (1.0.4)
-  - ARSafariActivity (0.0.3)
   - Async (1.3.1)
-  - AutoScrollLabel (0.4.1)
-  - Chivy (0.5.0):
-    - Chivy/Core (= 0.5.0)
-  - Chivy/Core (0.5.0):
-    - ARChromeActivity
-    - ARSafariActivity
-    - AutoScrollLabel
-    - Chivy/Core-no-arc
-    - DKNavbarBackButton
-    - NJKWebViewProgress
-  - Chivy/Core-no-arc (0.5.0)
-  - CRToast (0.0.7)
-  - DKNavbarBackButton (0.1.4):
-    - DKNavbarBackButton/core (= 0.1.4)
-  - DKNavbarBackButton/core (0.1.4)
-  - EVReflection (2.4.7)
+  - CRToast (0.0.8)
+  - EVReflection (2.6.0)
   - JSQMessagesViewController (7.1.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
-  - NJKWebViewProgress (0.2.3):
-    - NJKWebViewProgress/Core (= 0.2.3)
-    - NJKWebViewProgress/ProgressView (= 0.2.3)
-  - NJKWebViewProgress/Core (0.2.3)
-  - NJKWebViewProgress/ProgressView (0.2.3)
-  - SwiftTryCatch (0.0.1)
+  - PermissionScope (0.7)
+  - SwiftLocation (0.1.4)
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
-  - WhereAmI (1.2.1)
 
 DEPENDENCIES:
-  - Async (from `https://github.com/duemunk/Async.git`)
-  - Chivy
+  - Async (from `https://github.com/duemunk/Async.git`, branch `feature/Swift_2.0`)
   - CRToast
-  - EVReflection
+  - EVReflection (from `https://github.com/evermeer/EVReflection.git`, branch `Swift2`)
   - JSQMessagesViewController
-  - SwiftTryCatch
+  - PermissionScope (from `https://github.com/nickoneill/PermissionScope.git`, branch
+    `cloudkit`)
+  - SwiftLocation (from `https://github.com/malcommac/SwiftLocation.git`, branch `swift-2.0`)
   - UIImage-Resize
   - UzysAssetsPickerController
   - VIPhotoView
-  - WhereAmI
 
 EXTERNAL SOURCES:
   Async:
+    :branch: feature/Swift_2.0
     :git: https://github.com/duemunk/Async.git
+  EVReflection:
+    :branch: Swift2
+    :git: https://github.com/evermeer/EVReflection.git
+  PermissionScope:
+    :branch: cloudkit
+    :git: https://github.com/nickoneill/PermissionScope.git
+  SwiftLocation:
+    :branch: swift-2.0
+    :git: https://github.com/malcommac/SwiftLocation.git
 
 CHECKOUT OPTIONS:
   Async:
-    :commit: 9e64046b767fe11010891f5b7fe2aed613a6ee55
+    :commit: abe23c18d8d3a708a325b5db10231388e1ca5b88
     :git: https://github.com/duemunk/Async.git
+  EVReflection:
+    :commit: 9951670eb877a84892a2a0475ff762e5a2576510
+    :git: https://github.com/evermeer/EVReflection.git
+  PermissionScope:
+    :commit: 6053912a1d1ef814fdb81b33aad3d50d32ca799a
+    :git: https://github.com/nickoneill/PermissionScope.git
+  SwiftLocation:
+    :commit: 2c4521faf6544525005084287d3e1ce9cad5218b
+    :git: https://github.com/malcommac/SwiftLocation.git
 
 SPEC CHECKSUMS:
-  ARChromeActivity: 9064d94803338d3377f3e1013a8e8f4821d7daf1
-  ARSafariActivity: dc358220eae06afe83e7ca0b21ca1b862ef8ae81
   Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
-  AutoScrollLabel: afe272014f82c707c9203f1383f3fe4e32443fa2
-  Chivy: 336420216fd408f33ae12421e40c6b610c59fa41
-  CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
-  DKNavbarBackButton: adee21ab468fee2d1a605f421321516157cf6543
-  EVReflection: 80d5755b8ec4b5ca248b4d02058227c09334b2d9
+  CRToast: b087127369b4c603726ef6249d74d0d737629ab8
+  EVReflection: e8f562eaa015ae14a4a2af640d06b6e89c0a925c
   JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
-  NJKWebViewProgress: f481fd424cb5ecc27eacae11b5397db92fba9a4d
-  SwiftTryCatch: fb6d2b34abe48efd69578dac919293a44f95b481
+  PermissionScope: 1d27791185cca10c26f84d1aab905117dde50f39
+  SwiftLocation: af451eff3babb518ffa0e8d34637ab6e6035afc5
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
-  WhereAmI: 550fc141f0507b575a68c34a4cf01bb067566399
 
-COCOAPODS: 0.37.2
+COCOAPODS: 0.38.2

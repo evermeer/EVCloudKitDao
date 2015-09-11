@@ -31,37 +31,35 @@ public enum CachingStrategy {
 /**
 Strange enough by default Swift does not implement the Equality operator for enums. So we just made one ourselves.
 
-:param: leftPart The CachingStrategy value at the left of the equality operator.
-:param: rightPart The CachingStrategy value at the right of the equality operator.
+- parameter leftPart: The CachingStrategy value at the left of the equality operator.
+- parameter rightPart: The CachingStrategy value at the right of the equality operator.
 */
 func ==(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
     switch(leftPart) {
-    case let .None:
+    case .None:
         switch(rightPart) {
-        case let .None: return true
+        case .None: return true
         default: return false
         }
-    case let .Direct:
+    case .Direct:
         switch(rightPart) {
-        case let .Direct: return true
+        case .Direct: return true
         default: return false
         }
-
-    case let .Every(minutea):
+    case .Every(let minutea):
         switch(rightPart) {
-        case let .Every(minuteb): return minutea == minuteb
+        case .Every(let minuteb): return minutea == minuteb
         default: return false
         }
-    default:
-        return false
     }
 }
+
 
 /**
 Strange enough by default Swift does not implement the not Equality operator for enums. So we just made one ourselves.
 
-:param: leftPart The CachingStrategy value at the left of the equality operator.
-:param: rightPart The CachingStrategy value at the right of the equality operator.
+- parameter leftPart: The CachingStrategy value at the left of the equality operator.
+- parameter rightPart: The CachingStrategy value at the right of the equality operator.
 */
 func !=(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
     return !(leftPart == rightPart)
@@ -138,7 +136,7 @@ public class EVCloudData: NSObject {
 
     /**
     Singleton acces to a specific named public container
-    :param: containterIdentifier The identifier of the public container that you want to use.
+    - parameter containterIdentifier: The identifier of the public container that you want to use.
 
     :return: The public container for the identifier.
     */
@@ -146,7 +144,7 @@ public class EVCloudData: NSObject {
         if let containerInstance = containerWrapperInstance.publicContainers[containerIdentifier] {
             return containerInstance
         }
-        var cloudData = EVCloudData()
+        let cloudData = EVCloudData()
         cloudData.dao = EVCloudKitDao.publicDBForContainer(containerIdentifier)
         containerWrapperInstance.publicContainers[containerIdentifier] =  cloudData
         return cloudData
@@ -154,7 +152,7 @@ public class EVCloudData: NSObject {
 
     /**
     Singleton acces to a specific named private container
-    :param: containterIdentifier The identifier of the private container that you want to use.
+    - parameter containterIdentifier: The identifier of the private container that you want to use.
 
     :return: The private container for the identifier.
     */
@@ -162,7 +160,7 @@ public class EVCloudData: NSObject {
         if let containerInstance = containerWrapperInstance.privateContainers[containerIdentifier] {
             return containerInstance
         }
-        var cloudData = EVCloudData()
+        let cloudData = EVCloudData()
         cloudData.dao = EVCloudKitDao.privateDBForContainer(containerIdentifier)
         containerWrapperInstance.privateContainers[containerIdentifier] =  cloudData
         return cloudData
@@ -172,8 +170,9 @@ public class EVCloudData: NSObject {
     Overriding the default innit so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
     */
     override init() {
-        if let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as? NSString {
-            fileDirectory = documentDirectory
+        let pathDir = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        if pathDir.count > 0 {
+            fileDirectory = pathDir[0]
         } else
         {
             fileDirectory = ""
@@ -246,7 +245,7 @@ public class EVCloudData: NSObject {
     /**
     Write the data for a specific filter to a file if the corresponding backup strategy has been met.
 
-    :param: filterId The filter id for the data that needs to be written to a file
+    - parameter filterId: The filter id for the data that needs to be written to a file
     */
     private func backupDataWithStrategyTest(filterId: String) {
         switch cachingStrategies[filterId]! {
@@ -268,7 +267,7 @@ public class EVCloudData: NSObject {
     /**
     Handle data updates
 
-    :param: filterId The filter id for the data that was received from CloudKit
+    - parameter filterId: The filter id for the data that was received from CloudKit
     */
     private func dataIsUpdated(filterId: String) {
         cachingChangesCount[filterId] = cachingChangesCount[filterId]! + 1
@@ -278,18 +277,18 @@ public class EVCloudData: NSObject {
     /**
     Return the difrence of 2 dates in minutes
 
-    :param: fromDate The first date for the comparison
-    :param: toDate The second date for the comparison
+    - parameter fromDate: The first date for the comparison
+    - parameter toDate: The second date for the comparison
     */
     private func dateDiffInMinutes(fromDate: NSDate, toDate: NSDate) -> Int {
-        return NSCalendar.currentCalendar().components(.CalendarUnitMinute, fromDate: fromDate, toDate: toDate, options: nil).minute
+        return NSCalendar.currentCalendar().components(.Minute, fromDate: fromDate, toDate: toDate, options: NSCalendarOptions(rawValue: 0)).minute
     }
 
     /**
     Make sure that all data is backed up while taking into account the selected CachingStrategy. You should call this method right before exiting your app.
     */
     public func backupAllData() {
-        for (key, value) in cachingLastWrite {
+        for (key, _) in cachingLastWrite {
             backupDataWithStrategyTest(key)
         }
     }
@@ -298,7 +297,7 @@ public class EVCloudData: NSObject {
     Restore all previously backed up data for all initialized connections. Be aware that these already should have been restored.
     */
     public func restoreAllData() {
-        for (key, value) in cachingLastWrite {
+        for (key, _) in cachingLastWrite {
             restoreDataForFilter(key)
         }
     }
@@ -307,15 +306,15 @@ public class EVCloudData: NSObject {
     Remove the backup files for all the initialized connections.
     */
     public func removeAllBackups() {
-        for (key, value) in cachingLastWrite {
+        for (key, _) in cachingLastWrite {
             removeBackupForFilter(key)
         }
     }
-    
+
     /**
     Write the data for a specific filter to a file
 
-    :param: filterId The filter id for the data that needs to be written to a file
+    - parameter filterId: The filter id for the data that needs to be written to a file
     */
     public func backupDataForFilter(filterId: String) {
         if let theData = data[filterId] {
@@ -328,7 +327,7 @@ public class EVCloudData: NSObject {
     /**
     Restore data for a specific filter from a file
 
-    :param: filterId The filter id for the data that will be restored from file
+    - parameter filterId: The filter id for the data that will be restored from file
     */
     public func restoreDataForFilter(filterId: String) -> Bool {
         if let theData = restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
@@ -341,7 +340,7 @@ public class EVCloudData: NSObject {
     /**
     Remove the backup for a specific filter
 
-    :param: filterId The filter id for the backup file that will be removed
+    - parameter filterId: The filter id for the backup file that will be removed
     */
     public func removeBackupForFilter(filterId: String) {
         removeBackup("Filter_\(filterId).bak")
@@ -350,11 +349,11 @@ public class EVCloudData: NSObject {
     /**
     Write data to a file
 
-    :param: data The data that will be written to the file (Needs to implement NSCoding like the EVCloudKitDataObject)
-    :param: toFile The file that will be written to
+    - parameter data: The data that will be written to the file (Needs to implement NSCoding like the EVCloudKitDataObject)
+    - parameter toFile: The file that will be written to
     */
     public func backupData(data: AnyObject, toFile: String){
-        var filePath = fileDirectory.stringByAppendingPathComponent(toFile)
+        let filePath = fileDirectory.stringByAppendingPathComponent(toFile)
         dispatch_sync(ioQueue) {
             NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
             addSkipBackupAttributeToItemAtPath(filePath)
@@ -365,16 +364,14 @@ public class EVCloudData: NSObject {
     /**
     Read a backup file and return it as an unarchived object
 
-    :param: fromFile The file that will be read and parsed to objects
+    - parameter fromFile: The file that will be read and parsed to objects
     */
     public func restoreData(fromFile: String) -> AnyObject? {
-        var filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
+        let filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
         var result: AnyObject? = nil
         dispatch_sync(ioQueue) {
             if self.filemanager.fileExistsAtPath(filePath) {
-                EVtry({
-                    result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
-                })
+                result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
                 EVLog("Data is restored from \(filePath))")
             }
         }
@@ -384,14 +381,18 @@ public class EVCloudData: NSObject {
     /**
     Remove a backup file
 
-    :param: file The file that will be removed from the backup folder (EVCloudDataBackup)
+    - parameter file: The file that will be removed from the backup folder (EVCloudDataBackup)
     */
     public func removeBackup(file: String) {
-        var filePath = fileDirectory.stringByAppendingPathComponent(file)
+        let filePath = fileDirectory.stringByAppendingPathComponent(file)
         dispatch_sync(ioQueue) {
             if self.filemanager.fileExistsAtPath(filePath) {
-                var error: NSError?
-                self.filemanager.removeItemAtPath(filePath, error: &error)
+                do {
+                    try self.filemanager.removeItemAtPath(filePath)
+                } catch  _ as NSError {
+                } catch {
+                    fatalError()
+                }
             }
         }
     }
@@ -403,15 +404,15 @@ public class EVCloudData: NSObject {
     /**
     Add the inserted or updated object to every data collection where it confirms to it's predicate
 
-    :param: recordId The recordId of the object that will be processed
-    :param: item The object that will be processed
+    - parameter recordId: The recordId of the object that will be processed
+    - parameter item: The object that will be processed
     :return: No return value
     */
     private func upsertObject(recordId: String, item: EVCloudKitDataObject) {
         EVLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
-                var itemID: Int? = data[filter]!.EVindexOf {i in return i.recordID.recordName == recordId}
+                let itemID: Int? = data[filter]!.EVindexOf {i in return i.recordID.recordName == recordId}
                 if predicate.evaluateWithObject(item) {
                     var existingItem: EVCloudKitDataObject?
                     if itemID != nil && itemID < data[filter]!.count {
@@ -453,12 +454,12 @@ public class EVCloudData: NSObject {
     /**
     Delete an object from every data collection where it's part of
 
-    :param: recordId The recordId of the object that will be deleted
+    - parameter recordId: The recordId of the object that will be deleted
     :return: No return value
     */
     private func deleteObject(recordId: String) {
-        for (filter, table) in self.data {
-            var itemID: Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
+        for (filter, _) in self.data {
+            let itemID: Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
             if itemID != nil {
                 data[filter]!.removeAtIndex(itemID!)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -477,9 +478,9 @@ public class EVCloudData: NSObject {
     /**
     Get an Item for a recordId
 
-    :param: recordId The CloudKit record id that we want to get.
-    :param: completionHandler The function that will be called with the object that we aksed for
-    :param: errorHandler The function that will be called when there was an error
+    - parameter recordId: The CloudKit record id that we want to get.
+    - parameter completionHandler: The function that will be called with the object that we aksed for
+    - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
     public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
@@ -498,9 +499,9 @@ public class EVCloudData: NSObject {
     /**
     Save an item and update the connected collections and call the insertedHandlers events for those
 
-    :param: item object that we want to save
-    :param: completionHandler The function that will be called with a CKRecord representation of the saved object
-    :param: errorHandler The function that will be called when there was an error
+    - parameter item: object that we want to save
+    - parameter completionHandler: The function that will be called with a CKRecord representation of the saved object
+    - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
     public func saveItem<T:EVCloudKitDataObject>(item: T, completionHandler: (item: T) -> Void, errorHandler:(error: NSError) -> Void) {
@@ -528,9 +529,9 @@ public class EVCloudData: NSObject {
     /**
     Delete an Item for a recordId and update the connected collections and call the deletedHandlers events for those
 
-    :param: recordId The CloudKit record id of the record that we want to delete
-    :param: completionHandler The function that will be called with a record id of the deleted object
-    :param: errorHandler The function that will be called when there was an error
+    - parameter recordId: The CloudKit record id of the record that we want to delete
+    - parameter completionHandler: The function that will be called with a record id of the deleted object
+    - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
     public func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
@@ -556,17 +557,17 @@ public class EVCloudData: NSObject {
     /**
     Create a data connection between your app and CloudKit. Execute a query, create a subscription, process notifications, maintain an in memory dictionary of objects and execute apropriate events. The connection will be based on a predicate.
 
-    :param: type The CloudKit record id of the record that we want to delete
-    :param: predicate The filter that will be used. To see how to create a predicate, see: https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKQuery_class/index.html
-    :param: filterId The filterId under what this filter should be registered (must be unique per predicate
-    :param: cachingStrategy Optional vale for setting the caching strategy for this connect. The default value is CachingStrategy.Direct
-    :param: configureNotificationInfo The function that will be called with the CKNotificationInfo object so that we can configure it
-    :param: completionHandler The function that will be called with a record id of the deleted object
-    :param: insertedHandler Executed if the notification was for an inserted object
-    :param: updatedHandler Executed if the notification was for an updated object pasing on the data object plus the index in the data array
-    :param: deletedHandler Executed if the notification was for an deleted object passing on the recordId plus the index it had in the data array
-    :param: dataChangedHandler Executed on all data modifications (completion, inserted, updated and deleted)
-    :param: errorHandler The function that will be called when there was an error
+    - parameter type: The CloudKit record id of the record that we want to delete
+    - parameter predicate: The filter that will be used. To see how to create a predicate, see: https://developer.apple.com/library/prerelease/ios/documentation/CloudKit/Reference/CKQuery_class/index.html
+    - parameter filterId: The filterId under what this filter should be registered (must be unique per predicate
+    - parameter cachingStrategy: Optional vale for setting the caching strategy for this connect. The default value is CachingStrategy.Direct
+    - parameter configureNotificationInfo: The function that will be called with the CKNotificationInfo object so that we can configure it
+    - parameter completionHandler: The function that will be called with a record id of the deleted object
+    - parameter insertedHandler: Executed if the notification was for an inserted object
+    - parameter updatedHandler: Executed if the notification was for an updated object pasing on the data object plus the index in the data array
+    - parameter deletedHandler: Executed if the notification was for an deleted object passing on the recordId plus the index it had in the data array
+    - parameter dataChangedHandler: Executed on all data modifications (completion, inserted, updated and deleted)
+    - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
     public func connect<T:EVCloudKitDataObject>(
@@ -652,7 +653,7 @@ public class EVCloudData: NSObject {
 
                 var continueReading: Bool = false
                 self.data[filterId] = results
-                var sema = dispatch_semaphore_create(0)
+                let sema = dispatch_semaphore_create(0)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     if completionHandler != nil {
                         continueReading = completionHandler!(results: results)
@@ -679,7 +680,7 @@ public class EVCloudData: NSObject {
     /**
     Disconnect an existing connection. When a connect is made, then at least in the deinit you must do a disconnect for that same filterId.
 
-    :param: filterId The filterId
+    - parameter filterId: The filterId
     */
     public func disconnect(filterId: String) {
         let changed = dataChangedHandlers[filterId]
@@ -695,13 +696,14 @@ public class EVCloudData: NSObject {
     }
 
     /**
-    Remove the backup files for all the initialized connections.
+    Disconnect all connections
     */
     public func disconnectAll() {
-        for (key, value) in data {
+        for (key, _) in data {
             disconnect(key)
         }
     }
+    
     
     // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications
@@ -710,9 +712,9 @@ public class EVCloudData: NSObject {
     /**
     Call this from the AppDelegate didReceiveRemoteNotification for processing the notifications
 
-    :param: userInfo CKNotification dictionary
-    :param: executeIfNonQuery Will be called if the notification is not for a CloudKit subscription
-    :param: completed Executed when all notifications are processed
+    - parameter userInfo: CKNotification dictionary
+    - parameter executeIfNonQuery: Will be called if the notification is not for a CloudKit subscription
+    - parameter completed: Executed when all notifications are processed
     :return: No return value
     */
     public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject], executeIfNonQuery:() -> Void, completed:()-> Void) {
@@ -730,7 +732,7 @@ public class EVCloudData: NSObject {
     /**
     Call this in the AppDelegate didFinishLaunchingWithOptions to handle not yet handled notifications.
 
-    :param: completed Executed when all notifications are processed
+    - parameter completed: Executed when all notifications are processed
     :return: No return value
     */
     public func fetchChangeNotifications(completed:()-> Void) {
@@ -753,11 +755,11 @@ extension Array {
     /**
     Index of the first item that meets the condition.
 
-    :param: condition A function which returns a boolean if an element satisfies a given condition or not.
-    :returns: Index of the first matched item or nil
+    - parameter condition: A function which returns a boolean if an element satisfies a given condition or not.
+    - returns: Index of the first matched item or nil
     */
     func EVindexOf (condition: Element -> Bool) -> Int? {
-        for (index, element) in enumerate(self) {
+        for (index, element) in self.enumerate() {
             if condition(element) {
                 return index
             }

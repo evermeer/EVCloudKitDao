@@ -5,53 +5,34 @@
 //  Copyright (c) 2015. All rights reserved.
 //
 
-import SwiftTryCatch
-
-/**
-Bridge function to the SwiftTryCatch
-:param: try The code that you want to try
-:param: catch(exception) The optional code that will be executed in case of an exception
-:param: finally The optional code that always will be executed
-*/
-public func EVtry(try:()->(), catch:((exception:NSException)->())? = nil, finally:(()->())? = nil) {
-    SwiftTryCatch.try({
-        try()
-    }, catch: {error in
-        if catch != nil {
-            catch!(exception: error)
-        }
-    }, finally: {
-        if finally != nil {
-            finally!()
-        }
-    })
-}
+import Foundation
 
 /**
 Replacement function for NSLog that will also output the filename, linenumber and function name.
 
-:param: object What you want to log
-:param: filename Will be auto populated by the name of the file from where this function is called
-:param: line Will be auto populated by the line number in the file from where this function is called
-:param: funcname Will be auto populated by the function name from where this function is called
+- parameter object: What you want to log
+- parameter filename: Will be auto populated by the name of the file from where this function is called
+- parameter line: Will be auto populated by the line number in the file from where this function is called
+- parameter funcname: Will be auto populated by the function name from where this function is called
 */
 public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
-    var dateFormatter = NSDateFormatter()
+    let dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
-    var process = NSProcessInfo.processInfo()
-    var threadId = "." //NSThread.currentThread().threadDictionary
-    println("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \(filename.lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
+    let process = NSProcessInfo.processInfo()
+    let threadId = "." //NSThread.currentThread().threadDictionary
+    print("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \((filename as NSString).lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
 }
 
 /**
 Make sure the file is not backed up to iCloud
 
-:param: filePath the url of the file we want to set the attribute for
+- parameter filePath: the url of the file we want to set the attribute for
 */
 public func addSkipBackupAttributeToItemAtPath(filePath:String) {
     if let url:NSURL = NSURL(fileURLWithPath: filePath) {
-        var error:NSError?
-        if !url.setResourceValue(NSNumber(bool: true), forKey: NSURLIsExcludedFromBackupKey, error: &error) {
+        do {
+            try url.setResourceValue(NSNumber(bool: true), forKey: NSURLIsExcludedFromBackupKey)
+        } catch _ as NSError {
             EVLog("ERROR: Could not set 'exclude from backup' attribute for file \(filePath)\n\\tERROR:(error?.description)")
         }
     }

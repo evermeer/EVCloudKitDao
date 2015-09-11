@@ -42,9 +42,9 @@ class TestsViewController: UIViewController {
 
     func getUserInfoTest() {
         // retrieve our CloudKit user id. (made syncronous for this demo)
-        var sema = dispatch_semaphore_create(0)
+        let sema = dispatch_semaphore_create(0)
         dao.getUserInfo({user in
-            self.userId = user.userRecordID.recordName
+            self.userId = user.userRecordID?.recordName ?? ""
             EVLog("discoverUserInfo : \(self.userId) = \(user.firstName) \(user.lastName)");
             dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
@@ -71,13 +71,13 @@ class TestsViewController: UIViewController {
     func getAllContactsTest() {
         // Look who of our contact is also using this app.
         // the To for the test message will be the last contact in the list
-        var sema = dispatch_semaphore_create(0)
+        let sema = dispatch_semaphore_create(0)
         var userIdTo: String = userId
         dao.allContactsUserInfo({ users in
             EVLog("AllContactUserInfo count = \(users.count)");
             for user in users {
                 userIdTo = user.userRecordID!.recordName
-                EVLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(user.userRecordID)")
+                EVLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(userIdTo)")
             }
             dispatch_semaphore_signal(sema);
             }, errorHandler: { error in
@@ -88,16 +88,16 @@ class TestsViewController: UIViewController {
     }
 
     func saveObjectsTest() {
-        var userIdTo: String = userId
+        let userIdTo: String = userId
         // New message
-        var message = Message()
+        let message = Message()
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userIdTo)
         message.Text = "This is the message text"
         message.MessageType = MessageTypeEnum.Picture.rawValue
 
         // The attachment
-        var asset = Asset()
+        let asset = Asset()
         asset.File = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("test", ofType: "png")!))
         asset.FileName = "test"
         asset.FileType = "png"
@@ -119,14 +119,14 @@ class TestsViewController: UIViewController {
     }
 
     func saveAndDeleteTest() {
-        var userIdTo: String = userId
-        var message = Message()
+        let userIdTo: String = userId
+        let message = Message()
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userIdTo)
         message.Text = "This is the message text"
         message.MessageType = MessageTypeEnum.Text.rawValue
 
-        var sema = dispatch_semaphore_create(0);
+        let sema = dispatch_semaphore_create(0);
         message.MessageType = MessageTypeEnum.Text.rawValue
         dao.saveItem(message, completionHandler: {record in
             self.createdId = record.recordID.recordName
@@ -167,7 +167,7 @@ class TestsViewController: UIViewController {
         })
 
         // Get all records of a recordType that are created by me using a predicate
-        var predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
+        let predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
         dao.query(Message(), predicate:predicate, completionHandler: { results in
             EVLog("query recordType created by: result count = \(results.count)")
             return false
@@ -246,8 +246,8 @@ class TestsViewController: UIViewController {
     func alternateContainerTest() {
         EVLog("===== WARNING : This will fail because you will probably not have this specific container! =====")
 
-        var userIdTo: String = userId
-        var message = Message()
+        let userIdTo: String = userId
+        let message = Message()
         message.From = dao.referenceForId(userId)
         message.To = dao.referenceForId(userIdTo)
         message.Text = "This is the message text"
