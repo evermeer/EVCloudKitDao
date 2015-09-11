@@ -1,6 +1,6 @@
 language: objective-c
 podfile: AppMessage/Podfile
-osx_image: xcode631
+osx_image: xcode7
 
 before_install: 
 - export LANG=en_US.UTF-8
