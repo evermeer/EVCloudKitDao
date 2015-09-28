@@ -55,8 +55,6 @@ s.social_media_url   = "http://twitter.com/evermeer"
 #  Specify the minimum deployment target
 #
 s.ios.deployment_target = '8.0'
-s.osx.deployment_target = '10.10'
-s.watchos.deployment_target = '2.0'
 
 # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #

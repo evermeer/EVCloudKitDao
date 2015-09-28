@@ -297,33 +297,37 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     }
 
     func addLocation() {
-        SwiftLocation.shared.currentLocation(Accuracy.Room, timeout: 20, onSuccess: { location in
-            if location == nil {
-                return
-            }
-            print("1. Location found \(location?.description)")
-            let message = Message()
-            message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
-            message.FromFirstName = self.senderDisplayName
-            message.setToFields(self.chatWithId)
-            message.ToFirstName = self.chatWithFirstName
-            message.ToLastName = self.chatWithLastName
-            if location!.course < 0 {
-                message.Text = "±\(location!.verticalAccuracy)m"
-            } else {
-                message.Text = "±\(location!.verticalAccuracy)m, \(Int(location!.speed/0.36)/10)kmh \(self.direction(Int(location!.course))) \(location!.course)°"
-            }
-            message.MessageType = MessageTypeEnum.Location.rawValue
-            message.Longitude = (location!.coordinate.longitude as Double)
-            message.Latitude = (location!.coordinate.latitude as Double)
-            EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                EVLog("saveItem location Message: \(record.recordID.recordName)");
-                self.finishSendingMessage()
-                }, errorHandler: {error in
-                    Helper.showError("Could not send location message!  \(error.description)")
+        do {
+            try SwiftLocation.shared.currentLocation(.Room, timeout: 20, onSuccess: { (location) -> Void in
+                if location == nil {
+                    return
+                }
+                print("1. Location found \(location?.description)")
+                let message = Message()
+                message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
+                message.FromFirstName = self.senderDisplayName
+                message.setToFields(self.chatWithId)
+                message.ToFirstName = self.chatWithFirstName
+                message.ToLastName = self.chatWithLastName
+                if location!.course < 0 {
+                    message.Text = "±\(location!.verticalAccuracy)m"
+                } else {
+                    message.Text = "±\(location!.verticalAccuracy)m, \(Int(location!.speed/0.36)/10)kmh \(self.direction(Int(location!.course))) \(location!.course)°"
+                }
+                message.MessageType = MessageTypeEnum.Location.rawValue
+                message.Longitude = (location!.coordinate.longitude as Double)
+                message.Latitude = (location!.coordinate.latitude as Double)
+                EVCloudData.publicDB.saveItem(message, completionHandler: {record in
+                    EVLog("saveItem location Message: \(record.recordID.recordName)");
                     self.finishSendingMessage()
+                    }, errorHandler: {error in
+                        Helper.showError("Could not send location message!  \(error.description)")
+                        self.finishSendingMessage()
+                })
+            }, onFail: { (error) -> Void in
+                Helper.showError("Location authorization has been refused, unable to  send location")
             })
-        }) { (error) -> Void in
+        } catch {
             Helper.showError("Location authorization has been refused, unable to  send location")
         }
     }
