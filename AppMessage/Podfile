@@ -3,7 +3,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 pod 'EVReflection'
-pod 'SwiftLocation', :git => 'https://github.com/malcommac/SwiftLocation.git', :branch => 'swift-2.0'
+pod 'SwiftLocation'
 pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
 pod 'PermissionScope', :git => 'https://github.com/nickoneill/PermissionScope.git', :branch => 'cloudkit'
 

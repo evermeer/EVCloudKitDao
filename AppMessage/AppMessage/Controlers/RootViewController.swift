@@ -48,7 +48,7 @@ class RootViewController: UIViewController {
     Registering for iCloud availability change notifications (log in as different user, clear all user related data)
     */
     func reactToiCloudloginChanges() {
-        _ = NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
+        NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
             EVLog("The user’s iCloud login changed: should refresh all user data.")
             Async.main {
                 self.viewController?.removeFromParentViewController()

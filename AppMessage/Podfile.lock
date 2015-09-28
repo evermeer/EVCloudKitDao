@@ -1,8 +1,8 @@
 PODS:
   - Async (1.3.1)
   - CRToast (0.0.8)
-  - EVReflection (2.6.0)
-  - JSQMessagesViewController (7.1.0):
+  - EVReflection (2.8.1)
+  - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - PermissionScope (0.7)
@@ -14,7 +14,7 @@ PODS:
 DEPENDENCIES:
   - Async (from `https://github.com/duemunk/Async.git`, branch `feature/Swift_2.0`)
   - CRToast
-  - EVReflection (from `https://github.com/evermeer/EVReflection.git`, branch `Swift2`)
+  - EVReflection
   - JSQMessagesViewController
   - PermissionScope (from `https://github.com/nickoneill/PermissionScope.git`, branch
     `cloudkit`)
@@ -27,9 +27,6 @@ EXTERNAL SOURCES:
   Async:
     :branch: feature/Swift_2.0
     :git: https://github.com/duemunk/Async.git
-  EVReflection:
-    :branch: Swift2
-    :git: https://github.com/evermeer/EVReflection.git
   PermissionScope:
     :branch: cloudkit
     :git: https://github.com/nickoneill/PermissionScope.git
@@ -41,9 +38,6 @@ CHECKOUT OPTIONS:
   Async:
     :commit: abe23c18d8d3a708a325b5db10231388e1ca5b88
     :git: https://github.com/duemunk/Async.git
-  EVReflection:
-    :commit: 9951670eb877a84892a2a0475ff762e5a2576510
-    :git: https://github.com/evermeer/EVReflection.git
   PermissionScope:
     :commit: 6053912a1d1ef814fdb81b33aad3d50d32ca799a
     :git: https://github.com/nickoneill/PermissionScope.git
@@ -54,8 +48,8 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
   CRToast: b087127369b4c603726ef6249d74d0d737629ab8
-  EVReflection: e8f562eaa015ae14a4a2af640d06b6e89c0a925c
-  JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
+  EVReflection: 9a3fd400e0eec93baec83745072de715485fd08c
+  JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   PermissionScope: 1d27791185cca10c26f84d1aab905117dde50f39
   SwiftLocation: af451eff3babb518ffa0e8d34637ab6e6035afc5
