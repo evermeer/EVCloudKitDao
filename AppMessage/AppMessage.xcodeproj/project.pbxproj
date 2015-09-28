@@ -49,7 +49,6 @@
 		7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF447431A16964C0003AE91 /* ChatViewController.swift */; };
 		7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD4C0C1A222E9D00E03FAB /* Helper.swift */; };
 		D646280436B842FC792C67C5 /* Pods_OSXTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		EEBBFDCB1C430396CE90E894 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -129,7 +128,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F434A4F1962B95D0081F35C /* CloudKit.framework in Frameworks */,
-				EEBBFDCB1C430396CE90E894 /* Pods.framework in Frameworks */,
 				F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
