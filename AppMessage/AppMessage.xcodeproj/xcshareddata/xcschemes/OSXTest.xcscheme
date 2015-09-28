@@ -11,52 +11,43 @@
             buildForRunning = "YES"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7F0B2A021B060D280025165A"
-               BuildableName = "AppMessageTests.xctest"
-               BlueprintName = "AppMessageTests"
+               BlueprintIdentifier = "7F29764D1BB93D6A0074C85A"
+               BuildableName = "OSXTest.xctest"
+               BlueprintName = "OSXTest"
                ReferencedContainer = "container:AppMessage.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7F0B2A021B060D280025165A"
-               BuildableName = "AppMessageTests.xctest"
-               BlueprintName = "AppMessageTests"
+               BlueprintIdentifier = "7F29764D1BB93D6A0074C85A"
+               BuildableName = "OSXTest.xctest"
+               BlueprintName = "OSXTest"
                ReferencedContainer = "container:AppMessage.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7F0B2A021B060D280025165A"
-            BuildableName = "AppMessageTests.xctest"
-            BlueprintName = "AppMessageTests"
-            ReferencedContainer = "container:AppMessage.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
@@ -64,9 +55,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7F0B2A021B060D280025165A"
-            BuildableName = "AppMessageTests.xctest"
-            BlueprintName = "AppMessageTests"
+            BlueprintIdentifier = "7F29764D1BB93D6A0074C85A"
+            BuildableName = "OSXTest.xctest"
+            BlueprintName = "OSXTest"
             ReferencedContainer = "container:AppMessage.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -74,17 +65,17 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7F0B2A021B060D280025165A"
-            BuildableName = "AppMessageTests.xctest"
-            BlueprintName = "AppMessageTests"
+            BlueprintIdentifier = "7F29764D1BB93D6A0074C85A"
+            BuildableName = "OSXTest.xctest"
+            BlueprintName = "OSXTest"
             ReferencedContainer = "container:AppMessage.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
