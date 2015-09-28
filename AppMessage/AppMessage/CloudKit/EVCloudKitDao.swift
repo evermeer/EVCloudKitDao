@@ -921,6 +921,7 @@ public class EVCloudKitDao {
                     UIApplication.sharedApplication().applicationIconBadgeNumber = count
                 #elseif os(OSX)
                     //TODO: Set badge?
+                    NSLog("How to set the badge on OSX?")
                 #endif
                 })
         }

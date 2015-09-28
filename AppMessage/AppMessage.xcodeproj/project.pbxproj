@@ -14,6 +14,7 @@
 		7F2976571BB940730074C85A /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; settings = {ASSET_TAGS = (); }; };
 		7F2976581BB940730074C85A /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; settings = {ASSET_TAGS = (); }; };
 		7F2976591BB940730074C85A /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; settings = {ASSET_TAGS = (); }; };
+		7F29765B1BB943660074C85A /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F29765A1BB943660074C85A /* CloudKit.framework */; };
 		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
 		7F434A3019628D490081F35C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F434A2F19628D490081F35C /* Images.xcassets */; };
@@ -63,6 +64,7 @@
 		7F29764E1BB93D6A0074C85A /* OSXTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSXTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F2976501BB93D6A0074C85A /* OSXTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSXTest.swift; sourceTree = "<group>"; };
 		7F2976521BB93D6A0074C85A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7F29765A1BB943660074C85A /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudKitDataObject.swift; sourceTree = "<group>"; };
 		7F434A2319628D490081F35C /* AppMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F434A2719628D490081F35C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F29765B1BB943660074C85A /* CloudKit.framework in Frameworks */,
 				D646280436B842FC792C67C5 /* Pods_OSXTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,6 +288,7 @@
 		FE945222C18A4F03BAF7064D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7F29765A1BB943660074C85A /* CloudKit.framework */,
 				7F434A4E1962B95D0081F35C /* CloudKit.framework */,
 				3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */,
 				2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */,

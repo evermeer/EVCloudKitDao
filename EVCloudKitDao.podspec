@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "EVCloudKitDao"
-s.version      = "2.8.4"
+s.version      = "2.8.5"
 s.summary      = "iOS: Simplified access to Apple’s CloudKit"
 
 s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
@@ -55,7 +55,7 @@ s.social_media_url   = "http://twitter.com/evermeer"
 #  Specify the minimum deployment target
 #
 s.ios.deployment_target = '8.0'
-s.osx.deployment_target = '10.9'
+s.osx.deployment_target = '10.10'
 s.watchos.deployment_target = '2.0'
 
 # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -82,7 +82,7 @@ s.source_files  = 'AppMessage/AppMessage/CloudKit/*'
 #  the lib prefix of their name.
 #
 
-s.frameworks = "Foundation", "UIKit", "CloudKit"
+s.frameworks = "Foundation", "CloudKit", "UIKit"
 
 # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
