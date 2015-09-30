@@ -127,7 +127,7 @@ use_frameworks!
 pod "EVCloudKitDao"
 ```
 
-I have now moved on to Swift 2. If you want to use EVCloudKitDao, then get that version by using the podfile command:
+I have now moved on to Swift 2. If you want to use EVCloudKitDao with Swift 1.2, then get that version by using the podfile command:
 ```
 use_frameworks!
 pod "EVCloudKitDao", '~> 2.6'
