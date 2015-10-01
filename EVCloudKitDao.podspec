@@ -88,5 +88,5 @@ s.requires_arc = true
 
 s.dependency "SwiftTryCatch"
 s.dependency "EVReflection"
-
+s.dependency "SwiftTryCatch"
 end
