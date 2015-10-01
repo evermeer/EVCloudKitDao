@@ -1,8 +1,8 @@
 PODS:
-  - ARChromeActivity (1.0.4)
+  - ARChromeActivity (1.0.5)
   - ARSafariActivity (0.0.3)
   - Async (1.3.1)
-  - AutoScrollLabel (0.4.1)
+  - AutoScrollLabel (0.4.2)
   - Chivy (0.5.0):
     - Chivy/Core (= 0.5.0)
   - Chivy/Core (0.5.0):
@@ -13,12 +13,12 @@ PODS:
     - DKNavbarBackButton
     - NJKWebViewProgress
   - Chivy/Core-no-arc (0.5.0)
-  - CRToast (0.0.7)
+  - CRToast (0.0.8)
   - DKNavbarBackButton (0.1.4):
     - DKNavbarBackButton/core (= 0.1.4)
   - DKNavbarBackButton/core (0.1.4)
-  - EVReflection (2.4.7)
-  - JSQMessagesViewController (7.1.0):
+  - EVReflection (2.6.0)
+  - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - NJKWebViewProgress (0.2.3):
@@ -30,13 +30,13 @@ PODS:
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
-  - WhereAmI (1.2.1)
+  - WhereAmI (2.0.0)
 
 DEPENDENCIES:
   - Async (from `https://github.com/duemunk/Async.git`)
   - Chivy
   - CRToast
-  - EVReflection
+  - EVReflection (from `https://github.com/evermeer/EVReflection.git`, branch `Swift1.2`)
   - JSQMessagesViewController
   - SwiftTryCatch
   - UIImage-Resize
@@ -47,28 +47,34 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Async:
     :git: https://github.com/duemunk/Async.git
+  EVReflection:
+    :branch: Swift1.2
+    :git: https://github.com/evermeer/EVReflection.git
 
 CHECKOUT OPTIONS:
   Async:
-    :commit: 9e64046b767fe11010891f5b7fe2aed613a6ee55
+    :commit: b3864541c5bbee150d525556891dc7827f563dea
     :git: https://github.com/duemunk/Async.git
+  EVReflection:
+    :commit: edb7900608f5389c6205c61cd02e97c29a84c258
+    :git: https://github.com/evermeer/EVReflection.git
 
 SPEC CHECKSUMS:
-  ARChromeActivity: 9064d94803338d3377f3e1013a8e8f4821d7daf1
+  ARChromeActivity: 821c7849b566f49583987468733a896fee35aa4d
   ARSafariActivity: dc358220eae06afe83e7ca0b21ca1b862ef8ae81
-  Async: edb15b1e34181d7c9873ce6b5d6eabc1c99e638b
-  AutoScrollLabel: afe272014f82c707c9203f1383f3fe4e32443fa2
+  Async: 88b7eb5cb6d28771e05f0405d48fa4778e804d34
+  AutoScrollLabel: 661f3f33042db40e495cb4ebe599b903c8bf80cd
   Chivy: 336420216fd408f33ae12421e40c6b610c59fa41
-  CRToast: 99a28f4387def43b439ad88f957ce31357ff7373
+  CRToast: b087127369b4c603726ef6249d74d0d737629ab8
   DKNavbarBackButton: adee21ab468fee2d1a605f421321516157cf6543
-  EVReflection: 80d5755b8ec4b5ca248b4d02058227c09334b2d9
-  JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
+  EVReflection: e8f562eaa015ae14a4a2af640d06b6e89c0a925c
+  JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   NJKWebViewProgress: f481fd424cb5ecc27eacae11b5397db92fba9a4d
   SwiftTryCatch: fb6d2b34abe48efd69578dac919293a44f95b481
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
-  WhereAmI: 550fc141f0507b575a68c34a4cf01bb067566399
+  WhereAmI: 0b9e99c080a3e316231eab5584d8e88db9408dca
 
-COCOAPODS: 0.37.2
+COCOAPODS: 0.38.2
