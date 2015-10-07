@@ -131,7 +131,8 @@ I have now moved on to Swift 2. If you want to use EVCloudKitDao with Swift 1.2,
 ```
 use_frameworks!
 pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift1.2'
-pod "EVCloudKitDao", '~> 2.6'
+pod 'SwiftTryCatch'
+pod 'EVCloudKitDao', '~> 2.6'
 ```
 
 

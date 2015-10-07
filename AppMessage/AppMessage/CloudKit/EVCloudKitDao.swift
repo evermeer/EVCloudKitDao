@@ -269,6 +269,7 @@ public class EVCloudKitDao {
             query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
         let operation = CKQueryOperation(query: query)
+        operation.qualityOfService = .UserInitiated
         var results = [T]()
         operation.recordFetchedBlock = { record in
             if let parsed = self.fromCKRecord(record) as? T  {
@@ -302,6 +303,7 @@ public class EVCloudKitDao {
     private func queryRecords<T:EVCloudKitDataObject>(cursor: CKQueryCursor, continueWithResults:[T], completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         var results = continueWithResults
         let operation = CKQueryOperation(cursor: cursor)
+        operation.qualityOfService = .UserInitiated
         operation.recordFetchedBlock = { record in
             if let parsed = self.fromCKRecord(record) as? T  {
                 results.append(parsed)
