@@ -4,7 +4,7 @@ EVCloudKitDao
 <!---
 [![Circle CI](https://img.shields.io/circleci/project/evermeer/EVCloudKitDao.svg?style=flat)](https://circleci.com/gh/evermeer/EVCloudKitDao)
  -->
-[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat)](https://travis-ci.org/evermeer/EVCloudKitDao)
+[![Build Status](https://travis-ci.org/evermeer/EVCloudKitDao.svg?style=flat&branch=master)](https://travis-ci.org/evermeer/EVCloudKitDao)
 [![Issues](https://img.shields.io/github/issues-raw/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/issues)
 [![Stars](https://img.shields.io/github/stars/evermeer/EVCloudKitDao.svg?style=flat)](https://github.com/evermeer/EVCloudKitDao/stargazers)
 [![Documentation](https://img.shields.io/badge/documented-100%-brightgreen.svg?style=flat)](http://cocoadocs.org/docsets/EVCloudKitDao)
