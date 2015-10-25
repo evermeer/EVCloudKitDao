@@ -56,7 +56,7 @@ s.social_media_url   = "http://twitter.com/evermeer"
 #
 s.ios.deployment_target = '8.0'
 s.osx.deployment_target = '10.10'
-s.tvos.deployment_target = '9.0'
+#s.tvos.deployment_target = '9.0'
 
 # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
@@ -85,7 +85,7 @@ s.source_files  = 'AppMessage/AppMessage/CloudKit/*'
 s.frameworks = "Foundation", "CloudKit"
 s.ios.frameworks = "Foundation", "CloudKit"
 s.osx.frameworks = "Foundation", "CloudKit"
-s.tvos.frameworks = "Foundation", "CloudKit"
+#s.tvos.frameworks = "Foundation", "CloudKit"
 
 # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
