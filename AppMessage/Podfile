@@ -21,3 +21,8 @@ target 'OSXTest' do
     platform :osx, '10.10'
     pod 'EVReflection'
 end
+
+target 'tvOSTest' do
+    platform :tvos, '9.0'
+    pod 'EVReflection'
+end

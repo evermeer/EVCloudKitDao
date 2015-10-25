@@ -429,6 +429,10 @@ public class EVCloudKitDao {
         }, errorHandler: errorHandler)
     }
 
+
+    // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
+    #if os(tvos)
+    #else
     /**
     Who or our contacts is using the same app (will get a system popup requesting permitions)
 
@@ -459,7 +463,10 @@ public class EVCloudKitDao {
             })
         })
     }
+    #endif
 
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - Data methods - CRUD
     // ------------------------------------------------------------------------

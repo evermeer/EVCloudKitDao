@@ -1,7 +1,7 @@
 PODS:
   - AsyncSwift (1.4.2)
   - CRToast (0.0.9)
-  - EVReflection (2.11.0)
+  - EVReflection (2.11.1)
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -36,7 +36,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AsyncSwift: 3316df38ee85d6b01ede507d682d92fb5511504e
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVReflection: 353979472e98a0c5832630b44e60ecdbe4134f81
+  EVReflection: 89362cd97308a407ffe9b81e0d3884fd0927f394
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   PermissionScope: 1d27791185cca10c26f84d1aab905117dde50f39
