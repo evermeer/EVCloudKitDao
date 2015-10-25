@@ -7,7 +7,7 @@
 
 import UIKit
 import CloudKit
-import Async
+import AsyncSwift
 
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var contacts: [CKDiscoveredUserInfo]! = []

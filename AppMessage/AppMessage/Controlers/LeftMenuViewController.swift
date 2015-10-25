@@ -7,7 +7,7 @@
 
 import UIKit
 import CloudKit
-import Async
+import AsyncSwift
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 

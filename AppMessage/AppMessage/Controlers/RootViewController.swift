@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import Async
+import AsyncSwift
 import PermissionScope
 
 class RootViewController: UIViewController {

@@ -5,7 +5,8 @@ target 'AppMessage' do
     platform :ios, '8.0'
     pod 'EVReflection'
     pod 'SwiftLocation'
-    pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
+    #pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
+    pod 'AsyncSwift'
     pod 'PermissionScope', :git => 'https://github.com/nickoneill/PermissionScope.git', :branch => 'cloudkit'
 
     pod 'JSQMessagesViewController'

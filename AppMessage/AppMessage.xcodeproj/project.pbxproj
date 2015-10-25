@@ -10,10 +10,10 @@
 		7F07C54D1AF0C127000DF1F3 /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; };
 		7F0992E51AEA3BAD00522AE6 /* SSASideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0992E41AEA3BAD00522AE6 /* SSASideMenu.swift */; };
 		7F2976511BB93D6A0074C85A /* OSXTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2976501BB93D6A0074C85A /* OSXTest.swift */; };
-		7F2976561BB940730074C85A /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; settings = {ASSET_TAGS = (); }; };
-		7F2976571BB940730074C85A /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; settings = {ASSET_TAGS = (); }; };
-		7F2976581BB940730074C85A /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; settings = {ASSET_TAGS = (); }; };
-		7F2976591BB940730074C85A /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; settings = {ASSET_TAGS = (); }; };
+		7F2976561BB940730074C85A /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; };
+		7F2976571BB940730074C85A /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
+		7F2976581BB940730074C85A /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
+		7F2976591BB940730074C85A /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F29765B1BB943660074C85A /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F29765A1BB943660074C85A /* CloudKit.framework */; };
 		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
@@ -48,8 +48,8 @@
 		7FF11C411ACBEA6000A18FA3 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF11C401ACBEA6000A18FA3 /* SearchViewController.swift */; };
 		7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF447431A16964C0003AE91 /* ChatViewController.swift */; };
 		7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD4C0C1A222E9D00E03FAB /* Helper.swift */; };
-		D646280436B842FC792C67C5 /* Pods_OSXTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D646280436B842FC792C67C5 /* Pods_OSXTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */; };
+		F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

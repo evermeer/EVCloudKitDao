@@ -13,7 +13,7 @@ import SwiftLocation
 import VIPhotoView
 import MapKit
 import UIImage_Resize
-import Async
+import AsyncSwift
 import PermissionScope
 
 class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
