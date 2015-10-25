@@ -431,7 +431,10 @@ public class EVCloudKitDao {
 
 
     // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
-    #if os(tvos)
+    #if os(tvOS)
+    public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
+        assert(true, "Sorry, discoverAllContactUserInfosWithCompletionHandler does not work on tvOS")
+    }
     #else
     /**
     Who or our contacts is using the same app (will get a system popup requesting permitions)
