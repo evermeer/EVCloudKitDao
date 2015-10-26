@@ -66,7 +66,7 @@ class RootViewController: UIViewController {
     */
     func getUser(retryCount:Double = 1) {
         self.loginLabel.hidden = true
-        EVCloudKitDao.publicDB.getUserInfo({user in
+        EVCloudKitDao.publicDB.discoverUserInfo({ (user) -> Void in
                 EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.firstName) \(user.lastName)")
 
                 Async.main {

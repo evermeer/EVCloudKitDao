@@ -43,14 +43,14 @@ class TestsViewController: UIViewController {
     func getUserInfoTest() {
         // retrieve our CloudKit user id. (made syncronous for this demo)
         let sema = dispatch_semaphore_create(0)
-        dao.getUserInfo({user in
+        dao.discoverUserInfo({ (user) -> Void in
             self.userId = user.userRecordID?.recordName ?? ""
             EVLog("discoverUserInfo : \(self.userId) = \(user.firstName) \(user.lastName)");
             dispatch_semaphore_signal(sema);
-            }, errorHandler: { error in
-                EVLog("<--- ERROR in getUserInfo");
-                dispatch_semaphore_signal(sema);
-        })
+        }) { (error) -> Void in
+            EVLog("<--- ERROR in getUserInfo");
+            dispatch_semaphore_signal(sema);
+        }
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 
         // Must be loged in to iCloud

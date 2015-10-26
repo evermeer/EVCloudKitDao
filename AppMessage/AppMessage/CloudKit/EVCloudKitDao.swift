@@ -399,37 +399,8 @@ public class EVCloudKitDao {
             })
         })
     }
-
-    /**
-    Combined ask for rights and get the current user
-
-    - parameter completionHandler: The function that will be called with the CKDiscoveredUserInfo object
-    - parameter errorHandler: The function that will be called when there was an error
-    :return: No return value
-    */
-    public func getUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
-        self.requestDiscoverabilityPermission({ discoverable in
-            if discoverable {
-                self.discoverUserInfo({user in
-                        self.activeUser = user
-                        completionHandler(user: user)
-                    }, errorHandler: { error in
-                        if let handler = errorHandler {
-                            handler(error: error)
-                        }
-                    })
-            } else
-            {
-                EVLog("requestDiscoverabilityPermission : No permissions")
-                let error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
-                if let handler = errorHandler {
-                    handler(error: error)
-                }
-            }
-        }, errorHandler: errorHandler)
-    }
-
-
+    
+    
     // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
     #if os(tvOS)
     public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
