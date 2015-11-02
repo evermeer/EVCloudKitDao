@@ -114,7 +114,7 @@
                                 <animations/>
                                 <attributedString key="attributedText">
                                     <fragment>
-                                        <string key="content">Welcome to the AppMessage CloudKit demo. Open the menu on the left, or go to Contacts on the right and start a conversation. Invite an other contact and the chat will be a group chat. (It will only show other contacts that also installed the app)</string>
+                                        <string key="content">Welcome to the AppMessage CloudKit demo. Open the menu on the left, or go to Contacts on the right and start a conversation.  (It will only show other contacts that also installed the app)</string>
                                         <attributes>
                                             <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <font key="NSFont" size="17" name="HelveticaNeue"/>
