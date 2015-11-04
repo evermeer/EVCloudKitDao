@@ -32,6 +32,11 @@ public enum HandleCloudKitErrorAs {
     Fail
 }
 
+public enum InstanceType {
+    case IsPrivate,
+    IsPublic
+}
+
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
@@ -70,6 +75,7 @@ public class EVCloudKitDao {
     */
     public class var privateDB: EVCloudKitDao {
         struct Static { static let instance: EVCloudKitDao = EVCloudKitDao() }
+        Static.instance.isType = .IsPrivate
         Static.instance.database = Static.instance.container.privateCloudDatabase
         return Static.instance
     }
@@ -131,7 +137,7 @@ public class EVCloudKitDao {
 
     :return: The default CloudKit container
     */
-    private var container: CKContainer
+    private var container: CKContainer!
 
 
     /**
@@ -139,7 +145,7 @@ public class EVCloudKitDao {
 
     :return: The public database
     */
-    private var database: CKDatabase
+    private var database: CKDatabase!
 
     /**
     The iClout account status of the current user
@@ -149,35 +155,53 @@ public class EVCloudKitDao {
     public var accountStatus: CKAccountStatus?
 
     /**
-    The iClout account information of the current user
+    The iCloud account information of the current user
 
     :return: The account information of the current user
     */
     public var activeUser: CKDiscoveredUserInfo!
 
+
+    /**
+    For regestering if this class is for the public or the private database
+     
+    :return: Public or private
+    */
+    public var isType: InstanceType = .IsPublic
+    
     /**
     On init set a quick refrence to the container and database
     */
     init() {
-        container = CKContainer.defaultContainer()
-        database = container.publicCloudDatabase
-        container.accountStatusWithCompletionHandler({status, error in
-            if error != nil {
-                EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
-            } else {
-                self.accountStatus = status
-            }
-            EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
-        })
-        EVLog("Container identifier = \(container.containerIdentifier)")
+        self.initializeDatabase()
     }
 
     /**
-    On init set a quick refrence to the container and database for a specific container.
+    On init set a quick reference to the container and database for a specific container.
+
+     - parameter containerIdentifier: Passing on the name of the container
     */
     init(containerIdentifier: String) {
-        container = CKContainer(identifier: containerIdentifier)
-        database = container.publicCloudDatabase
+        self.initializeDatabase(containerIdentifier)
+    }
+
+    /**
+    Set or reset the quick reference to the container and database
+
+    - parameter containerIdentifier: Passing on the name of the container
+    */
+    public func initializeDatabase(containerIdentifier: String? = nil) {
+        if let identifier = containerIdentifier {
+            container = CKContainer(identifier: identifier)
+        } else {
+            container = CKContainer.defaultContainer()
+        }
+        if self.isType == .IsPublic {
+            database = container.publicCloudDatabase
+        } else {
+            database = container.privateCloudDatabase
+        }
+
         container.accountStatusWithCompletionHandler({status, error in
             if error != nil {
                 EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
@@ -188,7 +212,7 @@ public class EVCloudKitDao {
         })
         EVLog("Container identifier = \(container.containerIdentifier)")
     }
-
+    
     // ------------------------------------------------------------------------
     // MARK: - Helper methods
     // ------------------------------------------------------------------------
@@ -366,7 +390,7 @@ public class EVCloudKitDao {
     // ------------------------------------------------------------------------
 
     /**
-    Are we allowed to call the discoverUserInfo function?
+    Are we allowed to call the discoverAllContactUserInfosWithCompletionHandler function?
 
     - parameter completionHandler: The function that will be called with the result of the query (true or false)
     - parameter errorHandler: The function that will be called when there was an error
@@ -393,6 +417,7 @@ public class EVCloudKitDao {
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 self.container.discoverUserInfoWithUserRecordID(recordID!, completionHandler: { user, error in
                     self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                        self.activeUser = user
                         completionHandler(user: user!)
                     })
                 })
