@@ -424,8 +424,7 @@ public class EVCloudKitDao {
             })
         })
     }
-    
-    
+        
     // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
     #if os(tvOS)
     public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
@@ -633,7 +632,12 @@ public class EVCloudKitDao {
         let createSubscription = { () -> () in
             let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
+            
+#if os(tvOS)
+#else
             subscription.notificationInfo!.shouldSendContentAvailable = true
+#endif
+            
             if let configure = configureNotificationInfo {
                 configure(notificationInfo: subscription.notificationInfo!)
             }
