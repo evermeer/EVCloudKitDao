@@ -261,26 +261,32 @@ public class EVCloudKitDao {
     - parameter retryAttempt: In case we are retrying a function this parameter has to be incremented each time.
     */
     public static func handleCloudKitErrorAs(error:NSError?, retryAttempt:Double = 1) -> HandleCloudKitErrorAs {
+        // There is no error
         if error == nil {
             return .Success
         }
+        
+        // Or if there is a retry delay specified in the error, then use that.
+        if let userInfo = error?.userInfo {
+            if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
+                let seconds = Double(retry)
+                NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
+                return .Retry(afterSeconds: seconds)
+            }
+        }
+        
         let errorCode:CKErrorCode = CKErrorCode(rawValue: error!.code)!
         switch errorCode {
-        case .NetworkUnavailable, .NetworkFailure, .ServiceUnavailable, .RequestRateLimited, .ZoneBusy, .ResultsTruncated:
+        case .NotAuthenticated, .NetworkUnavailable, .NetworkFailure, .ServiceUnavailable, .RequestRateLimited, .ZoneBusy, .ResultsTruncated:
+            // Probably handled by the userInfo[CKErrorRetryAfterKey] but if not, then:
             // Use an exponential retry delay which maxes out at half an hour.
             var seconds = Double(pow(2, Double(retryAttempt)))
             if seconds > 1800 {
                 seconds = 1800
             }
-            // Or if there is a retry delay specified in the error, then use that.
-            if let userInfo = error?.userInfo {
-                if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
-                    seconds = Double(retry)
-                }
-            }
             NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
             return .Retry(afterSeconds: seconds)
-        case .UnknownItem, .InvalidArguments, .IncompatibleVersion, .BadContainer, .MissingEntitlement, .PermissionFailure, .BadDatabase, .AssetFileNotFound, .OperationCancelled, .NotAuthenticated, .AssetFileModified, .BatchRequestFailed, .ZoneNotFound, .UserDeletedZone, .InternalError, .ServerRejectedRequest, .ConstraintViolation:
+        case .UnknownItem, .InvalidArguments, .IncompatibleVersion, .BadContainer, .MissingEntitlement, .PermissionFailure, .BadDatabase, .AssetFileNotFound, .OperationCancelled, .AssetFileModified, .BatchRequestFailed, .ZoneNotFound, .UserDeletedZone, .InternalError, .ServerRejectedRequest, .ConstraintViolation:
             NSLog("Error: \(error)")
             return .Fail;
         case .QuotaExceeded, .LimitExceeded:
