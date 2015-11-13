@@ -32,6 +32,11 @@ public enum HandleCloudKitErrorAs {
     Fail
 }
 
+public enum InstanceType {
+    case IsPrivate,
+    IsPublic
+}
+
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
@@ -70,6 +75,7 @@ public class EVCloudKitDao {
     */
     public class var privateDB: EVCloudKitDao {
         struct Static { static let instance: EVCloudKitDao = EVCloudKitDao() }
+        Static.instance.isType = .IsPrivate
         Static.instance.database = Static.instance.container.privateCloudDatabase
         return Static.instance
     }
@@ -131,7 +137,7 @@ public class EVCloudKitDao {
 
     :return: The default CloudKit container
     */
-    private var container: CKContainer
+    private var container: CKContainer!
 
 
     /**
@@ -139,7 +145,7 @@ public class EVCloudKitDao {
 
     :return: The public database
     */
-    private var database: CKDatabase
+    private var database: CKDatabase!
 
     /**
     The iClout account status of the current user
@@ -149,35 +155,54 @@ public class EVCloudKitDao {
     public var accountStatus: CKAccountStatus?
 
     /**
-    The iClout account information of the current user
+    The iCloud account information of the current user
 
     :return: The account information of the current user
     */
     public var activeUser: CKDiscoveredUserInfo!
 
+
+    /**
+    For regestering if this class is for the public or the private database
+     
+    :return: Public or private
+    */
+    public var isType: InstanceType = .IsPublic
+    
     /**
     On init set a quick refrence to the container and database
     */
     init() {
-        container = CKContainer.defaultContainer()
-        database = container.publicCloudDatabase
-        container.accountStatusWithCompletionHandler({status, error in
-            if error != nil {
-                EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
-            } else {
-                self.accountStatus = status
-            }
-            EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
-        })
-        EVLog("Container identifier = \(container.containerIdentifier)")
+        self.initializeDatabase()
     }
 
     /**
-    On init set a quick refrence to the container and database for a specific container.
+    On init set a quick reference to the container and database for a specific container.
+
+     - parameter containerIdentifier: Passing on the name of the container
     */
     init(containerIdentifier: String) {
-        container = CKContainer(identifier: containerIdentifier)
-        database = container.publicCloudDatabase
+        self.initializeDatabase(containerIdentifier)
+    }
+
+    /**
+    Set or reset the quick reference to the container and database
+
+    - parameter containerIdentifier: Passing on the name of the container
+    */
+    public func initializeDatabase(containerIdentifier: String? = nil) {
+        if let identifier = containerIdentifier {
+            container = CKContainer(identifier: identifier)
+        } else {
+            container = CKContainer.defaultContainer()
+        }
+        if self.isType == .IsPublic {
+            database = container.publicCloudDatabase
+        } else {
+            database = container.privateCloudDatabase
+        }
+
+        let sema = dispatch_semaphore_create(0)
         container.accountStatusWithCompletionHandler({status, error in
             if error != nil {
                 EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
@@ -185,10 +210,12 @@ public class EVCloudKitDao {
                 self.accountStatus = status
             }
             EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
+            dispatch_semaphore_signal(sema);
         })
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
         EVLog("Container identifier = \(container.containerIdentifier)")
     }
-
+    
     // ------------------------------------------------------------------------
     // MARK: - Helper methods
     // ------------------------------------------------------------------------
@@ -214,32 +241,52 @@ public class EVCloudKitDao {
     }
     
     /**
+     When both error and value are nil, you will get a custom error
+     
+     - parameter error: The original error
+     - parameter value: The value that should not be nil
+     */
+    internal func nilNotAllowed(error: NSError?, value: AnyObject?) -> NSError? {
+        if error != nil || value != nil {
+            return error
+        }
+        return NSError(domain: NSCocoaErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "function returend nil without an error"])
+    }
+
+    
+    /**
     Categorise CloudKit errors into a functional status that will tell you how it should be handled.
     
     - parameter error: The CloudKit error for which you want a functional status.
     - parameter retryAttempt: In case we are retrying a function this parameter has to be incremented each time.
     */
     public static func handleCloudKitErrorAs(error:NSError?, retryAttempt:Double = 1) -> HandleCloudKitErrorAs {
+        // There is no error
         if error == nil {
             return .Success
         }
+        
+        // Or if there is a retry delay specified in the error, then use that.
+        if let userInfo = error?.userInfo {
+            if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
+                let seconds = Double(retry)
+                NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
+                return .Retry(afterSeconds: seconds)
+            }
+        }
+        
         let errorCode:CKErrorCode = CKErrorCode(rawValue: error!.code)!
         switch errorCode {
-        case .NetworkUnavailable, .NetworkFailure, .ServiceUnavailable, .RequestRateLimited, .ZoneBusy, .ResultsTruncated:
+        case .NotAuthenticated, .NetworkUnavailable, .NetworkFailure, .ServiceUnavailable, .RequestRateLimited, .ZoneBusy, .ResultsTruncated:
+            // Probably handled by the userInfo[CKErrorRetryAfterKey] but if not, then:
             // Use an exponential retry delay which maxes out at half an hour.
             var seconds = Double(pow(2, Double(retryAttempt)))
             if seconds > 1800 {
                 seconds = 1800
             }
-            // Or if there is a retry delay specified in the error, then use that.
-            if let userInfo = error?.userInfo {
-                if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
-                    seconds = Double(retry)
-                }
-            }
             NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
             return .Retry(afterSeconds: seconds)
-        case .UnknownItem, .InvalidArguments, .IncompatibleVersion, .BadContainer, .MissingEntitlement, .PermissionFailure, .BadDatabase, .AssetFileNotFound, .OperationCancelled, .NotAuthenticated, .AssetFileModified, .BatchRequestFailed, .ZoneNotFound, .UserDeletedZone, .InternalError, .ServerRejectedRequest, .ConstraintViolation:
+        case .UnknownItem, .InvalidArguments, .IncompatibleVersion, .BadContainer, .MissingEntitlement, .PermissionFailure, .BadDatabase, .AssetFileNotFound, .OperationCancelled, .AssetFileModified, .BatchRequestFailed, .ZoneNotFound, .UserDeletedZone, .InternalError, .ServerRejectedRequest, .ConstraintViolation:
             NSLog("Error: \(error)")
             return .Fail;
         case .QuotaExceeded, .LimitExceeded:
@@ -366,7 +413,7 @@ public class EVCloudKitDao {
     // ------------------------------------------------------------------------
 
     /**
-    Are we allowed to call the discoverUserInfo function?
+    Are we allowed to call the discoverAllContactUserInfosWithCompletionHandler function?
 
     - parameter completionHandler: The function that will be called with the result of the query (true or false)
     - parameter errorHandler: The function that will be called when there was an error
@@ -390,45 +437,24 @@ public class EVCloudKitDao {
     */
     public func discoverUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
         container.fetchUserRecordIDWithCompletionHandler({recordID, error in
-            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+            self.handleCallback(self.nilNotAllowed(error, value: recordID), errorHandler: errorHandler, completionHandler: {
                 self.container.discoverUserInfoWithUserRecordID(recordID!, completionHandler: { user, error in
-                    self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                    self.handleCallback(self.nilNotAllowed(error, value: user), errorHandler: errorHandler, completionHandler: {
+                        self.activeUser = user
                         completionHandler(user: user!)
                     })
                 })
             })
         })
     }
-
-    /**
-    Combined ask for rights and get the current user
-
-    - parameter completionHandler: The function that will be called with the CKDiscoveredUserInfo object
-    - parameter errorHandler: The function that will be called when there was an error
-    :return: No return value
-    */
-    public func getUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
-        self.requestDiscoverabilityPermission({ discoverable in
-            if discoverable {
-                self.discoverUserInfo({user in
-                        self.activeUser = user
-                        completionHandler(user: user)
-                    }, errorHandler: { error in
-                        if let handler = errorHandler {
-                            handler(error: error)
-                        }
-                    })
-            } else
-            {
-                EVLog("requestDiscoverabilityPermission : No permissions")
-                let error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
-                if let handler = errorHandler {
-                    handler(error: error)
-                }
-            }
-        }, errorHandler: errorHandler)
+    
+    
+    // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
+    #if os(tvOS)
+    public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
+        assert(true, "Sorry, discoverAllContactUserInfosWithCompletionHandler does not work on tvOS")
     }
-
+    #else
     /**
     Who or our contacts is using the same app (will get a system popup requesting permitions)
 
@@ -459,7 +485,10 @@ public class EVCloudKitDao {
             })
         })
     }
+    #endif
 
+    
+    
     // ------------------------------------------------------------------------
     // MARK: - Data methods - CRUD
     // ------------------------------------------------------------------------
@@ -498,7 +527,7 @@ public class EVCloudKitDao {
     public func saveItem(item: EVCloudKitDataObject, completionHandler: (record: CKRecord) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         let theRecord = self.toCKRecord(item)
         database.saveRecord(theRecord, completionHandler: { record, error in
-            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+            self.handleCallback(self.nilNotAllowed(error, value: record), errorHandler: errorHandler, completionHandler: {
                 completionHandler(record: record!);
             })
         })
@@ -514,7 +543,7 @@ public class EVCloudKitDao {
     */
     public func deleteItem(recordId: String, completionHandler: (recordID: CKRecordID) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
         database.deleteRecordWithID(CKRecordID(recordName: recordId), completionHandler: {recordID, error in
-            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+            self.handleCallback(self.nilNotAllowed(error, value: recordID), errorHandler: errorHandler, completionHandler: {
                 completionHandler(recordID: recordID!);
             })
         })
@@ -627,7 +656,12 @@ public class EVCloudKitDao {
         let createSubscription = { () -> () in
             let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
+            
+#if os(tvOS)
+#else
             subscription.notificationInfo!.shouldSendContentAvailable = true
+#endif
+            
             if let configure = configureNotificationInfo {
                 configure(notificationInfo: subscription.notificationInfo!)
             }
@@ -759,7 +793,7 @@ public class EVCloudKitDao {
     */
     public func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void , errorHandler:((error: NSError) -> Void)? = nil) {
         database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
-            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+            self.handleCallback(self.nilNotAllowed(error, value: subscriptions), errorHandler: errorHandler, completionHandler: {
                 for subscriptionObject in subscriptions! {
                     if let  subscription: CKSubscription = subscriptionObject {
                         self.database.deleteSubscriptionWithID(subscription.subscriptionID, completionHandler: {subscriptionId, error in

@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import Async
+import AsyncSwift
 import PermissionScope
 
 class RootViewController: UIViewController {
@@ -66,7 +66,16 @@ class RootViewController: UIViewController {
     */
     func getUser(retryCount:Double = 1) {
         self.loginLabel.hidden = true
-        EVCloudKitDao.publicDB.getUserInfo({user in
+        
+        EVCloudKitDao.publicDB.requestDiscoverabilityPermission({ (granted) -> Void in
+            if !granted {
+                Helper.showError("Discoverability has been denied. You will not be able to be found by other user. You can change this in the settings app, iCloud, iCloud drive, discover by email")
+            }
+            }) { (error) -> Void in
+                Helper.showError("Unable to request discoverability.")
+        }
+        
+        EVCloudKitDao.publicDB.discoverUserInfo({ (user) -> Void in
                 EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.firstName) \(user.lastName)")
 
                 Async.main {

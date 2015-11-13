@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		74F55638A82F47CCDE7DAA26 /* Pods_tvOSTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D82D3C2948E265B07521DADA /* Pods_tvOSTest.framework */; };
 		7F07C54D1AF0C127000DF1F3 /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; };
 		7F0992E51AEA3BAD00522AE6 /* SSASideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0992E41AEA3BAD00522AE6 /* SSASideMenu.swift */; };
 		7F2976511BB93D6A0074C85A /* OSXTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F2976501BB93D6A0074C85A /* OSXTest.swift */; };
-		7F2976561BB940730074C85A /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; settings = {ASSET_TAGS = (); }; };
-		7F2976571BB940730074C85A /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; settings = {ASSET_TAGS = (); }; };
-		7F2976581BB940730074C85A /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; settings = {ASSET_TAGS = (); }; };
-		7F2976591BB940730074C85A /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; settings = {ASSET_TAGS = (); }; };
+		7F2976561BB940730074C85A /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; };
+		7F2976571BB940730074C85A /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
+		7F2976581BB940730074C85A /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
+		7F2976591BB940730074C85A /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F29765B1BB943660074C85A /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F29765A1BB943660074C85A /* CloudKit.framework */; };
 		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
@@ -21,6 +22,11 @@
 		7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
 		7F434A4C1962AE780081F35C /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4B1962AE780081F35C /* Message.swift */; };
 		7F434A4F1962B95D0081F35C /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F434A4E1962B95D0081F35C /* CloudKit.framework */; };
+		7F4A37001BDD90C600A0F73F /* tvOSTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4A36FF1BDD90C600A0F73F /* tvOSTest.swift */; };
+		7F4A37051BDD92D600A0F73F /* EVglobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */; };
+		7F4A37061BDD92D600A0F73F /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
+		7F4A37071BDD92D600A0F73F /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
+		7F4A37081BDD92D600A0F73F /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F5DFB4E1A86B95600628235 /* UzysAssetsPickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB4D1A86B95600628235 /* UzysAssetsPickerController.xib */; };
 		7F5DFB501A86BC8200628235 /* UzysAssetPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB4F1A86BC8200628235 /* UzysAssetPickerController.bundle */; };
 		7F5DFB521A86C04100628235 /* JSQMessagesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB511A86C04100628235 /* JSQMessagesViewController.xib */; };
@@ -48,11 +54,12 @@
 		7FF11C411ACBEA6000A18FA3 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF11C401ACBEA6000A18FA3 /* SearchViewController.swift */; };
 		7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF447431A16964C0003AE91 /* ChatViewController.swift */; };
 		7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FFD4C0C1A222E9D00E03FAB /* Helper.swift */; };
-		D646280436B842FC792C67C5 /* Pods_OSXTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D646280436B842FC792C67C5 /* Pods_OSXTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */; };
+		F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		11944C757270515F30B41851 /* Pods-tvOSTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tvOSTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest.release.xcconfig"; sourceTree = "<group>"; };
 		20A7C3FBBC64364D1CFD6553 /* Pods-AppMessage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.debug.xcconfig"; sourceTree = "<group>"; };
 		2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppMessage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		38BE139AFB457DC8B76520BF /* Pods-OSXTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest.release.xcconfig"; sourceTree = "<group>"; };
@@ -73,6 +80,9 @@
 		7F434A4B1962AE780081F35C /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		7F434A4D1962B94E0081F35C /* AppMessage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppMessage.entitlements; sourceTree = "<group>"; };
 		7F434A4E1962B95D0081F35C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		7F4A36FD1BDD90C600A0F73F /* tvOSTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tvOSTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F4A36FF1BDD90C600A0F73F /* tvOSTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tvOSTest.swift; sourceTree = "<group>"; };
+		7F4A37011BDD90C600A0F73F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F51F15B197E6BA300A9E5B2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		7F5DFB4D1A86B95600628235 /* UzysAssetsPickerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UzysAssetsPickerController.xib; sourceTree = "<group>"; };
 		7F5DFB4F1A86BC8200628235 /* UzysAssetPickerController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UzysAssetPickerController.bundle; sourceTree = "<group>"; };
@@ -108,7 +118,9 @@
 		7FF447431A16964C0003AE91 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		7FFD4C0C1A222E9D00E03FAB /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		82759452322E59420ABE0701 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		98406E747C2D14A0069D0931 /* Pods-tvOSTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tvOSTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest.debug.xcconfig"; sourceTree = "<group>"; };
 		CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OSXTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D82D3C2948E265B07521DADA /* Pods_tvOSTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_tvOSTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3F15EDE11180CD65B1B1142 /* Pods-OSXTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest.debug.xcconfig"; sourceTree = "<group>"; };
 		F94CF0BD35E61D090F7F3E1B /* Pods-AppMessage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.release.xcconfig"; path = "Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -129,6 +141,14 @@
 			files = (
 				7F434A4F1962B95D0081F35C /* CloudKit.framework in Frameworks */,
 				F28B7EEBD2932A5D1C7B2A77 /* Pods_AppMessage.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7F4A36FA1BDD90C600A0F73F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				74F55638A82F47CCDE7DAA26 /* Pods_tvOSTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,6 +192,7 @@
 				7FC46F6619812ECA000A875F /* Podfile */,
 				7F434A2519628D490081F35C /* AppMessage */,
 				7F29764F1BB93D6A0074C85A /* OSXTest */,
+				7F4A36FE1BDD90C600A0F73F /* tvOSTest */,
 				7F434A2419628D490081F35C /* Products */,
 				FE945222C18A4F03BAF7064D /* Frameworks */,
 				83DD64617583D5A658A82454 /* Pods */,
@@ -183,6 +204,7 @@
 			children = (
 				7F434A2319628D490081F35C /* AppMessage.app */,
 				7F29764E1BB93D6A0074C85A /* OSXTest.xctest */,
+				7F4A36FD1BDD90C600A0F73F /* tvOSTest.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,6 +257,15 @@
 			path = DataObjects;
 			sourceTree = "<group>";
 		};
+		7F4A36FE1BDD90C600A0F73F /* tvOSTest */ = {
+			isa = PBXGroup;
+			children = (
+				7F4A36FF1BDD90C600A0F73F /* tvOSTest.swift */,
+				7F4A37011BDD90C600A0F73F /* Info.plist */,
+			);
+			path = tvOSTest;
+			sourceTree = "<group>";
+		};
 		7FC46F6819813282000A875F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +310,8 @@
 				38BE139AFB457DC8B76520BF /* Pods-OSXTest.release.xcconfig */,
 				20A7C3FBBC64364D1CFD6553 /* Pods-AppMessage.debug.xcconfig */,
 				F94CF0BD35E61D090F7F3E1B /* Pods-AppMessage.release.xcconfig */,
+				98406E747C2D14A0069D0931 /* Pods-tvOSTest.debug.xcconfig */,
+				11944C757270515F30B41851 /* Pods-tvOSTest.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -291,6 +324,7 @@
 				3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */,
 				2DD415E69CB6701A200FEA54 /* Pods_AppMessage.framework */,
 				CAD2C845BEF6B9A17F077096 /* Pods_OSXTest.framework */,
+				D82D3C2948E265B07521DADA /* Pods_tvOSTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -338,13 +372,33 @@
 			productReference = 7F434A2319628D490081F35C /* AppMessage.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7F4A36FC1BDD90C600A0F73F /* tvOSTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F4A37041BDD90C600A0F73F /* Build configuration list for PBXNativeTarget "tvOSTest" */;
+			buildPhases = (
+				49A026E690CEC786039CF6EA /* Check Pods Manifest.lock */,
+				7F4A36F91BDD90C600A0F73F /* Sources */,
+				7F4A36FA1BDD90C600A0F73F /* Frameworks */,
+				7F4A36FB1BDD90C600A0F73F /* Resources */,
+				34E671A719E70511A1456FA6 /* Embed Pods Frameworks */,
+				1999C827640A22BD5381E324 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tvOSTest;
+			productName = tvOSTest;
+			productReference = 7F4A36FD1BDD90C600A0F73F /* tvOSTest.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		7F434A1B19628D490081F35C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = mirabeau;
 				TargetAttributes = {
@@ -359,10 +413,16 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
+					};
+					7F4A36FC1BDD90C600A0F73F = {
+						CreatedOnToolsVersion = 7.1;
 					};
 				};
 			};
@@ -381,6 +441,7 @@
 			targets = (
 				7F434A2219628D490081F35C /* AppMessage */,
 				7F29764D1BB93D6A0074C85A /* OSXTest */,
+				7F4A36FC1BDD90C600A0F73F /* tvOSTest */,
 			);
 		};
 /* End PBXProject section */
@@ -414,6 +475,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7F4A36FB1BDD90C600A0F73F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -432,6 +500,36 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		1999C827640A22BD5381E324 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		34E671A719E70511A1456FA6 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		400B9B408F6342BE991A4723 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -445,6 +543,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		49A026E690CEC786039CF6EA /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		780C087B15ED47F7BE42A963 /* Check Pods Manifest.lock */ = {
@@ -546,6 +659,18 @@
 				7FC46F9019824285000A875F /* HomeViewController.swift in Sources */,
 				7FCB04A419A8E14F00A257FE /* News.swift in Sources */,
 				7FC46F981982805A000A875F /* SettingsViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7F4A36F91BDD90C600A0F73F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F4A37051BDD92D600A0F73F /* EVglobal.swift in Sources */,
+				7F4A37061BDD92D600A0F73F /* EVCloudKitDao.swift in Sources */,
+				7F4A37071BDD92D600A0F73F /* EVCloudData.swift in Sources */,
+				7F4A37081BDD92D600A0F73F /* EVCloudKitDataObject.swift in Sources */,
+				7F4A37001BDD90C600A0F73F /* tvOSTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +839,39 @@
 			};
 			name = Release;
 		};
+		7F4A37021BDD90C600A0F73F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 98406E747C2D14A0069D0931 /* Pods-tvOSTest.debug.xcconfig */;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = tvOSTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.evict.tvOSTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		7F4A37031BDD90C600A0F73F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 11944C757270515F30B41851 /* Pods-tvOSTest.release.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = tvOSTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.evict.tvOSTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -740,6 +898,15 @@
 			buildConfigurations = (
 				7F434A4019628D490081F35C /* Debug */,
 				7F434A4119628D490081F35C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7F4A37041BDD90C600A0F73F /* Build configuration list for PBXNativeTarget "tvOSTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F4A37021BDD90C600A0F73F /* Debug */,
+				7F4A37031BDD90C600A0F73F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

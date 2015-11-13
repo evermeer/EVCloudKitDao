@@ -7,7 +7,7 @@
 
 import UIKit
 import CloudKit
-import Async
+import AsyncSwift
 
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var contacts: [CKDiscoveredUserInfo]! = []
@@ -40,7 +40,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     func loadContacts(retryCount:Double = 1) {        
-        // Look who of our contact is also using this app.
+        // Look who of our contact is also using this app.        
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
                 EVLog("AllContactUserInfo count = \(users.count)");
                 Async.main{

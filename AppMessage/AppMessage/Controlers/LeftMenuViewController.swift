@@ -7,7 +7,7 @@
 
 import UIKit
 import CloudKit
-import Async
+import AsyncSwift
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -181,9 +181,12 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func connectToMessagesToMe(retryCount:Double = 1) {
-        let recordIdMe = EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName
+        let recordIdMe: String? = EVCloudData.publicDB.dao.activeUser?.userRecordID?.recordName
+        if recordIdMe == nil {
+            return
+        }
         EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "To_ID = %@", recordIdMe)
+            , predicate: NSPredicate(format: "To_ID = %@", recordIdMe!)
             , filterId: "Message_ToMe"
             , configureNotificationInfo:{ notificationInfo in
                 notificationInfo.alertLocalizationKey = "%1$@ %2$@ : %3$@"
