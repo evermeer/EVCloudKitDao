@@ -311,7 +311,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    internal func queryRecords<T:EVCloudKitDataObject>(type:T, query: CKQuery, completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+  internal func queryRecords<T:EVCloudKitDataObject>(type:T, query: CKQuery, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         if !(query.sortDescriptors != nil) {
             query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
@@ -326,7 +326,7 @@ public class EVCloudKitDao {
 
         operation.queryCompletionBlock = { cursor, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                if completionHandler(results: results) {
+              if completionHandler(results: results, isFinished: cursor == nil) {
                     if cursor != nil {
                         self.queryRecords(cursor!, continueWithResults: results, completionHandler: completionHandler, errorHandler: errorHandler)
                     }
@@ -347,7 +347,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    private func queryRecords<T:EVCloudKitDataObject>(cursor: CKQueryCursor, continueWithResults:[T], completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    private func queryRecords<T:EVCloudKitDataObject>(cursor: CKQueryCursor, continueWithResults:[T], completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         var results = continueWithResults
         let operation = CKQueryOperation(cursor: cursor)
         operation.qualityOfService = .UserInitiated
@@ -359,7 +359,7 @@ public class EVCloudKitDao {
 
         operation.queryCompletionBlock = { cursor, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                if completionHandler(results: results) {
+                if completionHandler(results: results, isFinished: cursor == nil) {
                     if cursor != nil {
                         self.queryRecords(cursor!, continueWithResults: results, completionHandler: completionHandler, errorHandler: errorHandler)
                     }
@@ -561,7 +561,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
        let recordType = EVReflection.swiftStringFromClass(type)
         let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -577,7 +577,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, referenceRecordName: String, referenceField: String ,completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T:EVCloudKitDataObject>(type:T, referenceRecordName: String, referenceField: String ,completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let parentId = CKRecordID(recordName: referenceRecordName)
         let parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
@@ -594,7 +594,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil){
+    public func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil){
         let recordType = EVReflection.swiftStringFromClass(type)
         let query: CKQuery = CKQuery(recordType: recordType, predicate: predicate)
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -609,7 +609,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, tokens: String ,completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T:EVCloudKitDataObject>(type:T, tokens: String ,completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -627,7 +627,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T: EVCloudKitDataObject>(type: T, fieldname: String, latitude: Double, longitude: Double, distance: Int ,completionHandler: (results: [T]) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T: EVCloudKitDataObject>(type: T, fieldname: String, latitude: Double, longitude: Double, distance: Int ,completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         let recordType: String = EVReflection.swiftStringFromClass(type)
         let location: CLLocation = CLLocation(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
         let predecate: NSPredicate =  NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %@", [fieldname, location, distance])

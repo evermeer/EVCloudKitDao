@@ -576,7 +576,7 @@ public class EVCloudData: NSObject {
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil,
-        completionHandler: ((results: [T]) -> Bool)? = nil,
+        completionHandler: ((results: [T], isFinished: Bool) -> Bool)? = nil,
         insertedHandler:((item: T) -> Void)? = nil,
         updatedHandler:((item: T, dataIndex: Int) -> Void)? = nil,
         deletedHandler:((recordId: String, dataIndex: Int) -> Void)? = nil,
@@ -587,7 +587,7 @@ public class EVCloudData: NSObject {
             if restoreDataForFilter(filterId) {
                 if let handler = completionHandler {
                     if let filterData = self.data[filterId] as? [T] {
-                        handler(results: filterData)
+                        handler(results: filterData, isFinished: true)
                     }
                 }
                 if let handler = dataChangedHandler {
@@ -646,7 +646,7 @@ public class EVCloudData: NSObject {
 
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
 
-            dao.query(type, predicate: predicate, completionHandler: { results in
+            dao.query(type, predicate: predicate, completionHandler: { results, isFinished in
                 if self.data[filterId] != nil && self.data[filterId]! == results && self.data[filterId]!.count > 0 {
                     return false // Result was already returned from cache
                 }
@@ -656,7 +656,7 @@ public class EVCloudData: NSObject {
                 let sema = dispatch_semaphore_create(0)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                     if completionHandler != nil {
-                        continueReading = completionHandler!(results: results)
+                        continueReading = completionHandler!(results: results, isFinished: isFinished)
                     }
                     dispatch_semaphore_signal(sema);
                     if dataChangedHandler != nil {

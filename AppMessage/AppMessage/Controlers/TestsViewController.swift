@@ -150,7 +150,7 @@ class TestsViewController: UIViewController {
 
     func queryRecordsTest() {
         // Get all records of a recordType
-        dao.query(Message(), completionHandler: { results in
+        dao.query(Message(), completionHandler: { results, isFinished in
             EVLog("query recordType : result count = \(results.count)")
             return false
             }, errorHandler: { error in
@@ -159,7 +159,7 @@ class TestsViewController: UIViewController {
 
         // Get all user related record of a recordType
         dao.query(Message(), referenceRecordName: userId, referenceField:"To"
-            , completionHandler: { results in
+            , completionHandler: { results, isFinished in
                 EVLog("query recordType reference : result count = \(results.count)")
                 return false
             }, errorHandler: { error in
@@ -168,7 +168,7 @@ class TestsViewController: UIViewController {
 
         // Get all records of a recordType that are created by me using a predicate
         let predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
-        dao.query(Message(), predicate:predicate, completionHandler: { results in
+        dao.query(Message(), predicate:predicate, completionHandler: { results, isFinished in
             EVLog("query recordType created by: result count = \(results.count)")
             return false
             }, errorHandler: { error in
@@ -176,7 +176,7 @@ class TestsViewController: UIViewController {
         })
 
         // Get all users containing some words
-        dao.query(Message(), tokens: "test the", completionHandler: { results in
+        dao.query(Message(), tokens: "test the", completionHandler: { results, isFinished in
             EVLog("query tokens: result count = \(results.count)")
             return false
             }, errorHandler: { error in
@@ -229,7 +229,7 @@ class TestsViewController: UIViewController {
             , configureNotificationInfo:{ notificationInfo in
                 notificationInfo.alertBody = "New Message record"
                 notificationInfo.shouldSendContentAvailable = true
-            }, completionHandler: { results in
+            }, completionHandler: { results, isFinished in
                 EVLog("results = \(results.count)")
                 return results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: { item in
