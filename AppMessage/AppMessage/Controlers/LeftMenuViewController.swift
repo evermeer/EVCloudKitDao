@@ -151,9 +151,9 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 // notificationInfo.soundName = "alertSound"
                 // notificationInfo.desiredKeys = [""]
             }
-            , completionHandler: { results in
+            , completionHandler: { results, isFinished in
                 EVLog("There are \(results.count) existing news items")
-                return results.count < 200 // Continue reading if we have less than 200 records and if there are more.
+                return !isFinished && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: {item in
                 EVLog("New News item: '\(item.Subject)'")
                 Helper.showStatus("New News item: '\(item.Subject)'")
@@ -191,9 +191,9 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             , configureNotificationInfo:{ notificationInfo in
                 notificationInfo.alertLocalizationKey = "%1$@ %2$@ : %3$@"
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
-            }, completionHandler: { results in
+            }, completionHandler: { results, isFinished in
                 EVLog("Message to me results = \(results.count)")
-                return results.count < 200 // Continue reading if we have less than 200 records and if there are more.
+                return !isFinished && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: { item in
                 EVLog("Message to me inserted \(item)")
                 self.startChat(item.From_ID, firstName: item.ToFirstName, lastName: item.ToLastName)

@@ -43,7 +43,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     func filterContentForSearchText(searchText: String) {
         EVLog("Filter for \(searchText)")
         networkSpinner(1)
-        EVCloudKitDao.publicDB.query(Message(), tokens: searchText, completionHandler: { results in
+        EVCloudKitDao.publicDB.query(Message(), tokens: searchText, completionHandler: { results, isFinished in
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
             Async.main {
@@ -61,7 +61,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     func filterContentForSearchTextV2(searchText: String) {
         EVLog("Filter for \(searchText)")
         networkSpinner(1)
-        EVCloudKitDao.publicDB.query(Message(), predicate: NSPredicate(format: "Text BEGINSWITH %@", searchText), completionHandler: { results in
+        EVCloudKitDao.publicDB.query(Message(), predicate: NSPredicate(format: "Text BEGINSWITH %@", searchText), completionHandler: { results, isFinished in
             EVLog("query for tokens '\(searchText)' result count = \(results.count)")
             self.data = results
             Async.main {
