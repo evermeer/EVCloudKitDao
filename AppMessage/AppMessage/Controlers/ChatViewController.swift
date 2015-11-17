@@ -152,7 +152,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     // Make sure that all Message attachments are saved in a local file
     func checkAttachedAssets(results: [Message]) {
         let filemanager = NSFileManager.defaultManager()
-        let docDirPaths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let docDirPaths = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
         if docDirPaths.count > 0 {
             for item in results {
                 if item.MessageType == MessageTypeEnum.Picture.rawValue {
@@ -168,7 +168,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     // Get an asset and save it as a file
     func getAttachment(id: String) {
         EVCloudData.publicDB.getItem(id, completionHandler: {item in
-            let docDirPaths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+            let docDirPaths = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
             if docDirPaths.count > 0 {
                 let filePath =  (docDirPaths[0] as NSString).stringByAppendingPathComponent("\(id).png")
                 if let asset = item as? Asset {
@@ -369,7 +369,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 JSQSystemSoundPlayer.jsq_playMessageSentSound()
 
                 // make sure we have a file with url
-                let docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+                let docDirPath = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0] as NSString
                 let filePath =  docDirPath.stringByAppendingPathComponent("Image_\(i).png")
                 let image = getUIImageFromCTAsset(asset as! ALAsset)
                 if let myData = UIImagePNGRepresentation(image) {
@@ -651,7 +651,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             })
             message = JSQMessage(senderId: sender, senderDisplayName: senderName, date:data.creationDate, media: locationItem)
         } else if data.MessageType == MessageTypeEnum.Picture.rawValue {
-            let docDirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+            let docDirPath = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0] as NSString
             let filePath =  docDirPath.stringByAppendingPathComponent(data.Asset_ID + ".png")
             let url = NSURL(fileURLWithPath: filePath)
             if let mediaData = NSData(contentsOfURL: url) {

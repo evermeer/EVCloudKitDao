@@ -225,7 +225,7 @@ public class EVCloudData: NSObject {
      Overriding the default innit so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
      */
     override init() {
-        let pathDir = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let pathDir = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
         if pathDir.count > 0 {
             fileDirectory = pathDir[0]
         } else
