@@ -32,13 +32,9 @@ public enum CachingStrategy {
  */
 public enum DataChangeNotificationType {
     /**
-    Requested data isn't locally cached. Request for data being sent to iCloud
-    */
-    case Retrieving,
-    /**
      Data retrieval is progressing/finished
      */
-    Completed,
+    case Completed,
     /**
     New item has been inserted
     */
@@ -738,7 +734,6 @@ public class EVCloudData: NSObject {
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         postNotifications: Bool? = nil,
         configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil,
-        retrievingHandler: (() -> Void)? = nil,
         completionHandler: ((results: [T], status: ConnectStatus) -> Bool)? = nil,
         insertedHandler:((item: T) -> Void)? = nil,
         updatedHandler:((item: T, dataIndex: Int) -> Void)? = nil,
