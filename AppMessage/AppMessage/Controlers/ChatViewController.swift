@@ -13,7 +13,7 @@ import SwiftLocation
 import VIPhotoView
 import MapKit
 import UIImage_Resize
-import AsyncSwift
+import Async
 import PermissionScope
 
 class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
@@ -107,13 +107,13 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])
             , filterId: dataID
             , configureNotificationInfo:{ notificationInfo in
-            }, completionHandler: { results, isFinished in
+            }, completionHandler: { results, status in
                 EVLog("Conversation message results = \(results.count)")
                 self.localData = [JSQMessage?](count:results.count, repeatedValue:nil)
                 self.checkAttachedAssets(results)
                 self.collectionView!.reloadData()
                 self.scrollToBottomAnimated(true)
-                return !isFinished && results.count < 500 // Continue reading if we have less than 500 records and if there are more.
+                return status == CompletionStatus.PartialResult && results.count < 500 // Continue reading if we have less than 500 records and if there are more.
             }, insertedHandler: { item in
                 EVLog("Conversation message inserted \(item)")
                 self.localData.insert(nil, atIndex: 0)

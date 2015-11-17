@@ -8,7 +8,7 @@
 
 import Foundation
 import CRToast
-import AsyncSwift
+import Async
 
 class Helper {
 
