@@ -82,6 +82,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - local updates will also update the data collection and call the appropriate events
 - since all data is processed all callback events will be executed on the mainQueue
 - caching of the results to a file for speedy app restart. (You can set the caching strategy) 
+- Internal app notifications using NSNotificationCenter
 
 ## Main features of EVglobal
 - EVLog as a replacement for NSLog which will also output the file, function and line number.

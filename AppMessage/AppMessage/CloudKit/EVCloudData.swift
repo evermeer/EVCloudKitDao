@@ -458,6 +458,11 @@ public class EVCloudData: NSObject {
     
     /**
     Get the NSNotificationCenter key for a given filterId and notification type
+    
+    - parameter filterId: ?
+    - parameter changeType: ?
+    
+    - returns: ?
     */
     public class func getNotificationCenterId(filterId: String, var changeType: DataChangeNotificationType? = nil) -> String {
         if changeType == nil {
@@ -467,9 +472,13 @@ public class EVCloudData: NSObject {
         return "NL.EVICT.CloudKit.\(filterId).\(changeType!)"
     }
     
-    /**
-    Convert the raw ConnectStatus value stuffed in an NSNotification userInfo instance back into a ConnectStatus enum value
-    */
+     /**
+     Convert the raw ConnectStatus value stuffed in an NSNotification userInfo instance back into a ConnectStatus enum value
+     
+     - parameter notification: ?
+     
+     - returns: ?
+     */
     public class func getCompletionStatusFromNotification(notification: NSNotification) -> CompletionStatus? {
         var result: CompletionStatus?
         
@@ -480,8 +489,12 @@ public class EVCloudData: NSObject {
         return result
     }
     
-    /**
+     /**
      Post a "completed" data notification plus the global "data changed" notification
+     
+     - parameter filterId: ?
+     - parameter results:  ?
+     - parameter status:   ?
      */
     private func postDataCompletedNotification<T:EVCloudKitDataObject>(filterId: String, results: [T], status: CompletionStatus) {
         // Verify notifications are wanted
@@ -493,8 +506,11 @@ public class EVCloudData: NSObject {
         }
     }
     
-    /**
+     /**
      Post an "inserted" data notification plus the global "data changed" notification
+     
+     - parameter filterId: ?
+     - parameter item:     ?
      */
     private func postDataInsertedNotification<T:EVCloudKitDataObject>(filterId: String, item: T) {
         // Verify notifications are wanted
@@ -506,8 +522,12 @@ public class EVCloudData: NSObject {
         }
     }
     
-    /**
+     /**
      Post an "updated" data notification plus the global "data changed" notification
+     
+     - parameter filterId:  ?
+     - parameter item:      ?
+     - parameter dataIndex: ?
      */
     private func postDataUpdatedNotification<T:EVCloudKitDataObject>(filterId: String, item: T, dataIndex: Int) {
         // Verify notifications are wanted
@@ -519,8 +539,10 @@ public class EVCloudData: NSObject {
         }
     }
     
-    /**
+     /**
      Post a "data changed" data notification
+     
+     - parameter filterId: ?
      */
     private func postDataChangeNotification(filterId: String) {
         // Verify notifications are wanted
@@ -530,6 +552,13 @@ public class EVCloudData: NSObject {
         }
     }
     
+    /**
+     Post a "data delete" data notification
+     
+     - parameter filterId:  ?
+     - parameter recordId:  ?
+     - parameter dataIndex: ?
+     */
     private func postDataDeletedNotification(filterId: String, recordId: String, dataIndex: Int) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
@@ -540,6 +569,12 @@ public class EVCloudData: NSObject {
         }
     }
     
+    /**
+     Post a "data error" data notification
+     
+     - parameter filterId: ?
+     - parameter error:    ?
+     */
     private func postDataErrorNotification(filterId: String, error: NSError) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
