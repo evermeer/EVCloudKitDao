@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import AsyncSwift
+import Async
 
 class SearchViewController: UITableViewController, UISearchBarDelegate {
 
