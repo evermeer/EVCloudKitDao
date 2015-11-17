@@ -60,7 +60,7 @@ public enum DataChangeNotificationType {
 /**
 The enum for determining the current state of data retrieval in the Completion handler and/or NSNotificationManager push notification
 */
-public enum ConnectStatus: Int {
+public enum CompletionStatus: Int {
     /**
     The results were returned from the local cache
     */
@@ -470,11 +470,11 @@ public class EVCloudData: NSObject {
     /**
     Convert the raw ConnectStatus value stuffed in an NSNotification userInfo instance back into a ConnectStatus enum value
     */
-    public class func getConnectStatusFromNotification(notification: NSNotification) -> ConnectStatus? {
-        var result: ConnectStatus?
+    public class func getCompletionStatusFromNotification(notification: NSNotification) -> CompletionStatus? {
+        var result: CompletionStatus?
         
         if notification.userInfo?["status"] != nil {
-            result = ConnectStatus(rawValue: Int((notification.userInfo?["status"])! as! NSNumber))
+            result = CompletionStatus(rawValue: Int((notification.userInfo?["status"])! as! NSNumber))
         }
         
         return result
@@ -483,7 +483,7 @@ public class EVCloudData: NSObject {
     /**
      Post a "completed" data notification plus the global "data changed" notification
      */
-    private func postDataCompletedNotification<T:EVCloudKitDataObject>(filterId: String, results: [T], status: ConnectStatus) {
+    private func postDataCompletedNotification<T:EVCloudKitDataObject>(filterId: String, results: [T], status: CompletionStatus) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
@@ -734,7 +734,7 @@ public class EVCloudData: NSObject {
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         postNotifications: Bool? = nil,
         configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil,
-        completionHandler: ((results: [T], status: ConnectStatus) -> Bool)? = nil,
+        completionHandler: ((results: [T], status: CompletionStatus) -> Bool)? = nil,
         insertedHandler:((item: T) -> Void)? = nil,
         updatedHandler:((item: T, dataIndex: Int) -> Void)? = nil,
         deletedHandler:((recordId: String, dataIndex: Int) -> Void)? = nil,
@@ -823,7 +823,7 @@ public class EVCloudData: NSObject {
                 self.data[filterId] = results
                 let sema = dispatch_semaphore_create(0)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    let status = isFinished ? ConnectStatus.FinalResult : ConnectStatus.PartialResult
+                    let status = isFinished ? CompletionStatus.FinalResult : CompletionStatus.PartialResult
                     self.postDataCompletedNotification(filterId, results: results, status: status)
                     if completionHandler != nil {
                         continueReading = completionHandler!(results: results, status: status)

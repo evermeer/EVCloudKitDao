@@ -113,7 +113,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 self.checkAttachedAssets(results)
                 self.collectionView!.reloadData()
                 self.scrollToBottomAnimated(true)
-                return status == ConnectStatus.PartialResult && results.count < 500 // Continue reading if we have less than 500 records and if there are more.
+                return status == CompletionStatus.PartialResult && results.count < 500 // Continue reading if we have less than 500 records and if there are more.
             }, insertedHandler: { item in
                 EVLog("Conversation message inserted \(item)")
                 self.localData.insert(nil, atIndex: 0)
