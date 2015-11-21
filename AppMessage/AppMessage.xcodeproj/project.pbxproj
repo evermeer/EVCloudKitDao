@@ -114,7 +114,6 @@
 		7FED8E201A4B14A30071F7A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
 		7FED8E211A4B14AF0071F7A9 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; name = .travis.yml; path = ../.travis.yml; sourceTree = "<group>"; };
 		7FF11C401ACBEA6000A18FA3 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
-		7FF1BD1E1BA2C85D000447BB /* circle.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = circle.yml; sourceTree = "<group>"; };
 		7FF447431A16964C0003AE91 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		7FFD4C0C1A222E9D00E03FAB /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		82759452322E59420ABE0701 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -185,7 +184,6 @@
 			children = (
 				7FED8E201A4B14A30071F7A9 /* .gitignore */,
 				7FED8E211A4B14AF0071F7A9 /* .travis.yml */,
-				7FF1BD1E1BA2C85D000447BB /* circle.yml */,
 				7FED8DF91A4A30B70071F7A9 /* EVCloudKitDao.podspec */,
 				7F51F15B197E6BA300A9E5B2 /* README.md */,
 				7FED8DFA1A4A30C10071F7A9 /* LICENSE */,
