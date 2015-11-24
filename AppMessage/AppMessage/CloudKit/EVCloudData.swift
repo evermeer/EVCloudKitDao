@@ -776,6 +776,11 @@ public class EVCloudData: NSObject {
         dataChangedHandler:(() -> Void)? = nil,
         errorHandler:((error: NSError) -> Void)? = nil
         ) -> Void {
+            // Set the post notifications flag for this filter ID before checking the cache
+            if postNotifications != nil && postNotifications! {
+                self.postNotifications[filterId] = postNotifications!
+            }
+            
             // If we have a cache for this filter, then first return that.
             if restoreDataForFilter(filterId) {
                 if let filterData = self.data[filterId] as? [T] {
@@ -803,10 +808,6 @@ public class EVCloudData: NSObject {
             self.cachingLastWrite[filterId] = NSDate()
             self.cachingChangesCount[filterId] = 0
             self.cachingStrategies[filterId] = cachingStrategy
-            
-            if postNotifications != nil && postNotifications! {
-                self.postNotifications[filterId] = postNotifications!
-            }
             
             // Wrapping (Type and optional) the generic function so that we can add it to the collection and prevent nil reference exceptions
             if insertedHandler != nil {
