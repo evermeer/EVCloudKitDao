@@ -440,7 +440,6 @@ public class EVCloudKitDao {
             database = container.privateCloudDatabase
         }
 
-        let sema = dispatch_semaphore_create(0)
         container.accountStatusWithCompletionHandler({ status, error in
             if error != nil {
                 EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
@@ -449,13 +448,10 @@ public class EVCloudKitDao {
             }
             EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
             
-            // Signal that the method can return before calling the completion handlers
-            dispatch_semaphore_signal(sema)
-
             // Call all assigned completion handlers
             EVCloudKitDao.callCompletionHandlers(initializationCompleteHandlers, status: status, error: error, invokeAll: true)
         })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+
         EVLog("Container identifier = \(container.containerIdentifier)")
     }
     
