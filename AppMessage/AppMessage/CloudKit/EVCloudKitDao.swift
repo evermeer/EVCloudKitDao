@@ -1129,14 +1129,23 @@ public class EVCloudKitDao {
         }
         
         if reset {
-            // Update connectStatus property on all instances
+            // Update activeUserId, activeUser and connectStatus properties on all instances
+            
+            publicDB.activeUserId = nil
+            publicDB.activeUser = nil
             publicDB.initializeDatabase(nil, initializationCompleteHandlers: publicDBInitializationCompleteHandlers)
             for (identifier, instance) in containerWrapperInstance.publicContainers {
+                instance.activeUserId = nil
+                instance.activeUser = nil
                 instance.initializeDatabase(identifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[identifier])
             }
 
+            privateDB.activeUserId = nil
+            privateDB.activeUser = nil
             privateDB.initializeDatabase(nil, initializationCompleteHandlers: privateDBInitializationCompleteHandlers)
             for (identifier, instance) in containerWrapperInstance.privateContainers {
+                instance.activeUserId = nil
+                instance.activeUser = nil
                 instance.initializeDatabase(identifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[identifier])
             }
             
