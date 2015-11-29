@@ -1111,47 +1111,57 @@ public class EVCloudKitDao {
      :return: No return value
      */
     public class func verifyiCloudAccountStatus() {
-        var reset: Bool = false
-        let tokenKey = "NL.EVICT.CloudKit.UbiquityIdentityToken"
-        // Get the current iCloud token
-        let currentToken = NSFileManager.defaultManager().ubiquityIdentityToken
-        if currentToken != nil {
+        // Local func called below after retrieving the current iCloud user's ID
+        func checkCurrentToken(currentToken: String?) {
+            var reset: Bool = false
+            let tokenKey = "NL.EVICT.CloudKit.UbiquityIdentityToken"
+            
             // Check for a previous token being written to user defaults and compare tokens if found
-            let existingToken = NSUserDefaults.standardUserDefaults().objectForKey(tokenKey)
-            if existingToken == nil || currentToken!.isEqual(existingToken) {
-                let newTokenData: NSData = NSKeyedArchiver.archivedDataWithRootObject(currentToken!)
-                NSUserDefaults.standardUserDefaults().setObject(newTokenData, forKey: tokenKey)
+            let existingToken = NSUserDefaults.standardUserDefaults().stringForKey(tokenKey)
+            if existingToken != currentToken {
+                if currentToken != nil {
+                    NSUserDefaults.standardUserDefaults().setValue(currentToken, forKey: tokenKey)
+                } else {
+                    NSUserDefaults.standardUserDefaults().removeObjectForKey(tokenKey)
+                }
                 reset = true
             }
-        } else {
-            NSUserDefaults.standardUserDefaults().removeObjectForKey(tokenKey)
-            reset = true
+            
+            if reset {
+                // Update activeUserId, activeUser and connectStatus properties on all instances
+                
+                publicDB.activeUserId = nil
+                publicDB.activeUser = nil
+                publicDB.initializeDatabase(nil, initializationCompleteHandlers: publicDBInitializationCompleteHandlers)
+                for (identifier, instance) in containerWrapperInstance.publicContainers {
+                    instance.activeUserId = nil
+                    instance.activeUser = nil
+                    instance.initializeDatabase(identifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[identifier])
+                }
+                
+                privateDB.activeUserId = nil
+                privateDB.activeUser = nil
+                privateDB.initializeDatabase(nil, initializationCompleteHandlers: privateDBInitializationCompleteHandlers)
+                for (identifier, instance) in containerWrapperInstance.privateContainers {
+                    instance.activeUserId = nil
+                    instance.activeUser = nil
+                    instance.initializeDatabase(identifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[identifier])
+                }
+                
+                // Post notification that account status has changed
+                delay(0.1) {
+                    NSNotificationCenter.defaultCenter().postNotificationName(iCloudAccountStatusChangeNotification, object: nil)
+                }
+            }
         }
         
-        if reset {
-            // Update activeUserId, activeUser and connectStatus properties on all instances
-            
-            publicDB.activeUserId = nil
-            publicDB.activeUser = nil
-            publicDB.initializeDatabase(nil, initializationCompleteHandlers: publicDBInitializationCompleteHandlers)
-            for (identifier, instance) in containerWrapperInstance.publicContainers {
-                instance.activeUserId = nil
-                instance.activeUser = nil
-                instance.initializeDatabase(identifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[identifier])
-            }
-
-            privateDB.activeUserId = nil
-            privateDB.activeUser = nil
-            privateDB.initializeDatabase(nil, initializationCompleteHandlers: privateDBInitializationCompleteHandlers)
-            for (identifier, instance) in containerWrapperInstance.privateContainers {
-                instance.activeUserId = nil
-                instance.activeUser = nil
-                instance.initializeDatabase(identifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[identifier])
-            }
-            
-            // Post notification that account status has changed
-            NSNotificationCenter.defaultCenter().postNotificationName(iCloudAccountStatusChangeNotification, object: nil)
-        }
+        // Always get the current iCloud token since we're checking for account status changes
+        EVCloudKitDao.publicDB.discoverUserRecordId({ recordId in
+            checkCurrentToken(recordId.recordName)
+            }, errorHandler: { error in
+                print("ERROR: \(error.description)")
+                checkCurrentToken(nil)
+        })
     }
     
     // ------------------------------------------------------------------------

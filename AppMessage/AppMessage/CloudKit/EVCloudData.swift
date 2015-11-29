@@ -142,7 +142,7 @@ public class EVCloudData: NSObject {
     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
     */
     public class func addPublicDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return EVCloudKitDao.insertPublicDBInitializationCompleteHandler(handler)
+        return EVCloudKitDao.addPublicDBInitializationCompleteHandler(handler)
     }
     
     /**
@@ -152,7 +152,7 @@ public class EVCloudData: NSObject {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     public class func addPublicDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return EVCloudKitDao.insertPublicDBInitializationCompleteHandler(forContainer, handler: handler)
+        return EVCloudKitDao.addPublicDBInitializationCompleteHandler(forContainer, handler: handler)
     }
 
     /**
@@ -162,7 +162,7 @@ public class EVCloudData: NSObject {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     public class func addPrivateDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(handler)
+        return EVCloudKitDao.addPrivateDBInitializationCompleteHandler(handler)
     }
     
     /**
@@ -172,7 +172,7 @@ public class EVCloudData: NSObject {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     public class func addPrivateDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(forContainer, handler: handler)
+        return EVCloudKitDao.addPrivateDBInitializationCompleteHandler(forContainer, handler: handler)
     }
 
     // ------------------------------------------------------------------------
@@ -293,11 +293,6 @@ public class EVCloudData: NSObject {
         NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
     }
     
-    deinit {
-        initializationCompleteHandlerToken?.releaseToken()
-        initializationCompleteHandlerToken = nil
-    }
-    
     // ------------------------------------------------------------------------
     // MARK: - class variables
     // ------------------------------------------------------------------------
@@ -350,10 +345,6 @@ public class EVCloudData: NSObject {
      A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
      */
     public var deletedHandlers = Dictionary<String, (recordId: String, dataIndex: Int) -> Void>()
-    /**
-     Token returned by EVCloudKitDao when our initialization completion handler is registered
-     */
-    private var initializationCompleteHandlerToken: DBInitializationCompleteHandlerToken? = nil
     
     
     // ------------------------------------------------------------------------
