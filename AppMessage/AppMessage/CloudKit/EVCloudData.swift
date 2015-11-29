@@ -131,7 +131,50 @@ private class DataContainerWrapper {
  Class for access to  Apple's CloudKit data the easiest way possible
  */
 public class EVCloudData: NSObject {
+    // ----------------------------------------------------------------------------------
+    // MARK: - Assigning initialization completion handlers
+    // ----------------------------------------------------------------------------------
     
+    /**
+    Method used to add an initializationComplete handler that is called when access to the default public container is (re)initialized. The returned token can be retained by the calling code and removed from the list of handlers when it is no longer needed by calling its removeToken method.
+    - parameter handler: DBInitializationCompleteHandler method reference to be called
+    
+    :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+    */
+    public class func addPublicDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return EVCloudKitDao.insertPublicDBInitializationCompleteHandler(handler)
+    }
+    
+    /**
+     Method used to add an initializationComplete handler that is called when access to the specified public container is (re)initialized. The returned token can be retained by the calling code and released when it is no longer needed by calling its releaseToken method.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    public class func addPublicDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return EVCloudKitDao.insertPublicDBInitializationCompleteHandler(forContainer, handler: handler)
+    }
+
+    /**
+     Method used to add an initializationComplete handler that is called when access to the default private container is (re)initialized. The returned token can be retained by the calling code and removed from the list of handlers when it is no longer needed by calling its removeToken method.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    public class func addPrivateDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(handler)
+    }
+    
+    /**
+     Method used to add an initializationComplete handler that is called when access to the specified private container is (re)initialized. The returned token can be retained by the calling code and released when it is no longer needed by calling its releaseToken method.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    public class func addPrivateDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(forContainer, handler: handler)
+    }
+
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
     // ------------------------------------------------------------------------
@@ -142,7 +185,13 @@ public class EVCloudData: NSObject {
     :return: The EVCloudData object
     */
     public class var publicDB: EVCloudData {
-        struct Static { static let instance: EVCloudData = EVCloudData() }
+        // Pass our static publicDBInitializationCompleteHandler as the initialization complete handler to be called by our internal default handler
+        struct Static {
+            static let instance: EVCloudData = EVCloudData()
+            // Add completion handler before referencing EVCloudKitDao instance
+            static let token = EVCloudKitDao.insertPublicDBInitializationCompleteHandler(instance.defaultDBInitializationCompleteHandler)
+        }
+        Static.instance.dao = EVCloudKitDao.publicDB
         return Static.instance
     }
     
@@ -161,7 +210,11 @@ public class EVCloudData: NSObject {
      :return: The EVCloudData object
      */
     public class var privateDB: EVCloudData {
-        struct Static { static let instance: EVCloudData = EVCloudData() }
+        struct Static {
+            static let instance: EVCloudData = EVCloudData()
+            // Add completion handler before referencing EVCloudKitDao instance
+            static let token = EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(instance.defaultDBInitializationCompleteHandler)
+        }
         Static.instance.dao = EVCloudKitDao.privateDB
         return Static.instance
     }
@@ -196,6 +249,8 @@ public class EVCloudData: NSObject {
             return containerInstance
         }
         let cloudData = EVCloudData()
+        // Add completion handler before referencing EVCloudKitDao instance
+        EVCloudKitDao.insertPublicDBInitializationCompleteHandler(containerIdentifier, handler: cloudData.defaultDBInitializationCompleteHandler)
         cloudData.dao = EVCloudKitDao.publicDBForContainer(containerIdentifier)
         containerWrapperInstance.publicContainers[containerIdentifier] =  cloudData
         return cloudData
@@ -212,15 +267,17 @@ public class EVCloudData: NSObject {
             return containerInstance
         }
         let cloudData = EVCloudData()
+        // Add completion handler before referencing EVCloudKitDao instance
+        EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(containerIdentifier, handler: cloudData.defaultDBInitializationCompleteHandler)
         cloudData.dao = EVCloudKitDao.privateDBForContainer(containerIdentifier)
         containerWrapperInstance.privateContainers[containerIdentifier] =  cloudData
         return cloudData
     }
     
     /**
-     Overriding the default innit so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
+     Overriding the default init so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
      */
-    override init() {
+    override private init() {
         let pathDir = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
         if pathDir.count > 0 {
             fileDirectory = pathDir[0]
@@ -230,9 +287,15 @@ public class EVCloudData: NSObject {
         }
         filemanager = NSFileManager.defaultManager()
         ioQueue = dispatch_queue_create("NL.EVICT.CloudKit.ioQueue", DISPATCH_QUEUE_SERIAL) as dispatch_queue_t
+        opsQueue = NSOperationQueue()
         
         super.init()
         NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
+    }
+    
+    deinit {
+        initializationCompleteHandlerToken?.releaseToken()
+        initializationCompleteHandlerToken = nil
     }
     
     // ------------------------------------------------------------------------
@@ -242,7 +305,7 @@ public class EVCloudData: NSObject {
     /**
     The EVCloudKitDao instance that will be used
     */
-    public var dao = EVCloudKitDao.publicDB;
+    public var dao: EVCloudKitDao!;
     /**
      Save the recordType of the connection.
      */
@@ -287,6 +350,10 @@ public class EVCloudData: NSObject {
      A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
      */
     public var deletedHandlers = Dictionary<String, (recordId: String, dataIndex: Int) -> Void>()
+    /**
+     Token returned by EVCloudKitDao when our initialization completion handler is registered
+     */
+    private var initializationCompleteHandlerToken: DBInitializationCompleteHandlerToken? = nil
     
     
     // ------------------------------------------------------------------------
@@ -296,6 +363,7 @@ public class EVCloudData: NSObject {
     private let fileDirectory: NSString
     private let filemanager: NSFileManager
     private let ioQueue: dispatch_queue_t
+    private let opsQueue: NSOperationQueue
     
     /**
      Write the data for a specific filter to a file if the corresponding backup strategy has been met.
@@ -343,26 +411,56 @@ public class EVCloudData: NSObject {
      Make sure that all data is backed up while taking into account the selected CachingStrategy. You should call this method right before exiting your app.
      */
     public func backupAllData() {
-        for (key, _) in cachingLastWrite {
-            backupDataWithStrategyTest(key)
-        }
+        sequenceOps({ key, finished in
+            self.backupDataWithStrategyTest(key)
+            finished(true)
+        })
     }
     
     /**
      Restore all previously backed up data for all initialized connections. Be aware that these already should have been restored.
      */
     public func restoreAllData() {
-        for (key, _) in cachingLastWrite {
-            restoreDataForFilter(key)
-        }
+        sequenceOps({ key, finished in
+            self.restoreDataForFilter(key, resultHandler: finished)
+        })
     }
     
     /**
      Remove the backup files for all the initialized connections.
      */
     public func removeAllBackups() {
+        sequenceOps({ key, finished in
+            self.removeBackupForFilter(key)
+            finished(true)
+        })
+    }
+    
+    /**
+     Private helper func that insures sequential execution of requests for filter file names, which are dependent on the async EVCloudKitDao discoverUserRecordId method having completed its operation first.
+     */
+    private func sequenceOps(op: (String, OperationResult) -> Void ) {
+        var ops = [NSBlockOperation]()
+        var prevOp: NSBlockOperation? = nil
+        
         for (key, _) in cachingLastWrite {
-            removeBackupForFilter(key)
+            let operation = NSBlockOperation {
+                let dispatchGroup = dispatch_group_create()
+                dispatch_group_enter(dispatchGroup)
+                op(key) { _ in
+                    dispatch_group_leave(dispatchGroup)
+                }
+                dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
+            }
+            if prevOp != nil {
+                operation.addDependency(prevOp!)
+            }
+            ops.append(operation)
+            prevOp = operation
+        }
+        
+        if ops.count > 0 {
+            opsQueue.addOperations(ops, waitUntilFinished: true)
         }
     }
     
@@ -373,23 +471,33 @@ public class EVCloudData: NSObject {
      */
     public func backupDataForFilter(filterId: String) {
         if let theData = data[filterId] {
-            backupData(theData, toFile: "Filter_\(filterId).bak" )
-            self.cachingLastWrite[filterId] = NSDate()
-            self.cachingChangesCount[filterId] = 0
+            getFilterBackupName(filterId) { fileName in
+                self.backupData(theData, toFile: fileName!)
+                self.cachingLastWrite[filterId] = NSDate()
+                self.cachingChangesCount[filterId] = 0
+            }
         }
     }
+    
+    /**
+     Type alias used to define a handler for the bool result of a method
+     */
+    public typealias OperationResult = (Bool) -> Void
     
     /**
      Restore data for a specific filter from a file
      
      - parameter filterId: The filter id for the data that will be restored from file
      */
-    public func restoreDataForFilter(filterId: String) -> Bool {
-        if let theData = restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
-            data[filterId] = theData
-            return true
+    public func restoreDataForFilter(filterId: String, resultHandler: OperationResult? = nil) {
+        getFilterBackupName(filterId) { fileName in
+            if let theData = self.restoreData(fileName!) as? [EVCloudKitDataObject] {
+                self.data[filterId] = theData
+                resultHandler?(true)
+            } else {
+                resultHandler?(false)
+            }
         }
-        return false
     }
     
     /**
@@ -398,7 +506,44 @@ public class EVCloudData: NSObject {
      - parameter filterId: The filter id for the backup file that will be removed
      */
     public func removeBackupForFilter(filterId: String) {
-        removeBackup("Filter_\(filterId).bak")
+        getFilterBackupName(filterId) { fileName in
+            self.removeBackup(fileName!)
+        }
+    }
+    
+    /**
+     Private type alias used to define the handler for result returned from the getFilterBackupName method
+     */
+    private typealias FilterBackupNameResult = (String?) -> Void
+    
+    /**
+    Generate a user-specific backup name for a given filter ID
+    */
+    private func getFilterBackupName(filterId: String, resultHandler: FilterBackupNameResult) {
+        // local func used to build string from async results
+        func buildFilterBackupName(filterId: String, userId: CKRecordID? = nil) -> String {
+            var result = "Filter_\(filterId)"
+            
+            if let recordName = userId?.recordName {
+                result += "_ForUser_\(recordName)"
+            }
+            
+            result += ".bak"
+            
+            return result
+        }
+        
+        // Verify iCloud ID has been retrieved
+        if EVCloudKitDao.publicDB.activeUserId == nil {
+            EVCloudKitDao.publicDB.discoverUserRecordId({ recordId in
+                resultHandler(buildFilterBackupName(filterId, userId: recordId))
+                }, errorHandler: { error in
+                    print("ERROR: \(error.description)")
+                    resultHandler(buildFilterBackupName(filterId))
+            })
+        } else {
+            resultHandler(buildFilterBackupName(filterId, userId: EVCloudKitDao.publicDB.activeUserId))
+        }
     }
     
     /**
@@ -782,22 +927,27 @@ public class EVCloudData: NSObject {
             }
             
             // If we have a cache for this filter, then first return that.
-            if restoreDataForFilter(filterId) {
-                if let filterData = self.data[filterId] as? [T] {
-                    postDataCompletedNotification(filterId, results: filterData, status: .FromCache)
-                    if let handler = completionHandler {
-                        handler(results: filterData, status: .FromCache)
+            let cacheSema = dispatch_semaphore_create(0)
+            restoreDataForFilter(filterId) { result in
+                if result {
+                    if let filterData = self.data[filterId] as? [T] {
+                        self.postDataCompletedNotification(filterId, results: filterData, status: .FromCache)
+                        if let handler = completionHandler {
+                            handler(results: filterData, status: .FromCache)
+                        }
                     }
+                    if let handler = dataChangedHandler {
+                        handler()
+                    }
+                } else {
+                    if let handler = completionHandler {
+                        handler(results: [], status: .Retrieving)
+                    }
+                    self.postDataCompletedNotification(filterId, results: [], status: .Retrieving)
                 }
-                if let handler = dataChangedHandler {
-                    handler()
-                }
-            } else {
-                if let handler = completionHandler {
-                    handler(results: [], status: .Retrieving)
-                }
-                postDataCompletedNotification(filterId, results: [], status: .Retrieving)
+                dispatch_semaphore_signal(cacheSema)
             }
+            dispatch_semaphore_wait(cacheSema, DISPATCH_TIME_FOREVER)
             
             // setting the connection properties
             if data[filterId] == nil {
@@ -909,7 +1059,21 @@ public class EVCloudData: NSObject {
             disconnect(key)
         }
     }
+
     
+    // ------------------------------------------------------------------------
+    // MARK: - Handling iCloud account status changes
+    // ------------------------------------------------------------------------
+    
+    /**
+    Default initialization complete handler passed to EVCloudKitDao instances used by EVCloudData instances. Ensures all connections are disconnected whenever the iCloud account status changes.
+    - parameter status: Specifies the current iCloud account status
+    - parameter error: Non-nil if an error occurred while attempting to access the current iCloud account
+    :return: No return value
+    */
+    private func defaultDBInitializationCompleteHandler(_: CKAccountStatus, error: NSError?) {
+        disconnectAll()
+    }
     
     // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications

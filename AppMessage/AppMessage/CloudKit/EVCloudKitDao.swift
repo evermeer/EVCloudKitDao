@@ -5,6 +5,7 @@
 //  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
+import Foundation
 import CloudKit
 import EVReflection
 
@@ -32,20 +33,219 @@ public enum HandleCloudKitErrorAs {
     Fail
 }
 
+/**
+Enumeration that indicates if the instance's connection is to the user's private or app's public db
+*/
 public enum InstanceType {
     case IsPrivate,
     IsPublic
 }
 
 /**
+Type alias that defines a callback handler that is called when DB initialization attempt is completed
+ */
+public typealias DBInitializationCompleteHandler = (status: CKAccountStatus, error: NSError?) -> Void
+
+/**
+Token protocol used to identify tokens returned by add..DBInitializationCompleteHandler methods
+*/
+public protocol DBInitializationCompleteHandlerToken {
+    func releaseToken()
+}
+
+/**
+ Internal implementor of opaque token protocol returned by add..DBInitializationCompleteHandler methods. Used instead of directly storing handler references so removeToken can be implemented by filtering instances by comparing to self.
+*/
+private class ConnectStatusCompletionHandlerWrapper: DBInitializationCompleteHandlerToken {
+    /**
+    The collection that this wrapper is assigned to. Used when releaseToken is called.
+    */
+    private var collection: [ConnectStatusCompletionHandlerWrapper]
+    /**
+    The originally-passed handler that should be invoked.
+    */
+    private let handler: DBInitializationCompleteHandler
+    
+    /**
+    Boolean that indicates if the handler has been invoked yet. Used to determine if a handler should be explicitly called when a reference (publicDB, privateDB, etc.) that has already been initialized is retrieved.
+     */
+    var hasBeenInvoked: Bool = false
+    
+    /**
+    We modify the passed collection by inserting/appending ourselves, thus requiring it be defined as an inout var
+    */
+    init(inout collection: [ConnectStatusCompletionHandlerWrapper],  insert: Bool, handler: DBInitializationCompleteHandler) {
+        self.collection = collection
+        self.handler = handler
+        
+        if insert {
+            collection.insert(self, atIndex: 0)
+        } else {
+            collection.append(self)
+        }
+    }
+    
+    /**
+    Method called to invoke the originally-passed handler and to set our hasBeenInvoked flag to true
+    */
+    func invoke(status: CKAccountStatus, error: NSError?) {
+        hasBeenInvoked = true
+        handler(status: status, error: error)
+    }
+    
+    /**
+    Method called to release our instance from the collection we were assigned to
+    */
+    func releaseToken() {
+        collection = collection.filter { $0 !== self }
+    }
+}
+
+/**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
 public class EVCloudKitDao {
+    // ----------------------------------------------------------------------------------
+    // MARK: - Assigning initialization completion handlers
+    // ----------------------------------------------------------------------------------
+    
+    /**
+    Singleton assignment of initializationComplete handlers that are called when access to the default public container is (re)initialized.
+    Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
+    */
+    private static var publicDBInitializationCompleteHandlers = [ConnectStatusCompletionHandlerWrapper]()
+    
+    /**
+    Method used to add an initializationComplete handler that is called when access to the default public container is (re)initialized. The returned token can be retained by the calling code and removed from the list of handlers when it is no longer needed by calling its removeToken method.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+    
+    :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+    */
+    public class func addPublicDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return ConnectStatusCompletionHandlerWrapper(collection: &publicDBInitializationCompleteHandlers, insert: false, handler: handler)
+    }
+    
+    /**
+    Internal method used by EVCloudData to insert handlers before user-provided handlers for the public DB so EVCloudData-based connections can be disconnected before user-provided completion handlers are called.
+    - parameter handler: DBInitializationCompleteHandler method reference to be called
+    
+    :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+    */
+    internal class func insertPublicDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return ConnectStatusCompletionHandlerWrapper(collection: &publicDBInitializationCompleteHandlers, insert: true, handler: handler)
+    }
+    
+    /**
+     Singleton assignment of initializationComplete handlers that are called when access to a specified public container is (re)initialized.
+     Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
+     */
+    private static var publicDBInitializationCompleteHandlersForContainer = Dictionary<String, [ConnectStatusCompletionHandlerWrapper]>()
+    
+    /**
+     Method used to add an initializationComplete handler that is called when access to the specified public container is (re)initialized. The returned token can be retained by the calling code and released when it is no longer needed by calling its releaseToken method.
+     - parameter forContainer: Specifies the container's name that the completion handler is intended for.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    public class func addPublicDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        var collection = getCollectionFromDictionary(forContainer, dict: &publicDBInitializationCompleteHandlersForContainer)
+        
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
+    }
+    
+    /**
+     Internal method used by EVCloudData to insert handlers before user-provided handlers for a public DB container so EVCloudData-based connections can be disconnected before user-provided completion handlers are called.
+     - parameter forContainer: Specifies the container's name that the completion handler is intended for.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    internal class func insertPublicDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        var collection = getCollectionFromDictionary(forContainer, dict: &publicDBInitializationCompleteHandlersForContainer)
+        
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
+    }
+    
+    /**
+     Singleton assignment of initializationComplete handlers that are called when access to the default private container is (re)initialized.
+     Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
+     */
+    private static var privateDBInitializationCompleteHandlers = [ConnectStatusCompletionHandlerWrapper]()
+    
+    /**
+     Method used to add an initializationComplete handler that is called when access to the default private container is (re)initialized. The returned token can be retained by the calling code and removed from the list of handlers when it is no longer needed by calling its removeToken method.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    public class func addPrivateDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return ConnectStatusCompletionHandlerWrapper(collection: &privateDBInitializationCompleteHandlers, insert: false, handler: handler)
+    }
+    
+    /**
+     Internal method used by EVCloudData to insert handlers before user-provided handlers for the private DB so EVCloudData-based connections can be disconnected before user-provided completion handlers are called.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    internal class func insertPrivateDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        return ConnectStatusCompletionHandlerWrapper(collection: &privateDBInitializationCompleteHandlers, insert: true, handler: handler)
+    }
+    
+    /**
+     Singleton assignment of initializationComplete handlers that are called when access to a specified private container is (re)initialized.
+     Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
+     */
+    private static var privateDBInitializationCompleteHandlersForContainer = Dictionary<String, [ConnectStatusCompletionHandlerWrapper]>()
+    
+    /**
+     Method used to add an initializationComplete handler that is called when access to the specified private container is (re)initialized. The returned token can be retained by the calling code and released when it is no longer needed by calling its releaseToken method.
+     - parameter forContainer: Specifies the container's name that the completion handler is intended for.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    public class func addPrivateDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        var collection = getCollectionFromDictionary(forContainer, dict: &privateDBInitializationCompleteHandlersForContainer)
+        
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
+    }
+    
+    /**
+     Internal method used by EVCloudData to insert handlers before user-provided handlers for a private DB container so EVCloudData-based connections can be disconnected before user-provided completion handlers are called.
+     - parameter forContainer: Specifies the container's name that the completion handler is intended for.
+     - parameter handler: DBInitializationCompleteHandler method reference to be called
+     
+     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
+     */
+    internal class func insertPrivateDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
+        var collection = getCollectionFromDictionary(forContainer, dict: &privateDBInitializationCompleteHandlersForContainer)
+        
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
+    }
+    
+    /**
+     Private helper function to locate an existing ConnectStatusCompletionHandlerWrapper for a specified container name, and to create a new array if an existing one isn't found, from the provided dictionary.
+     - parameter forContainer: String that specifies the container name to search for in the provided dictionary
+     - parameter dict: inout variable that allows the pass Dictionary of ConnectStatusCompletionHandlerWrapper arrays to be modified by adding a new array if an existing one isn't found
+     
+     :return: An array of ConnectStatusCompletionHandlerWrapper instances for the requested container
+    */
+    private class func getCollectionFromDictionary(forContainer: String, inout dict : Dictionary<String, [ConnectStatusCompletionHandlerWrapper]>) -> [ConnectStatusCompletionHandlerWrapper] {
+        var collection = dict[forContainer]
+        if collection == nil {
+            collection = [ConnectStatusCompletionHandlerWrapper]()
+            dict[forContainer] = collection
+        }
+        
+        return collection!
+    }
 
     // ------------------------------------------------------------------------
     // MARK: - For getting the various instances
     // ------------------------------------------------------------------------
-
+    
     /**
     Singleton access to EVCloudKitDao public database that can be called from Swift
 
@@ -55,7 +255,13 @@ public class EVCloudKitDao {
         /**
         Singleton structure
         */
-        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao() }
+        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao(initializationCompleteHandlers: EVCloudKitDao.publicDBInitializationCompleteHandlers) }
+
+        // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
+        if let status = Static.instance.accountStatus {
+            callCompletionHandlers(publicDBInitializationCompleteHandlers, status: status, error: nil)
+        }
+        
         return Static.instance
     }
 
@@ -74,9 +280,15 @@ public class EVCloudKitDao {
     :return: The EVCLoudKitDao object
     */
     public class var privateDB: EVCloudKitDao {
-        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao() }
+        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao(initializationCompleteHandlers: EVCloudKitDao.privateDBInitializationCompleteHandlers) }
         Static.instance.isType = .IsPrivate
         Static.instance.database = Static.instance.container.privateCloudDatabase
+
+        // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
+        if let status = Static.instance.accountStatus {
+            callCompletionHandlers(privateDBInitializationCompleteHandlers, status: status, error: nil)
+        }
+        
         return Static.instance
     }
 
@@ -90,7 +302,7 @@ public class EVCloudKitDao {
     }
 
     /**
-    Singleton acces to the wrapper class with the dictionaries with public and private containers.
+    Singleton access to the wrapper class with the dictionaries with public and private containers.
 
     :return: The container wrapper class
     */
@@ -100,33 +312,51 @@ public class EVCloudKitDao {
     }
 
     /**
-    Singleton acces to a specific named public container
-    - parameter containterIdentifier: The identifier of the public container that you want to use.
+    Singleton access to a specific named public container
+    - parameter containerIdentifier: The identifier of the public container that you want to use.
 
     :return: The public container for the identifier.
     */
-    public class func publicDBForContainer(containterIdentifier: String) -> EVCloudKitDao {
-        if let containerInstance = containerWrapperInstance.publicContainers[containterIdentifier] {
+    public class func publicDBForContainer(containerIdentifier: String) -> EVCloudKitDao {
+        if let containerInstance = containerWrapperInstance.publicContainers[containerIdentifier] {
+            // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
+            if let status = containerInstance.accountStatus {
+                if let handlers = publicDBInitializationCompleteHandlersForContainer[containerIdentifier] {
+                    callCompletionHandlers(handlers, status: status, error: nil)
+                }
+            }
+            
             return containerInstance
         }
-        containerWrapperInstance.publicContainers[containterIdentifier] =  EVCloudKitDao(containerIdentifier: containterIdentifier)
-        return containerWrapperInstance.publicContainers[containterIdentifier]!
+        // Pass the initialization complete handler to our constructor if one was provided. Otherwise, pass the static publicDBInitializationCompleteHandler value (which may also be nil)
+        
+        containerWrapperInstance.publicContainers[containerIdentifier] =  EVCloudKitDao(containerIdentifier: containerIdentifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[containerIdentifier])
+
+        return containerWrapperInstance.publicContainers[containerIdentifier]!
     }
 
     /**
-    Singleton acces to a specific named private container
+    Singleton access to a specific named private container
     - parameter containterIdentifier: The identifier of the private container that you want to use.
 
     :return: The private container for the identifier.
     */
-    public class func privateDBForContainer(containterIdentifier: String) -> EVCloudKitDao {
-        if let containerInstance = containerWrapperInstance.privateContainers[containterIdentifier] {
+    public class func privateDBForContainer(containerIdentifier: String) -> EVCloudKitDao {
+        if let containerInstance = containerWrapperInstance.privateContainers[containerIdentifier] {
+            // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
+            if let status = containerInstance.accountStatus {
+                if let handlers = privateDBInitializationCompleteHandlersForContainer[containerIdentifier] {
+                    callCompletionHandlers(handlers, status: status, error: nil)
+                }
+            }
+            
             return containerInstance
         }
-        containerWrapperInstance.privateContainers[containterIdentifier] =  EVCloudKitDao(containerIdentifier: containterIdentifier)
-        return containerWrapperInstance.privateContainers[containterIdentifier]!
-    }
+        // Pass the initialization complete handler to our constructor if one was provided. Otherwise, pass the static privateDBInitializationCompleteHandler value (which may also be nil)
+        containerWrapperInstance.privateContainers[containerIdentifier] =  EVCloudKitDao(containerIdentifier: containerIdentifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[containerIdentifier])
 
+        return containerWrapperInstance.privateContainers[containerIdentifier]!
+    }
 
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -148,19 +378,23 @@ public class EVCloudKitDao {
     private var database: CKDatabase!
 
     /**
-    The iClout account status of the current user
+    The iCloud account status of the current user
 
     :return: The account status of the current user
     */
-    public var accountStatus: CKAccountStatus?
+    public var accountStatus: CKAccountStatus!
 
     /**
-    The iCloud account information of the current user
+    The iCloud account ID of the current user
+     :return: The account ID for the current user
+     */
+    public var activeUserId: CKRecordID!
 
-    :return: The account information of the current user
-    */
+    /**
+     The iCloud account information of the current user
+     :return: The account information of the current user
+     */
     public var activeUser: CKDiscoveredUserInfo!
-
 
     /**
     For regestering if this class is for the public or the private database
@@ -171,26 +405,30 @@ public class EVCloudKitDao {
     
     /**
     On init set a quick refrence to the container and database
+     
+    - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    init() {
-        self.initializeDatabase()
+    private init(initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?) {
+        self.initializeDatabase(nil, initializationCompleteHandlers: initializationCompleteHandlers)
     }
 
     /**
     On init set a quick reference to the container and database for a specific container.
 
-     - parameter containerIdentifier: Passing on the name of the container
+    - parameter containerIdentifier: Passing on the name of the container
+    - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    init(containerIdentifier: String) {
-        self.initializeDatabase(containerIdentifier)
+    private init(containerIdentifier: String, initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?) {
+        self.initializeDatabase(containerIdentifier, initializationCompleteHandlers: initializationCompleteHandlers)
     }
 
     /**
     Set or reset the quick reference to the container and database
 
     - parameter containerIdentifier: Passing on the name of the container
+    - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    public func initializeDatabase(containerIdentifier: String? = nil) {
+    private func initializeDatabase(containerIdentifier: String? = nil, initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?) {
         if let identifier = containerIdentifier {
             container = CKContainer(identifier: identifier)
         } else {
@@ -203,17 +441,42 @@ public class EVCloudKitDao {
         }
 
         let sema = dispatch_semaphore_create(0)
-        container.accountStatusWithCompletionHandler({status, error in
+        container.accountStatusWithCompletionHandler({ status, error in
             if error != nil {
                 EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
             } else {
                 self.accountStatus = status
             }
             EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
-            dispatch_semaphore_signal(sema);
+            
+            // Signal that the method can return before calling the completion handlers
+            dispatch_semaphore_signal(sema)
+
+            // Call all assigned completion handlers
+            EVCloudKitDao.callCompletionHandlers(initializationCompleteHandlers, status: status, error: error, invokeAll: true)
         })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
         EVLog("Container identifier = \(container.containerIdentifier)")
+    }
+    
+    /**
+    Convenience method used to call all assigned completion handlers with initialization results
+
+    - parameter initializationCompleteHandlers: Optional array of ConnectStatusCompletionHandlerWrapper instances to call
+    - parameter status: Current iCloud account status
+    - parameter error: Optional error info if the iCloud container's accountStatusWithCompletionHandler method returns an error
+    */
+    private class func callCompletionHandlers(initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?, status: CKAccountStatus, error: NSError?, invokeAll: Bool = false) {
+        if let handlers = initializationCompleteHandlers {
+            // Delay so our instance is returned and processed as needed before any newly-added completion handlers are called
+            delay(0.1) {
+                for wrapper in handlers {
+                    if invokeAll || !wrapper.hasBeenInvoked {
+                        wrapper.invoke(status, error: error)
+                    }
+                }
+            }
+        }
     }
     
     // ------------------------------------------------------------------------
@@ -429,6 +692,22 @@ public class EVCloudKitDao {
     }
 
     /**
+     Get the iCloud ID of the current user - used to formulate a unique file name in EVCloudData::getFilterBackupName()
+     
+     - parameter completionHandler: The function that will be called with the CKRecordID object
+     - parameter errorHandler: The function that will be called when there was an error
+     :return: No return value
+     */
+    public func discoverUserRecordId(completionHandler: ((recordID: CKRecordID) -> Void)? = nil, errorHandler: ((error:NSError) -> Void)? = nil) {
+        container.fetchUserRecordIDWithCompletionHandler({ recordID, error in
+            self.handleCallback(self.nilNotAllowed(error, value: recordID), errorHandler: errorHandler, completionHandler: {
+                self.activeUserId = recordID
+                completionHandler?(recordID: recordID!)
+            })
+        })
+    }
+    
+    /**
     Get the info of the current user
 
     - parameter completionHandler: The function that will be called with the CKDiscoveredUserInfo object
@@ -448,7 +727,6 @@ public class EVCloudKitDao {
         })
     }
     
-    
     // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
     #if os(tvOS)
     public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error:NSError) -> Void)? = nil) {
@@ -456,7 +734,7 @@ public class EVCloudKitDao {
     }
     #else
     /**
-    Who or our contacts is using the same app (will get a system popup requesting permitions)
+    Who of our contacts is using the same app (will get a system popup requesting permitions)
 
     - parameter completionHandler: The function that will be called with an array of CKDiscoveredUserInfo objects
     - parameter errorHandler: The function that will be called when there was an error
@@ -809,6 +1087,65 @@ public class EVCloudKitDao {
     }
 
     // ------------------------------------------------------------------------
+    // MARK: - Handling iCloud Account Changes
+    // ------------------------------------------------------------------------
+    
+    /**
+    NSNotificationCenter message posted whenever the current iCloud account status has changed
+    */
+    public static let iCloudAccountStatusChangeNotification = "NL.EVICT.CloudKit.AccountStatusChanged"
+    
+    /**
+    Method for observing iCloud account status changes. Call this from the AppDelegate didFinishLaunchingWithOptions method.
+    :return: No return value
+    */
+    public class func addiCloudAccountObserver() {
+        NSNotificationCenter.defaultCenter().addObserverForName(NSUbiquityIdentityDidChangeNotification, object: nil, queue: nil) { _ in
+            // Verify iCloud account status hasn't changed
+            verifyiCloudAccountStatus()
+        }
+    }
+    
+    /**
+    Method for verifying the iCloud account status hasn't changed. Call this from the AppDelegate applicationDidBecomeActive method.
+     :return: No return value
+     */
+    public class func verifyiCloudAccountStatus() {
+        var reset: Bool = false
+        let tokenKey = "NL.EVICT.CloudKit.UbiquityIdentityToken"
+        // Get the current iCloud token
+        let currentToken = NSFileManager.defaultManager().ubiquityIdentityToken
+        if currentToken != nil {
+            // Check for a previous token being written to user defaults and compare tokens if found
+            let existingToken = NSUserDefaults.standardUserDefaults().objectForKey(tokenKey)
+            if existingToken == nil || currentToken!.isEqual(existingToken) {
+                let newTokenData: NSData = NSKeyedArchiver.archivedDataWithRootObject(currentToken!)
+                NSUserDefaults.standardUserDefaults().setObject(newTokenData, forKey: tokenKey)
+                reset = true
+            }
+        } else {
+            NSUserDefaults.standardUserDefaults().removeObjectForKey(tokenKey)
+            reset = true
+        }
+        
+        if reset {
+            // Update connectStatus property on all instances
+            publicDB.initializeDatabase(nil, initializationCompleteHandlers: publicDBInitializationCompleteHandlers)
+            for (identifier, instance) in containerWrapperInstance.publicContainers {
+                instance.initializeDatabase(identifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[identifier])
+            }
+
+            privateDB.initializeDatabase(nil, initializationCompleteHandlers: privateDBInitializationCompleteHandlers)
+            for (identifier, instance) in containerWrapperInstance.privateContainers {
+                instance.initializeDatabase(identifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[identifier])
+            }
+            
+            // Post notification that account status has changed
+            NSNotificationCenter.defaultCenter().postNotificationName(iCloudAccountStatusChangeNotification, object: nil)
+        }
+    }
+    
+    // ------------------------------------------------------------------------
     // MARK: - Handling remote notifications
     // ------------------------------------------------------------------------
 
@@ -1017,7 +1354,7 @@ public class EVCloudKitDao {
         for (key, value) in fromDict {
             if !(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"]).contains(key as! String) {
                 if let _ = value as? NSNull {
-//                    record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
+//                    record.setValue(nil, forKey: key) // Swift can not set a value on a nullable type.
                 } else if key as! String != "recordID" {
                     record.setValue(value, forKey: key as! String)
                 }
@@ -1040,5 +1377,20 @@ public class EVCloudKitDao {
             }
         }
         return dictionary
+    }
+    
+    // ------------------------------------------------------------------------
+    // MARK: - Miscellaneous utilities
+    // ------------------------------------------------------------------------
+    
+    private static func delay(delay: Double, closure: ()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(),
+            closure
+        )
     }
 }
