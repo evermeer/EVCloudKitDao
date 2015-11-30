@@ -463,9 +463,13 @@ public class EVCloudData: NSObject {
     public func backupDataForFilter(filterId: String) {
         if let theData = data[filterId] {
             getFilterBackupName(filterId) { fileName in
-                self.backupData(theData, toFile: fileName!)
-                self.cachingLastWrite[filterId] = NSDate()
-                self.cachingChangesCount[filterId] = 0
+                if let validName = fileName {
+                    self.backupData(theData, toFile: validName)
+                    self.cachingLastWrite[filterId] = NSDate()
+                    self.cachingChangesCount[filterId] = 0
+                } else {
+                    EVLog("Unable to backup filter data to local cache for \(filterId); no iCloud account currently available")
+                }
             }
         }
     }
@@ -482,12 +486,15 @@ public class EVCloudData: NSObject {
      */
     public func restoreDataForFilter(filterId: String, resultHandler: OperationResult? = nil) {
         getFilterBackupName(filterId) { fileName in
-            if let theData = self.restoreData(fileName!) as? [EVCloudKitDataObject] {
-                self.data[filterId] = theData
-                resultHandler?(true)
-            } else {
-                resultHandler?(false)
+            if let validName = fileName {
+                if let theData = self.restoreData(validName) as? [EVCloudKitDataObject] {
+                    self.data[filterId] = theData
+                    resultHandler?(true)
+                    return
+                }
             }
+            EVLog("Unable to restore locally-cached filter data for \(filterId); no iCloud account currently available")
+            resultHandler?(false)
         }
     }
     
@@ -498,7 +505,11 @@ public class EVCloudData: NSObject {
      */
     public func removeBackupForFilter(filterId: String) {
         getFilterBackupName(filterId) { fileName in
-            self.removeBackup(fileName!)
+            if let validName = fileName {
+                self.removeBackup(validName)
+            } else {
+                EVLog("Unable to remove locally-cached filter data for \(filterId); no iCloud account currently available")
+            }
         }
     }
     
@@ -511,29 +522,16 @@ public class EVCloudData: NSObject {
     Generate a user-specific backup name for a given filter ID
     */
     private func getFilterBackupName(filterId: String, resultHandler: FilterBackupNameResult) {
-        // local func used to build string from async results
-        func buildFilterBackupName(filterId: String, userId: CKRecordID? = nil) -> String {
-            var result = "Filter_\(filterId)"
-            
-            if let recordName = userId?.recordName {
-                result += "_ForUser_\(recordName)"
-            }
-            
-            result += ".bak"
-            
-            return result
-        }
-        
         // Verify iCloud ID has been retrieved
         if EVCloudKitDao.publicDB.activeUserId == nil {
             EVCloudKitDao.publicDB.discoverUserRecordId({ recordId in
-                resultHandler(buildFilterBackupName(filterId, userId: recordId))
+                resultHandler("Filter_\(filterId)_ForUser_\(recordId.recordName).bak")
                 }, errorHandler: { error in
-                    print("ERROR: \(error.description)")
-                    resultHandler(buildFilterBackupName(filterId))
+                    EVLog("ERROR creating backup file name: \(error.description)")
+                    resultHandler(nil)
             })
         } else {
-            resultHandler(buildFilterBackupName(filterId, userId: EVCloudKitDao.publicDB.activeUserId))
+            resultHandler("Filter_\(filterId)_ForUser_\(EVCloudKitDao.publicDB.activeUserId.recordName).bak")
         }
     }
     

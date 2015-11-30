@@ -101,6 +101,21 @@ private class ConnectStatusCompletionHandlerWrapper: DBInitializationCompleteHan
     }
 }
 
+private class HandlerCollection {
+    var collection = [ConnectStatusCompletionHandlerWrapper]()
+    var hasNewHandlers = false
+    
+    func addHandlerToCollection(handler: DBInitializationCompleteHandler) -> ConnectStatusCompletionHandlerWrapper {
+        hasNewHandlers = true
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
+    }
+    
+    func insertHandlerIntoCollection(handler: DBInitializationCompleteHandler) -> ConnectStatusCompletionHandlerWrapper {
+        hasNewHandlers = true
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
+    }
+}
+
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
@@ -113,7 +128,7 @@ public class EVCloudKitDao {
     Singleton assignment of initializationComplete handlers that are called when access to the default public container is (re)initialized.
     Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
     */
-    private static var publicDBInitializationCompleteHandlers = [ConnectStatusCompletionHandlerWrapper]()
+    private static var publicDBInitializationCompleteHandlers = HandlerCollection()
     
     /**
     Method used to add an initializationComplete handler that is called when access to the default public container is (re)initialized. The returned token can be retained by the calling code and removed from the list of handlers when it is no longer needed by calling its removeToken method.
@@ -122,7 +137,7 @@ public class EVCloudKitDao {
     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
     */
     public class func addPublicDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return ConnectStatusCompletionHandlerWrapper(collection: &publicDBInitializationCompleteHandlers, insert: false, handler: handler)
+        return publicDBInitializationCompleteHandlers.addHandlerToCollection(handler)
     }
     
     /**
@@ -132,14 +147,14 @@ public class EVCloudKitDao {
     :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
     */
     internal class func insertPublicDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return ConnectStatusCompletionHandlerWrapper(collection: &publicDBInitializationCompleteHandlers, insert: true, handler: handler)
+        return publicDBInitializationCompleteHandlers.insertHandlerIntoCollection(handler)
     }
     
     /**
      Singleton assignment of initializationComplete handlers that are called when access to a specified public container is (re)initialized.
      Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
      */
-    private static var publicDBInitializationCompleteHandlersForContainer = Dictionary<String, [ConnectStatusCompletionHandlerWrapper]>()
+    private static var publicDBInitializationCompleteHandlersForContainer = Dictionary<String, HandlerCollection>()
     
     /**
      Method used to add an initializationComplete handler that is called when access to the specified public container is (re)initialized. The returned token can be retained by the calling code and released when it is no longer needed by calling its releaseToken method.
@@ -149,9 +164,9 @@ public class EVCloudKitDao {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     public class func addPublicDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        var collection = getCollectionFromDictionary(forContainer, dict: &publicDBInitializationCompleteHandlersForContainer)
+        let collection = getCollectionFromDictionary(forContainer, dict: &publicDBInitializationCompleteHandlersForContainer)
         
-        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
+        return collection.addHandlerToCollection(handler)
     }
     
     /**
@@ -162,16 +177,16 @@ public class EVCloudKitDao {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     internal class func insertPublicDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        var collection = getCollectionFromDictionary(forContainer, dict: &publicDBInitializationCompleteHandlersForContainer)
+        let collection = getCollectionFromDictionary(forContainer, dict: &publicDBInitializationCompleteHandlersForContainer)
         
-        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
+        return collection.insertHandlerIntoCollection(handler)
     }
     
     /**
      Singleton assignment of initializationComplete handlers that are called when access to the default private container is (re)initialized.
      Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
      */
-    private static var privateDBInitializationCompleteHandlers = [ConnectStatusCompletionHandlerWrapper]()
+    private static var privateDBInitializationCompleteHandlers = HandlerCollection()
     
     /**
      Method used to add an initializationComplete handler that is called when access to the default private container is (re)initialized. The returned token can be retained by the calling code and removed from the list of handlers when it is no longer needed by calling its removeToken method.
@@ -180,7 +195,7 @@ public class EVCloudKitDao {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     public class func addPrivateDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return ConnectStatusCompletionHandlerWrapper(collection: &privateDBInitializationCompleteHandlers, insert: false, handler: handler)
+        return privateDBInitializationCompleteHandlers.addHandlerToCollection(handler)
     }
     
     /**
@@ -190,14 +205,14 @@ public class EVCloudKitDao {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     internal class func insertPrivateDBInitializationCompleteHandler(handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        return ConnectStatusCompletionHandlerWrapper(collection: &privateDBInitializationCompleteHandlers, insert: true, handler: handler)
+        return privateDBInitializationCompleteHandlers.insertHandlerIntoCollection(handler)
     }
     
     /**
      Singleton assignment of initializationComplete handlers that are called when access to a specified private container is (re)initialized.
      Is called upon successful or failed completion of database initialization attempts during initial access and again if the iCloud account status changes
      */
-    private static var privateDBInitializationCompleteHandlersForContainer = Dictionary<String, [ConnectStatusCompletionHandlerWrapper]>()
+    private static var privateDBInitializationCompleteHandlersForContainer = Dictionary<String, HandlerCollection>()
     
     /**
      Method used to add an initializationComplete handler that is called when access to the specified private container is (re)initialized. The returned token can be retained by the calling code and released when it is no longer needed by calling its releaseToken method.
@@ -207,9 +222,9 @@ public class EVCloudKitDao {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     public class func addPrivateDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        var collection = getCollectionFromDictionary(forContainer, dict: &privateDBInitializationCompleteHandlersForContainer)
+        let collection = getCollectionFromDictionary(forContainer, dict: &privateDBInitializationCompleteHandlersForContainer)
         
-        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
+        return collection.addHandlerToCollection(handler)
     }
     
     /**
@@ -220,9 +235,9 @@ public class EVCloudKitDao {
      :return: A token to be retained until the passed handler should no longer be called, at which point the token's releaseToken method should be called.
      */
     internal class func insertPrivateDBInitializationCompleteHandler(forContainer: String, handler: DBInitializationCompleteHandler) -> DBInitializationCompleteHandlerToken {
-        var collection = getCollectionFromDictionary(forContainer, dict: &privateDBInitializationCompleteHandlersForContainer)
+        let collection = getCollectionFromDictionary(forContainer, dict: &privateDBInitializationCompleteHandlersForContainer)
         
-        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
+        return collection.insertHandlerIntoCollection(handler)
     }
     
     /**
@@ -232,10 +247,10 @@ public class EVCloudKitDao {
      
      :return: An array of ConnectStatusCompletionHandlerWrapper instances for the requested container
     */
-    private class func getCollectionFromDictionary(forContainer: String, inout dict : Dictionary<String, [ConnectStatusCompletionHandlerWrapper]>) -> [ConnectStatusCompletionHandlerWrapper] {
+    private class func getCollectionFromDictionary(forContainer: String, inout dict : Dictionary<String, HandlerCollection>) -> HandlerCollection {
         var collection = dict[forContainer]
         if collection == nil {
-            collection = [ConnectStatusCompletionHandlerWrapper]()
+            collection = HandlerCollection()
             dict[forContainer] = collection
         }
         
@@ -408,7 +423,7 @@ public class EVCloudKitDao {
      
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private init(initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?) {
+    private init(initializationCompleteHandlers: HandlerCollection?) {
         self.initializeDatabase(nil, initializationCompleteHandlers: initializationCompleteHandlers)
     }
 
@@ -418,7 +433,7 @@ public class EVCloudKitDao {
     - parameter containerIdentifier: Passing on the name of the container
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private init(containerIdentifier: String, initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?) {
+    private init(containerIdentifier: String, initializationCompleteHandlers: HandlerCollection?) {
         self.initializeDatabase(containerIdentifier, initializationCompleteHandlers: initializationCompleteHandlers)
     }
 
@@ -428,7 +443,7 @@ public class EVCloudKitDao {
     - parameter containerIdentifier: Passing on the name of the container
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private func initializeDatabase(containerIdentifier: String? = nil, initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?) {
+    private func initializeDatabase(containerIdentifier: String? = nil, initializationCompleteHandlers: HandlerCollection?) {
         if let identifier = containerIdentifier {
             container = CKContainer(identifier: identifier)
         } else {
@@ -462,13 +477,18 @@ public class EVCloudKitDao {
     - parameter status: Current iCloud account status
     - parameter error: Optional error info if the iCloud container's accountStatusWithCompletionHandler method returns an error
     */
-    private class func callCompletionHandlers(initializationCompleteHandlers: [ConnectStatusCompletionHandlerWrapper]?, status: CKAccountStatus, error: NSError?, invokeAll: Bool = false) {
+    private class func callCompletionHandlers(initializationCompleteHandlers: HandlerCollection?, status: CKAccountStatus, error: NSError?, invokeAll: Bool = false) {
         if let handlers = initializationCompleteHandlers {
-            // Delay so our instance is returned and processed as needed before any newly-added completion handlers are called
-            delay(0.1) {
-                for wrapper in handlers {
-                    if invokeAll || !wrapper.hasBeenInvoked {
-                        wrapper.invoke(status, error: error)
+            // Verify that all handlers should be called or that at least one of the handlers hasn't been already called
+            if invokeAll || handlers.hasNewHandlers {
+                // Set the collection's hasNewHandlers flag to false since we're about to call the handlers
+                handlers.hasNewHandlers = false
+                // Delay so our instance is returned and processed as needed before any newly-added completion handlers are called
+                delay(0.1) {
+                    for wrapper in handlers.collection {
+                        if invokeAll || !wrapper.hasBeenInvoked {
+                            wrapper.invoke(status, error: error)
+                        }
                     }
                 }
             }
@@ -1114,7 +1134,7 @@ public class EVCloudKitDao {
             
             // Check for a previous token being written to user defaults and compare tokens if found
             let existingToken = NSUserDefaults.standardUserDefaults().stringForKey(tokenKey)
-            if existingToken != currentToken {
+            if currentToken == nil || existingToken != currentToken {
                 if currentToken != nil {
                     NSUserDefaults.standardUserDefaults().setValue(currentToken, forKey: tokenKey)
                 } else {
