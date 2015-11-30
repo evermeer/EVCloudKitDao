@@ -192,6 +192,9 @@ public class EVCloudData: NSObject {
             static let token = EVCloudKitDao.insertPublicDBInitializationCompleteHandler(instance.defaultDBInitializationCompleteHandler)
         }
         Static.instance.dao = EVCloudKitDao.publicDB
+        // Force instantiation of token
+        let _ = Static.token
+        
         return Static.instance
     }
     
@@ -216,6 +219,9 @@ public class EVCloudData: NSObject {
             static let token = EVCloudKitDao.insertPrivateDBInitializationCompleteHandler(instance.defaultDBInitializationCompleteHandler)
         }
         Static.instance.dao = EVCloudKitDao.privateDB
+        // Force instantiation of token
+        let _ = Static.token
+
         return Static.instance
     }
     
