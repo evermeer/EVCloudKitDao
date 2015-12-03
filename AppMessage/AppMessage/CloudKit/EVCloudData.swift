@@ -497,11 +497,14 @@ public class EVCloudData: NSObject {
                     self.data[filterId] = theData
                     resultHandler?(true)
                     return
+                } else {
+                    EVLog("Unable to restore locally-cached filter data for \(filterId); file not found")
                 }
+            } else {
+                EVLog("Unable to restore locally-cached filter data for \(filterId); no iCloud account currently available")
             }
-            EVLog("Unable to restore locally-cached filter data for \(filterId); no iCloud account currently available")
-            resultHandler?(false)
         }
+        resultHandler?(false)
     }
     
     /**
