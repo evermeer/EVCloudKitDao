@@ -270,7 +270,7 @@ public class EVCloudKitDao {
         /**
         Singleton structure
         */
-        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao(initializationCompleteHandlers: EVCloudKitDao.publicDBInitializationCompleteHandlers) }
+        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao(type: .IsPublic, initializationCompleteHandlers: EVCloudKitDao.publicDBInitializationCompleteHandlers) }
 
         // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
         if let status = Static.instance.accountStatus {
@@ -295,8 +295,8 @@ public class EVCloudKitDao {
     :return: The EVCLoudKitDao object
     */
     public class var privateDB: EVCloudKitDao {
-        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao(initializationCompleteHandlers: EVCloudKitDao.privateDBInitializationCompleteHandlers) }
-        Static.instance.isType = .IsPrivate
+        struct Static { static let instance: EVCloudKitDao = EVCloudKitDao(type: .IsPrivate, initializationCompleteHandlers: EVCloudKitDao.privateDBInitializationCompleteHandlers) }
+
         Static.instance.database = Static.instance.container.privateCloudDatabase
 
         // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
@@ -344,8 +344,7 @@ public class EVCloudKitDao {
             return containerInstance
         }
         // Pass the initialization complete handler to our constructor if one was provided. Otherwise, pass the static publicDBInitializationCompleteHandler value (which may also be nil)
-        
-        containerWrapperInstance.publicContainers[containerIdentifier] =  EVCloudKitDao(containerIdentifier: containerIdentifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[containerIdentifier])
+        containerWrapperInstance.publicContainers[containerIdentifier] = EVCloudKitDao(type: .IsPublic, containerIdentifier: containerIdentifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[containerIdentifier])
 
         return containerWrapperInstance.publicContainers[containerIdentifier]!
     }
@@ -368,7 +367,7 @@ public class EVCloudKitDao {
             return containerInstance
         }
         // Pass the initialization complete handler to our constructor if one was provided. Otherwise, pass the static privateDBInitializationCompleteHandler value (which may also be nil)
-        containerWrapperInstance.privateContainers[containerIdentifier] =  EVCloudKitDao(containerIdentifier: containerIdentifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[containerIdentifier])
+        containerWrapperInstance.privateContainers[containerIdentifier] =  EVCloudKitDao(type: .IsPrivate, containerIdentifier: containerIdentifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[containerIdentifier])
 
         return containerWrapperInstance.privateContainers[containerIdentifier]!
     }
@@ -423,7 +422,8 @@ public class EVCloudKitDao {
      
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private init(initializationCompleteHandlers: HandlerCollection?) {
+    private init(type: InstanceType, initializationCompleteHandlers: HandlerCollection?) {
+        isType = type
         self.initializeDatabase(nil, initializationCompleteHandlers: initializationCompleteHandlers)
     }
 
@@ -433,7 +433,8 @@ public class EVCloudKitDao {
     - parameter containerIdentifier: Passing on the name of the container
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private init(containerIdentifier: String, initializationCompleteHandlers: HandlerCollection?) {
+    private init(type: InstanceType, containerIdentifier: String, initializationCompleteHandlers: HandlerCollection?) {
+        isType = type
         self.initializeDatabase(containerIdentifier, initializationCompleteHandlers: initializationCompleteHandlers)
     }
 
