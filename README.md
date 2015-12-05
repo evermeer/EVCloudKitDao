@@ -1,6 +1,8 @@
 EVCloudKitDao
 =============
 
+[![Join the chat at https://gitter.im/evermeer/EVCloudKitDao](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/evermeer/EVCloudKitDao?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 <!---
 [![Circle CI](https://img.shields.io/circleci/project/evermeer/EVCloudKitDao.svg?style=flat)](https://circleci.com/gh/evermeer/EVCloudKitDao)
  -->
