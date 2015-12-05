@@ -6,6 +6,9 @@
 //  Copyright © 2015 mirabeau. All rights reserved.
 //
 
+import Foundation
+import CloudKit
+
 
 // ------------------------------------------------------------------------
 // MARK: - EVCloudKitDao enums
@@ -156,3 +159,65 @@ func !=(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
     return !(leftPart == rightPart)
 }
 
+/**
+ Internal implementor of opaque token protocol returned by add..DBInitializationCompleteHandler methods. Used instead of directly storing handler references so removeToken can be implemented by filtering instances by comparing to self.
+ */
+internal class ConnectStatusCompletionHandlerWrapper: DBInitializationCompleteHandlerToken {
+    /**
+     The collection that this wrapper is assigned to. Used when releaseToken is called.
+     */
+    private var collection: [ConnectStatusCompletionHandlerWrapper]
+    /**
+     The originally-passed handler that should be invoked.
+     */
+    private let handler: DBInitializationCompleteHandler
+    
+    /**
+     Boolean that indicates if the handler has been invoked yet. Used to determine if a handler should be explicitly called when a reference (publicDB, privateDB, etc.) that has already been initialized is retrieved.
+     */
+    var hasBeenInvoked: Bool = false
+    
+    /**
+     We modify the passed collection by inserting/appending ourselves, thus requiring it be defined as an inout var
+     */
+    init(inout collection: [ConnectStatusCompletionHandlerWrapper],  insert: Bool, handler: DBInitializationCompleteHandler) {
+        self.collection = collection
+        self.handler = handler
+        
+        if insert {
+            collection.insert(self, atIndex: 0)
+        } else {
+            collection.append(self)
+        }
+    }
+    
+    /**
+     Method called to invoke the originally-passed handler and to set our hasBeenInvoked flag to true
+     */
+    func invoke(status: CKAccountStatus, error: NSError?) {
+        hasBeenInvoked = true
+        handler(status: status, error: error)
+    }
+    
+    /**
+     Method called to release our instance from the collection we were assigned to
+     */
+    func releaseToken() {
+        collection = collection.filter { $0 !== self }
+    }
+}
+
+internal class HandlerCollection {
+    var collection = [ConnectStatusCompletionHandlerWrapper]()
+    var hasNewHandlers = false
+    
+    func addHandlerToCollection(handler: DBInitializationCompleteHandler) -> ConnectStatusCompletionHandlerWrapper {
+        hasNewHandlers = true
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
+    }
+    
+    func insertHandlerIntoCollection(handler: DBInitializationCompleteHandler) -> ConnectStatusCompletionHandlerWrapper {
+        hasNewHandlers = true
+        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
+    }
+}

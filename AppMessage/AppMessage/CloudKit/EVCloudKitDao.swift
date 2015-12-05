@@ -9,41 +9,6 @@ import Foundation
 import CloudKit
 import EVReflection
 
-<<<<<<< HEAD
-/**
-Wrapper class for being able to use a class instance Dictionary
-*/
-private class DaoContainerWrapper {
-    /**
-    Wrapping the public containers
-    */
-    var publicContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
-    /**
-    Wrapping the private containers
-    */
-    var privateContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
-}
-
-/**
-The functional statuses for a CloudKit error
-*/
-public enum HandleCloudKitErrorAs {
-    case Success,
-    Retry(afterSeconds:Double),
-    RecoverableError,
-    Fail
-}
-
-/**
-Enumeration that indicates if the instance's connection is to the user's private or app's public db
-*/
-public enum InstanceType {
-    case IsPrivate,
-    IsPublic
-}
-=======
->>>>>>> evermeer/master
-
 /**
 Type alias that defines a callback handler that is called when DB initialization attempt is completed
  */
@@ -54,69 +19,6 @@ Token protocol used to identify tokens returned by add..DBInitializationComplete
 */
 public protocol DBInitializationCompleteHandlerToken {
     func releaseToken()
-}
-
-/**
- Internal implementor of opaque token protocol returned by add..DBInitializationCompleteHandler methods. Used instead of directly storing handler references so removeToken can be implemented by filtering instances by comparing to self.
-*/
-private class ConnectStatusCompletionHandlerWrapper: DBInitializationCompleteHandlerToken {
-    /**
-    The collection that this wrapper is assigned to. Used when releaseToken is called.
-    */
-    private var collection: [ConnectStatusCompletionHandlerWrapper]
-    /**
-    The originally-passed handler that should be invoked.
-    */
-    private let handler: DBInitializationCompleteHandler
-    
-    /**
-    Boolean that indicates if the handler has been invoked yet. Used to determine if a handler should be explicitly called when a reference (publicDB, privateDB, etc.) that has already been initialized is retrieved.
-     */
-    var hasBeenInvoked: Bool = false
-    
-    /**
-    We modify the passed collection by inserting/appending ourselves, thus requiring it be defined as an inout var
-    */
-    init(inout collection: [ConnectStatusCompletionHandlerWrapper],  insert: Bool, handler: DBInitializationCompleteHandler) {
-        self.collection = collection
-        self.handler = handler
-        
-        if insert {
-            collection.insert(self, atIndex: 0)
-        } else {
-            collection.append(self)
-        }
-    }
-    
-    /**
-    Method called to invoke the originally-passed handler and to set our hasBeenInvoked flag to true
-    */
-    func invoke(status: CKAccountStatus, error: NSError?) {
-        hasBeenInvoked = true
-        handler(status: status, error: error)
-    }
-    
-    /**
-    Method called to release our instance from the collection we were assigned to
-    */
-    func releaseToken() {
-        collection = collection.filter { $0 !== self }
-    }
-}
-
-private class HandlerCollection {
-    var collection = [ConnectStatusCompletionHandlerWrapper]()
-    var hasNewHandlers = false
-    
-    func addHandlerToCollection(handler: DBInitializationCompleteHandler) -> ConnectStatusCompletionHandlerWrapper {
-        hasNewHandlers = true
-        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: false, handler: handler)
-    }
-    
-    func insertHandlerIntoCollection(handler: DBInitializationCompleteHandler) -> ConnectStatusCompletionHandlerWrapper {
-        hasNewHandlers = true
-        return ConnectStatusCompletionHandlerWrapper(collection: &collection, insert: true, handler: handler)
-    }
 }
 
 /**
@@ -365,17 +267,8 @@ public class EVCloudKitDao {
             
             return containerInstance
         }
-<<<<<<< HEAD
         // Pass the initialization complete handler to our constructor if one was provided. Otherwise, pass the static privateDBInitializationCompleteHandler value (which may also be nil)
         containerWrapperInstance.privateContainers[containerIdentifier] =  EVCloudKitDao(type: .IsPrivate, containerIdentifier: containerIdentifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[containerIdentifier])
-=======
-        let dao = EVCloudKitDao(containerIdentifier: containterIdentifier)
-        dao.isType = .IsPrivate
-        dao.database = dao.container.privateCloudDatabase
-        containerWrapperInstance.privateContainers[containterIdentifier] = dao
-        return dao
-    }
->>>>>>> evermeer/master
 
         return containerWrapperInstance.privateContainers[containerIdentifier]!
     }
