@@ -16,6 +16,7 @@
 		7F2976581BB940730074C85A /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
 		7F2976591BB940730074C85A /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F29765B1BB943660074C85A /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F29765A1BB943660074C85A /* CloudKit.framework */; };
+		7F3C16501C1341ED0057B5E1 /* EVCloudKitEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F3C164F1C1341ED0057B5E1 /* EVCloudKitEnums.swift */; };
 		7F41BB851A2B2B92003FE1DD /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
 		7F434A2919628D490081F35C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A2819628D490081F35C /* AppDelegate.swift */; };
 		7F434A3019628D490081F35C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F434A2F19628D490081F35C /* Images.xcassets */; };
@@ -71,6 +72,7 @@
 		7F2976501BB93D6A0074C85A /* OSXTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSXTest.swift; sourceTree = "<group>"; };
 		7F2976521BB93D6A0074C85A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F29765A1BB943660074C85A /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
+		7F3C164F1C1341ED0057B5E1 /* EVCloudKitEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudKitEnums.swift; sourceTree = "<group>"; };
 		7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVCloudKitDataObject.swift; sourceTree = "<group>"; };
 		7F434A2319628D490081F35C /* AppMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F434A2719628D490081F35C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -237,10 +239,11 @@
 		7F434A4519628E2D0081F35C /* CloudKit */ = {
 			isa = PBXGroup;
 			children = (
-				7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */,
 				7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */,
 				7FD41610199666F3003C2CE9 /* EVCloudData.swift */,
 				7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */,
+				7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */,
+				7F3C164F1C1341ED0057B5E1 /* EVCloudKitEnums.swift */,
 			);
 			path = CloudKit;
 			sourceTree = "<group>";
@@ -652,6 +655,7 @@
 				7FC8B3B119E0600900C146AE /* MenuViewController.swift in Sources */,
 				7F0992E51AEA3BAD00522AE6 /* SSASideMenu.swift in Sources */,
 				7F434A2919628D490081F35C /* AppDelegate.swift in Sources */,
+				7F3C16501C1341ED0057B5E1 /* EVCloudKitEnums.swift in Sources */,
 				7FC46F8C19814C17000A875F /* LeftMenuViewController.swift in Sources */,
 				7F434A4719628EAA0081F35C /* EVCloudKitDao.swift in Sources */,
 				7FC46F9019824285000A875F /* HomeViewController.swift in Sources */,

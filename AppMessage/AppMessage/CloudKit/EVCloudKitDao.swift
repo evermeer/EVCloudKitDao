@@ -9,6 +9,7 @@ import Foundation
 import CloudKit
 import EVReflection
 
+<<<<<<< HEAD
 /**
 Wrapper class for being able to use a class instance Dictionary
 */
@@ -40,6 +41,8 @@ public enum InstanceType {
     case IsPrivate,
     IsPublic
 }
+=======
+>>>>>>> evermeer/master
 
 /**
 Type alias that defines a callback handler that is called when DB initialization attempt is completed
@@ -362,8 +365,17 @@ public class EVCloudKitDao {
             
             return containerInstance
         }
+<<<<<<< HEAD
         // Pass the initialization complete handler to our constructor if one was provided. Otherwise, pass the static privateDBInitializationCompleteHandler value (which may also be nil)
         containerWrapperInstance.privateContainers[containerIdentifier] =  EVCloudKitDao(type: .IsPrivate, containerIdentifier: containerIdentifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[containerIdentifier])
+=======
+        let dao = EVCloudKitDao(containerIdentifier: containterIdentifier)
+        dao.isType = .IsPrivate
+        dao.database = dao.container.privateCloudDatabase
+        containerWrapperInstance.privateContainers[containterIdentifier] = dao
+        return dao
+    }
+>>>>>>> evermeer/master
 
         return containerWrapperInstance.privateContainers[containerIdentifier]!
     }
@@ -955,7 +967,7 @@ public class EVCloudKitDao {
         let createSubscription = { () -> () in
             let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
-            
+// tvOS does not have visible remote notifications. This property is not available.
 #if os(tvOS)
 #else
             subscription.notificationInfo!.shouldSendContentAvailable = true
