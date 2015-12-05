@@ -274,7 +274,7 @@ public class EVCloudKitDao {
 
         // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
         if let status = Static.instance.accountStatus {
-            callCompletionHandlers(publicDBInitializationCompleteHandlers, status: status, error: nil)
+            Static.instance.callCompletionHandlers(status, error: nil)
         }
         
         return Static.instance
@@ -301,7 +301,7 @@ public class EVCloudKitDao {
 
         // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
         if let status = Static.instance.accountStatus {
-            callCompletionHandlers(privateDBInitializationCompleteHandlers, status: status, error: nil)
+            Static.instance.callCompletionHandlers(status, error: nil)
         }
         
         return Static.instance
@@ -336,7 +336,7 @@ public class EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.publicContainers[containerIdentifier] {
             // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
             if let status = containerInstance.accountStatus {
-                callCompletionHandlers(publicDBInitializationCompleteHandlersForContainer[containerIdentifier], status: status, error: nil)
+                containerInstance.callCompletionHandlers(status, error: nil)
             }
             
             return containerInstance
@@ -357,7 +357,7 @@ public class EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.privateContainers[containerIdentifier] {
             // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
             if let status = containerInstance.accountStatus {
-                callCompletionHandlers(privateDBInitializationCompleteHandlersForContainer[containerIdentifier], status: status, error: nil)
+                containerInstance.callCompletionHandlers(status, error: nil)
             }
             
             return containerInstance
@@ -469,7 +469,7 @@ public class EVCloudKitDao {
             EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
             
             // Call all assigned completion handlers
-            EVCloudKitDao.callCompletionHandlers(self.initializationCompleteHandlers, status: status, error: error, invokeAll: true)
+            self.callCompletionHandlers(status, error: error, invokeAll: true)
         })
 
         EVLog("Container identifier = \(container.containerIdentifier)")
@@ -482,14 +482,14 @@ public class EVCloudKitDao {
     - parameter status: Current iCloud account status
     - parameter error: Optional error info if the iCloud container's accountStatusWithCompletionHandler method returns an error
     */
-    private class func callCompletionHandlers(initializationCompleteHandlers: HandlerCollection?, status: CKAccountStatus, error: NSError?, invokeAll: Bool = false) {
+    private func callCompletionHandlers(status: CKAccountStatus, error: NSError?, invokeAll: Bool = false) {
         if let handlers = initializationCompleteHandlers {
             // Verify that all handlers should be called or that at least one of the handlers hasn't been already called
             if invokeAll || handlers.hasNewHandlers {
                 // Set the collection's hasNewHandlers flag to false since we're about to call the handlers
                 handlers.hasNewHandlers = false
                 // Delay so our instance is returned and processed as needed before any newly-added completion handlers are called
-                delay(0.1) {
+                EVCloudKitDao.delay(0.1) {
                     for wrapper in handlers.collection {
                         if invokeAll || !wrapper.hasBeenInvoked {
                             wrapper.invoke(status, error: error)
