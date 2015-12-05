@@ -21,7 +21,7 @@ EVCloudKitDao
 [![Website](https://img.shields.io/badge/website-evict.nl-blue.svg?style=flat)](http://evict.nl)
 [![eMail](https://img.shields.io/badge/email-edwin@evict.nl-blue.svg?style=flat)](mailto:edwin@evict.nl?SUBJECT=About EVCloudKitDao)
 
-
+Discuss EVCloudKitDao : [![Join the chat at https://gitter.im/evermeer/EVCloudKitDao](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/evermeer/EVCloudKitDao?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## What is this
 With Apple CloudKit, you can focus on your client-side app development and let iCloud eliminate the need to write server-side application logic. CloudKit provides you with Authentication, private and public database, structured and asset storage services - all for free with very high [limits](https://developer.apple.com/icloud/documentation/cloudkit-storage/). For more information see [Apple CloudKit documentation](https://developer.apple.com/icloud/index.html)

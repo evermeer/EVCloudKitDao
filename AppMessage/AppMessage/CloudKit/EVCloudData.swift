@@ -9,113 +9,6 @@ import Foundation
 import CloudKit
 import EVReflection
 
-/**
- The enum for specifying the caching strategy for the data
- */
-public enum CachingStrategy {
-    /**
-     Do not cache this
-     */
-    case None,
-    /**
-    Always write changes to the cache immediately
-    */
-    Direct,
-    /**
-    Only write to the cache once every .. minutes when there are changes (initial query result will always be written directly)
-    */
-    Every(minute:Int)
-}
-
-/**
- The enum for getting the notification key to subscribe to when observing changes
- */
-public enum DataChangeNotificationType {
-    /**
-     Data retrieval is progressing/finished
-     */
-    case Completed,
-    /**
-    New item has been inserted
-    */
-    Inserted,
-    /**
-    Existing item has been updated
-    */
-    Updated,
-    /**
-    Notification of any data modification (completion, inserted, updated or deleted)
-    */
-    DataChanged,
-    /**
-    Existing item has been deleted
-    */
-    Deleted,
-    /**
-    An error occurred while attempting a data operation
-    */
-    Error
-}
-
-/**
-The enum for determining the current state of data retrieval in the Completion handler and/or NSNotificationManager push notification
-*/
-public enum CompletionStatus: Int {
-    /**
-    The results were returned from the local cache
-    */
-    case FromCache,
-    /**
-    The requested data wasn't found in the local cache. It will be requested from iCloud
-    */
-    Retrieving,
-    /**
-    Some data was received from iCloud, but more results are available if wanted (return true to request more results)
-    */
-    PartialResult,
-    /**
-    All available data has been successfully retrieved from iCloud
-    */
-    FinalResult
-}
-
-/**
- Strange enough by default Swift does not implement the Equality operator for enums. So we just made one ourselves.
- 
- - parameter leftPart: The CachingStrategy value at the left of the equality operator.
- - parameter rightPart: The CachingStrategy value at the right of the equality operator.
- */
-func ==(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
-    switch(leftPart) {
-    case .None:
-        switch(rightPart) {
-        case .None: return true
-        default: return false
-        }
-    case .Direct:
-        switch(rightPart) {
-        case .Direct: return true
-        default: return false
-        }
-    case .Every(let minutea):
-        switch(rightPart) {
-        case .Every(let minuteb): return minutea == minuteb
-        default: return false
-        }
-    }
-}
-
-
-/**
- Strange enough by default Swift does not implement the not Equality operator for enums. So we just made one ourselves.
- 
- - parameter leftPart: The CachingStrategy value at the left of the equality operator.
- - parameter rightPart: The CachingStrategy value at the right of the equality operator.
- */
-func !=(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
-    return !(leftPart == rightPart)
-}
-
 
 /**
  Wrapper class for being able to use a class instance Dictionary.
@@ -240,7 +133,7 @@ public class EVCloudData: NSObject {
     // ------------------------------------------------------------------------
     
     /**
-    The EVCloudKitDao instance that will be used
+    The EVCloudKitDao instance that will be used. Defaults to the publicDB
     */
     public var dao = EVCloudKitDao.publicDB;
     /**
@@ -325,7 +218,7 @@ public class EVCloudData: NSObject {
      - parameter filterId: The filter id for the data that was received from CloudKit
      */
     private func dataIsUpdated(filterId: String) {
-        cachingChangesCount[filterId] = cachingChangesCount[filterId]! + 1
+        cachingChangesCount[filterId] = (cachingChangesCount[filterId] ?? 0) + 1
         backupDataWithStrategyTest(filterId)
     }
     
@@ -500,7 +393,8 @@ public class EVCloudData: NSObject {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            NSNotificationCenter.defaultCenter().postNotificationName(EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Completed), object: self, userInfo: ["filterId": filterId, "results":results, "status": status.rawValue])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Completed)
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "results":results, "status": status.rawValue])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -516,7 +410,8 @@ public class EVCloudData: NSObject {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            NSNotificationCenter.defaultCenter().postNotificationName(EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Inserted), object: self, userInfo: ["filterId": filterId, "item":item])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Inserted)
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "item":item])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -533,7 +428,8 @@ public class EVCloudData: NSObject {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            NSNotificationCenter.defaultCenter().postNotificationName(EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Updated), object: self, userInfo: ["filterId": filterId, "item":item, "dataIndex":dataIndex])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Updated)
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "item":item, "dataIndex":dataIndex])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -548,7 +444,8 @@ public class EVCloudData: NSObject {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            NSNotificationCenter.defaultCenter().postNotificationName(EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.DataChanged), object: self, userInfo: ["filterId": filterId])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.DataChanged)
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId])
         }
     }
     
@@ -563,7 +460,8 @@ public class EVCloudData: NSObject {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            NSNotificationCenter.defaultCenter().postNotificationName(EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Deleted), object: self, userInfo: ["filterId": filterId, "recordId":recordId, "dataIndex":dataIndex])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Deleted)
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "recordId":recordId, "dataIndex":dataIndex])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -579,7 +477,8 @@ public class EVCloudData: NSObject {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            NSNotificationCenter.defaultCenter().postNotificationName(EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Error), object: self, userInfo: ["filterId": filterId, "error":error])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Error)
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "error":error])
             // No universal "data changed" notification on errors
         }
     }
@@ -650,18 +549,18 @@ public class EVCloudData: NSObject {
      */
     private func deleteObject(recordId: String) {
         for (filter, _) in self.data {
-            let itemID: Int? = data[filter]!.EVindexOf {item in return item.recordID.recordName == recordId}
-            if itemID != nil {
-                data[filter]!.removeAtIndex(itemID!)
+            if let itemID: Int = data[filter]?.EVindexOf({item in return item.recordID.recordName == recordId}) {
+                data[filter]!.removeAtIndex(itemID)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
+                    (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID)
                     (self.dataChangedHandlers[filter]!)()
-                    self.postDataDeletedNotification(filter, recordId: recordId, dataIndex: itemID!)
+                    self.postDataDeletedNotification(filter, recordId: recordId, dataIndex: itemID)
                 }
                 dataIsUpdated(filter)
             }
         }
     }
+
     
     // ------------------------------------------------------------------------
     // MARK: - Data methods - CRUD

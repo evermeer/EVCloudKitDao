@@ -8,34 +8,6 @@
 import CloudKit
 import EVReflection
 
-/**
-Wrapper class for being able to use a class instance Dictionary
-*/
-private class DaoContainerWrapper {
-    /**
-    Wrapping the public containers
-    */
-    var publicContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
-    /**
-    Wrapping the private containers
-    */
-    var privateContainers : Dictionary<String,EVCloudKitDao> = Dictionary<String,EVCloudKitDao>()
-}
-
-/**
-The functional statuses for a CloudKit error
-*/
-public enum HandleCloudKitErrorAs {
-    case Success,
-    Retry(afterSeconds:Double),
-    RecoverableError,
-    Fail
-}
-
-public enum InstanceType {
-    case IsPrivate,
-    IsPublic
-}
 
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
@@ -123,8 +95,11 @@ public class EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.privateContainers[containterIdentifier] {
             return containerInstance
         }
-        containerWrapperInstance.privateContainers[containterIdentifier] =  EVCloudKitDao(containerIdentifier: containterIdentifier)
-        return containerWrapperInstance.privateContainers[containterIdentifier]!
+        let dao = EVCloudKitDao(containerIdentifier: containterIdentifier)
+        dao.isType = .IsPrivate
+        dao.database = dao.container.privateCloudDatabase
+        containerWrapperInstance.privateContainers[containterIdentifier] = dao
+        return dao
     }
 
 
@@ -656,7 +631,7 @@ public class EVCloudKitDao {
         let createSubscription = { () -> () in
             let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
-            
+// tvOS does not have visible remote notifications. This property is not available.
 #if os(tvOS)
 #else
             subscription.notificationInfo!.shouldSendContentAvailable = true
