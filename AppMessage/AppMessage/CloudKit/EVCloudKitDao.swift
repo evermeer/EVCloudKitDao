@@ -336,9 +336,7 @@ public class EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.publicContainers[containerIdentifier] {
             // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
             if let status = containerInstance.accountStatus {
-                if let handlers = publicDBInitializationCompleteHandlersForContainer[containerIdentifier] {
-                    callCompletionHandlers(handlers, status: status, error: nil)
-                }
+                callCompletionHandlers(publicDBInitializationCompleteHandlersForContainer[containerIdentifier], status: status, error: nil)
             }
             
             return containerInstance
@@ -359,9 +357,7 @@ public class EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.privateContainers[containerIdentifier] {
             // Check for our instance already being initialized and invoke callCompletionHandlers if so. Any completion handlers added since our instance was initialized will be called.
             if let status = containerInstance.accountStatus {
-                if let handlers = privateDBInitializationCompleteHandlersForContainer[containerIdentifier] {
-                    callCompletionHandlers(handlers, status: status, error: nil)
-                }
+                callCompletionHandlers(privateDBInitializationCompleteHandlersForContainer[containerIdentifier], status: status, error: nil)
             }
             
             return containerInstance
@@ -418,13 +414,20 @@ public class EVCloudKitDao {
     public var isType: InstanceType = .IsPublic
     
     /**
+    Reference to the handlers that should be called by this instance from the initializeDatabase method
+    :return: The completion handlers assigned to this instance
+    */
+    private var initializationCompleteHandlers: HandlerCollection?
+    
+    /**
     On init set a quick refrence to the container and database
      
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
     private init(type: InstanceType, initializationCompleteHandlers: HandlerCollection?) {
         isType = type
-        self.initializeDatabase(nil, initializationCompleteHandlers: initializationCompleteHandlers)
+        self.initializationCompleteHandlers = initializationCompleteHandlers
+        self.initializeDatabase(nil)
     }
 
     /**
@@ -435,7 +438,8 @@ public class EVCloudKitDao {
     */
     private init(type: InstanceType, containerIdentifier: String, initializationCompleteHandlers: HandlerCollection?) {
         isType = type
-        self.initializeDatabase(containerIdentifier, initializationCompleteHandlers: initializationCompleteHandlers)
+        self.initializationCompleteHandlers = initializationCompleteHandlers
+        self.initializeDatabase(containerIdentifier)
     }
 
     /**
@@ -444,7 +448,7 @@ public class EVCloudKitDao {
     - parameter containerIdentifier: Passing on the name of the container
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private func initializeDatabase(containerIdentifier: String? = nil, initializationCompleteHandlers: HandlerCollection?) {
+    private func initializeDatabase(containerIdentifier: String? = nil) {
         if let identifier = containerIdentifier {
             container = CKContainer(identifier: identifier)
         } else {
@@ -465,7 +469,7 @@ public class EVCloudKitDao {
             EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
             
             // Call all assigned completion handlers
-            EVCloudKitDao.callCompletionHandlers(initializationCompleteHandlers, status: status, error: error, invokeAll: true)
+            EVCloudKitDao.callCompletionHandlers(self.initializationCompleteHandlers, status: status, error: error, invokeAll: true)
         })
 
         EVLog("Container identifier = \(container.containerIdentifier)")
@@ -1149,20 +1153,20 @@ public class EVCloudKitDao {
                 
                 publicDB.activeUserId = nil
                 publicDB.activeUser = nil
-                publicDB.initializeDatabase(nil, initializationCompleteHandlers: publicDBInitializationCompleteHandlers)
+                publicDB.initializeDatabase(nil)
                 for (identifier, instance) in containerWrapperInstance.publicContainers {
                     instance.activeUserId = nil
                     instance.activeUser = nil
-                    instance.initializeDatabase(identifier, initializationCompleteHandlers: publicDBInitializationCompleteHandlersForContainer[identifier])
+                    instance.initializeDatabase(identifier)
                 }
                 
                 privateDB.activeUserId = nil
                 privateDB.activeUser = nil
-                privateDB.initializeDatabase(nil, initializationCompleteHandlers: privateDBInitializationCompleteHandlers)
+                privateDB.initializeDatabase(nil)
                 for (identifier, instance) in containerWrapperInstance.privateContainers {
                     instance.activeUserId = nil
                     instance.activeUser = nil
-                    instance.initializeDatabase(identifier, initializationCompleteHandlers: privateDBInitializationCompleteHandlersForContainer[identifier])
+                    instance.initializeDatabase(identifier)
                 }
                 
                 // Post notification that account status has changed
