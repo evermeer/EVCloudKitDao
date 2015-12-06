@@ -899,6 +899,11 @@ public class EVCloudData: NSObject {
             
             dao.query(type, predicate: predicate, completionHandler: { results, isFinished in
                 if self.data[filterId] != nil && self.data[filterId]! == results && self.data[filterId]!.count > 0 {
+                    // Post notification and call completion handler if available
+                    self.postDataCompletedNotification(filterId, results: results, status: .FinalResult)
+                    if let handler = completionHandler {
+                        handler(results: results, status: .FinalResult)
+                    }
                     return false // Result was already returned from cache
                 }
                 
@@ -906,10 +911,10 @@ public class EVCloudData: NSObject {
                 self.data[filterId] = results
                 let sema = dispatch_semaphore_create(0)
                 NSOperationQueue.mainQueue().addOperationWithBlock {
-                    let status = isFinished ? CompletionStatus.FinalResult : CompletionStatus.PartialResult
+                    let status: CompletionStatus = isFinished ? .FinalResult : .PartialResult
                     self.postDataCompletedNotification(filterId, results: results, status: status)
-                    if completionHandler != nil {
-                        continueReading = completionHandler!(results: results, status: status)
+                    if let handler = completionHandler {
+                        continueReading = handler(results: results, status: .FinalResult)
                     }
                     dispatch_semaphore_signal(sema);
                     if dataChangedHandler != nil {
