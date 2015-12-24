@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Only call this line once. It will make sure the recordType are there in iCloud.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
-//        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News()])
+        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News(), Invoice()])
 
         // During development you will probably play around with subscriptins. 
         // To be sure you do not have any old subscriptions left over,  just clear them all on startup.
