@@ -26,6 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // To be sure you do not have any old subscriptions left over,  just clear them all on startup.
 //        EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in EVLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
 
+        EVCloudKitDao.publicDB.unsubscribeAll( { count in
+            EVLog("\(count) subscriptions removed")
+        })
+        
         return true
     }
 

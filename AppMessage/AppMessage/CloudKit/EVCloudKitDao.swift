@@ -5,8 +5,10 @@
 //  Copyright (c) 2014 EVICT BV. All rights reserved.
 //
 
+import Foundation
 import CloudKit
 import EVReflection
+
 
 
 /**
@@ -841,6 +843,7 @@ public class EVCloudKitDao {
             }
         } else {
             executeIfNonQuery()
+            EVLog("WARNING: The retrieved notification is not a CloudKit query notification.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification)")
         }
         fetchChangeNotifications(recordID, inserted: inserted , updated: updated, deleted: deleted, completed:completed)
     }
@@ -989,18 +992,32 @@ public class EVCloudKitDao {
             record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
         }
         let (fromDict, _) = EVReflection.toDictionary(theObject)
-        for (key, value) in fromDict {
-            if !(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"]).contains(key as! String) {
-                if let _ = value as? NSNull {
-//                    record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
-                } else if key as! String != "recordID" {
-                    record.setValue(value, forKey: key as! String)
-                }
-            }
-        }
+        dictToCKRecord(record, dict: fromDict)
+        
         return record
     }
 
+    /**
+     Put a dictionary recursively in a CKRecord
+     
+     - parameter record: the record
+     - parameter dict:   the dictionary
+     - parameter root:   used for expanding the property name
+     */
+    private func dictToCKRecord(record: CKRecord, dict: NSDictionary, root:String = "") {
+        for (key, value) in dict {
+            if !(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"]).contains(key as! String) {
+                if value is NSNull {
+                    // record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
+                } else if let dict = value as? NSDictionary {
+                    dictToCKRecord(record, dict: dict, root: "\(root)\(key as! String)__")
+                } else if key as! String != "recordID" {
+                    record.setValue(value, forKey: "\(root)\(key as! String)")
+                }
+            }
+        }
+    }
+    
     /**
     Convert CKRecord to dictionary
 
@@ -1011,7 +1028,23 @@ public class EVCloudKitDao {
         let dictionary = NSMutableDictionary()
         for key in record.allKeys() {
             if let value = record.objectForKey(key) {
-                dictionary.setObject(value, forKey: key)
+                var path:[String] = key.componentsSeparatedByString("__")
+                if path.count == 1 {
+                    dictionary.setObject(value, forKey: key)
+                } else {
+                    var tempDict = dictionary
+                    var tempKey = key
+                    let lastKey = path[path.count - 1]
+                    path.removeLast()
+                    for item in path {
+                        tempKey = item
+                        if tempDict[tempKey] == nil {
+                            tempDict.setObject(NSMutableDictionary(), forKey: tempKey)
+                        }
+                        tempDict = (tempDict[tempKey] as? NSMutableDictionary) ?? NSMutableDictionary()
+                    }
+                    tempDict.setObject(value, forKey: lastKey)
+               }
             }
         }
         return dictionary
