@@ -1313,15 +1313,10 @@ public class EVCloudKitDao {
     private func dictToCKRecord(record: CKRecord, dict: NSDictionary, root:String = "") {
         for (key, value) in dict {
             if !(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"]).contains(key as! String) {
-<<<<<<< HEAD
-                if let _ = value as? NSNull {
-//                    record.setValue(nil, forKey: key) // Swift can not set a value on a nullable type.
-=======
                 if value is NSNull {
                     // record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
                 } else if let dict = value as? NSDictionary {
                     dictToCKRecord(record, dict: dict, root: "\(root)\(key as! String)__")
->>>>>>> evermeer/master
                 } else if key as! String != "recordID" {
                     record.setValue(value, forKey: "\(root)\(key as! String)")
                 }
