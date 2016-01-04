@@ -21,6 +21,8 @@ class TestsViewController: UIViewController {
     @IBAction func runTest(sender: AnyObject) {
         getUserInfoTest() // will set the self.userId
 
+        ingnoreFieldTest()
+        
         subObjectTest()
         
         removeAllSubscriptionsTest()
@@ -299,4 +301,22 @@ class TestsViewController: UIViewController {
         })
     }
     
+    func ingnoreFieldTest() {
+        let myObj = testObject()
+        myObj.saveString = "save this"
+        myObj.ignoreString = "Forget about this"
+        
+        let record = EVCloudKitDao().toCKRecord(myObj)
+        EVLog("record from object: \(record)")
+    }
 }
+
+public class testObject: EVCloudKitDataObject {
+    private var ignoreString: String = ""
+    var saveString: String = ""
+
+    override public func propertyMapping() -> [(String?, String?)] {
+        return [("ignoreString", nil)]
+    }
+}
+
