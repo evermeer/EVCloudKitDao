@@ -739,6 +739,28 @@ public class EVCloudKitDao {
     }
 
     /**
+     Save an array of items.
+     
+     - parameter items:             the items to save
+     - parameter completionHandler: The function that will be called with a CKRecord representation of the saved object
+     - parameter errorHandler:      The function that will be called when there was an error
+     :return: No return value
+     */
+    public func saveItems(items: [EVCloudKitDataObject], completionHandler: (records: [CKRecord]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+        let recordsToSave: [CKRecord] = items.map({EVCloudKitDao.publicDB.toCKRecord($0)})
+        let operation = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
+        operation.atomic = false
+        operation.database = database
+        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: NSError?) -> Void in
+            self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords), errorHandler: errorHandler, completionHandler: {
+                completionHandler(records: savedRecords!);
+            })
+        }
+        operation.start()
+    }
+    
+    
+    /**
     Delete an Item for a recordId
 
     - parameter recordId: The CloudKit record id of the record that we want to delete
@@ -754,6 +776,28 @@ public class EVCloudKitDao {
         })
     }
 
+    
+    /**
+     Delete an array of items.
+     
+     - parameter items:             the items to save
+     - parameter completionHandler: The function that will be called with a CKRecord representation of the saved object
+     - parameter errorHandler:      The function that will be called when there was an error
+     :return: No return value
+     */
+    public func deleteItems(items: [EVCloudKitDataObject], completionHandler: (records: [CKRecord]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+        let recordsToDelete: [CKRecordID] = items.map({$0.recordID})
+        let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordsToDelete)
+        operation.atomic = false
+        operation.database = database
+        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: NSError?) -> Void in
+            self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords), errorHandler: errorHandler, completionHandler: {
+                completionHandler(records: savedRecords!);
+            })
+        }
+        operation.start()
+    }
+    
     // ------------------------------------------------------------------------
     // MARK: - Data methods - Query
     // ------------------------------------------------------------------------
@@ -1110,8 +1154,7 @@ public class EVCloudKitDao {
         var converedUserInfo:[String:NSObject] = [String:NSObject]()
         for (key, value) in userInfo {
             if let setValue = value as? NSObject {
-                converedUserInfo[key as! String] = setValue
-                
+                converedUserInfo[key as! String] = setValue                
             }
         }
 

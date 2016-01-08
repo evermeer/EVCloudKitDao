@@ -74,7 +74,7 @@ Documentation is now available at [cocoadocs.org](http://cocoadocs.org/docsets/E
 - Handling incoming notifications
 - (Re)setting the badge
 
-## Main features of EVCloudKitData:
+## Main features of EVCloudData:
 - Use just one predicate for a query, subscription and processing incoming notifications.
 - it's only one method call with a couple of callback events (optional which to use)
 - it will store the fetched data collection in memory.
@@ -112,7 +112,7 @@ Besides these the dependency to EVCloudKitDao has been skipped by just using the
 - [EVCloudKitDao](https://github.com/evermeer/EVCloudKitDao) - Simplified access to Apple's CloudKit
 
 
-## Using EVCloudKitDao or EVCloudKitData in your own App 
+## Using EVCloudKitDao or EVCloudData in your own App 
 
 'EVCloudKitDao' is now available through the dependency manager [CocoaPods](http://cocoapods.org). 
 You do have to use cocoapods version 0.36. At this moment this can be installed by executing:
@@ -143,7 +143,7 @@ Version 0.36 of cocoapods will make a dynamic framework of all the pods that you
 import EVCloudKitDao
 ```
 
-If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 5 classes EVCloudKitDao, EVCloudKitData, EVReflection, EVCloudKitDataObject and EVglobal to your app.
+If you want support for older versions than iOS 8.0, then you can also just copy the Cloudkit folder containing the 5 classes EVCloudKitDao, EVCloudData, EVReflection, EVCloudKitDataObject and EVglobal to your app.
 
 When you have added EVCloudKitDao to your project, then have a look at the AppMessage code for how to implement push notifications and how to connect to CloudKit data (see AppDelegate.swift and LeftMenuViewController.swift) For contacts see the RightMenuViewController.swift and for other usage see the TestsViewController.swift
 
@@ -178,7 +178,7 @@ pod install
 
 and you are ready to go!
 
-## How to use the EVCloudKitData
+## How to use the EVCloudData
 Below is all the code you need to setup a news feed including push notification handling for any changes.
 
 
