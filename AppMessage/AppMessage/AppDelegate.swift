@@ -15,33 +15,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-
-        // The 2 commands below are only here to assist during development.
         
         // Only call this line once. It will make sure the recordType are there in iCloud.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
-        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News(), Invoice()])
+        // If you use this in your own project, then make sure that the fields are not nil otherwise the field will not be created.
+//        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News(), Invoice()])
 
-        // During development you will probably play around with subscriptins. 
+        
+        // During development you will probably play around with subscriptins.
         // To be sure you do not have any old subscriptions left over,  just clear them all on startup.
-//        EVCloudKitDao.publicDB.unsubscribeAll({subscriptioncount in EVLog("subscriptions removed = \(subscriptioncount)")}, errorHandler: {error in })
-
-        EVCloudKitDao.publicDB.unsubscribeAll( { count in
-            EVLog("\(count) subscriptions removed")
-        })
+        if EVCloudKitDao.publicDB.accountStatus == .Available {
+            EVCloudKitDao.publicDB.unsubscribeAll( { count in
+                EVLog("\(count) subscriptions removed")
+            })            
+        }
+        
+        // Here we do not call the EVCloudData.publicDB.fetchChangeNotifications. Instead we do that in the LeftMenuViewController after we are sure that all general .connect are setup
         
         return true
     }
 
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    // The app is alredy loaded and the .connect calls are setup. So we can process any notifications that have arived and not processed. 
+    func applicationDidBecomeActive(application: UIApplication) {
+        EVCloudData.publicDB.fetchChangeNotifications({
+            EVLog("All change notifications are processed")
+            EVCloudKitDao.publicDB.setBadgeCounter(0)
+        })
+    }
+    
+
+// This will only be called when your app is active. Instead we should use the function below
+//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+//        EVLog("Push received")
+//        EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
+//            EVLog("Not a CloudKit Query notification.")
+//        }, completed: {
+//            EVLog("All notifications are processed")
+//        })
+//    }
+    
+
+    // Process al notifications
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         EVLog("Push received")
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
             EVLog("Not a CloudKit Query notification.")
-        }, completed: {
-            EVLog("All notifications are processed")
+            }, completed: {
+                EVLog("All notifications are processed")
+                completionHandler(.NewData)
         })
     }
-
+    
+    
     func applicationDidEnterBackground(application: UIApplication) {
         // Just to make sure that all updates are written do the cache.
         EVCloudData.publicDB.backupAllData()
