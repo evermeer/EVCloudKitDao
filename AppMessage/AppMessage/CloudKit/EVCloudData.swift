@@ -681,7 +681,7 @@ public class EVCloudData: NSObject {
             }
             
             // If we have a cache for this filter, then first return that.
-            if restoreDataForFilter(filterId) {
+            if cachingStrategy != CachingStrategy.None  && restoreDataForFilter(filterId) {
                 if let filterData = self.data[filterId] as? [T] {
                     postDataCompletedNotification(filterId, results: filterData, status: .FromCache)
                     if let handler = completionHandler {
