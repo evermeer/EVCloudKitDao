@@ -55,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     #else
     // Process al notifications even if we are in the background. tvOS will not have this event
+    // Make sure you enable background notifications in the app settings. (entitlements: pushnotifications and  backgrounds modes - notifications plus background fetch)
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         EVLog("Push received")
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
