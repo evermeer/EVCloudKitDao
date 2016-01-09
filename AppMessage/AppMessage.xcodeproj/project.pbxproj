@@ -28,6 +28,8 @@
 		7F4A37061BDD92D600A0F73F /* EVCloudKitDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */; };
 		7F4A37071BDD92D600A0F73F /* EVCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD41610199666F3003C2CE9 /* EVCloudData.swift */; };
 		7F4A37081BDD92D600A0F73F /* EVCloudKitDataObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */; };
+		7F4CA2C11C4121C500AEE29D /* EVCloudKitEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F3C164F1C1341ED0057B5E1 /* EVCloudKitEnums.swift */; };
+		7F4CA2C21C4121C600AEE29D /* EVCloudKitEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F3C164F1C1341ED0057B5E1 /* EVCloudKitEnums.swift */; };
 		7F5DFB4E1A86B95600628235 /* UzysAssetsPickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB4D1A86B95600628235 /* UzysAssetsPickerController.xib */; };
 		7F5DFB501A86BC8200628235 /* UzysAssetPickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB4F1A86BC8200628235 /* UzysAssetPickerController.bundle */; };
 		7F5DFB521A86C04100628235 /* JSQMessagesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F5DFB511A86C04100628235 /* JSQMessagesViewController.xib */; };
@@ -631,6 +633,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F4CA2C21C4121C600AEE29D /* EVCloudKitEnums.swift in Sources */,
 				7F2976581BB940730074C85A /* EVCloudData.swift in Sources */,
 				7F2976511BB93D6A0074C85A /* OSXTest.swift in Sources */,
 				7F2976561BB940730074C85A /* EVglobal.swift in Sources */,
@@ -672,6 +675,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F4CA2C11C4121C500AEE29D /* EVCloudKitEnums.swift in Sources */,
 				7F4A37051BDD92D600A0F73F /* EVglobal.swift in Sources */,
 				7F4A37061BDD92D600A0F73F /* EVCloudKitDao.swift in Sources */,
 				7F4A37071BDD92D600A0F73F /* EVCloudData.swift in Sources */,

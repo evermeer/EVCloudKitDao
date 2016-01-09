@@ -43,19 +43,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
     
-
-// This will only be called when your app is active. Instead we should use the function below
-//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-//        EVLog("Push received")
-//        EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
-//            EVLog("Not a CloudKit Query notification.")
-//        }, completed: {
-//            EVLog("All notifications are processed")
-//        })
-//    }
-    
-
-    // Process al notifications
+    #if os(tvOS)
+    //This will only be called when your app is active. So this is what you should use on tvOS
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        EVLog("Push received")
+        EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
+            EVLog("Not a CloudKit Query notification.")
+        }, completed: {
+            EVLog("All notifications are processed")
+        })
+    }
+    #else
+    // Process al notifications even if we are in the background. tvOS will not have this event
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         EVLog("Push received")
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
@@ -65,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(.NewData)
         })
     }
-    
+    #endif
     
     func applicationDidEnterBackground(application: UIApplication) {
         // Just to make sure that all updates are written do the cache.
