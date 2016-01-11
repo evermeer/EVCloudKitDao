@@ -116,7 +116,16 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func startChat(user: CKDiscoveredUserInfo) {
-        startChat(user.userRecordID!.recordName, firstName: user.firstName ?? "", lastName: user.lastName ?? "")
+        var firstName: String = ""
+        var lastName: String = ""
+        if #available(iOS 9.0, *) {
+            firstName = user.displayContact?.givenName ?? ""
+            lastName = user.displayContact?.familyName ?? ""
+        } else {
+            firstName = user.firstName ?? ""
+            lastName = user.lastName ?? ""
+        }
+        startChat(user.userRecordID!.recordName, firstName: firstName, lastName: lastName)
     }
 
     func startChat(recordId: String, firstName: String, lastName: String) {

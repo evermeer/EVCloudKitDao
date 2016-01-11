@@ -49,7 +49,16 @@ class TestsViewController: UIViewController {
         let sema = dispatch_semaphore_create(0)
         dao.discoverUserInfo({ (user) -> Void in
             self.userId = user.userRecordID?.recordName ?? ""
-            EVLog("discoverUserInfo : \(self.userId) = \(user.firstName) \(user.lastName)");
+            var firstName: String = ""
+            var lastName: String = ""
+            if #available(iOS 9.0, *) {
+                firstName = user.displayContact?.givenName ?? ""
+                lastName = user.displayContact?.familyName ?? ""
+            } else {
+                firstName = user.firstName ?? ""
+                lastName = user.lastName ?? ""
+            }
+            EVLog("discoverUserInfo : \(self.userId) = \(firstName) \(lastName)");
             dispatch_semaphore_signal(sema);
         }) { (error) -> Void in
             EVLog("<--- ERROR in getUserInfo");
@@ -81,7 +90,16 @@ class TestsViewController: UIViewController {
             EVLog("AllContactUserInfo count = \(users.count)");
             for user in users {
                 userIdTo = user.userRecordID!.recordName
-                EVLog("Firstname: \(user.firstName), Lastname: \(user.lastName), RecordId: \(userIdTo)")
+                var firstName: String = ""
+                var lastName: String = ""
+                if #available(iOS 9.0, *) {
+                    firstName = user.displayContact?.givenName ?? ""
+                    lastName = user.displayContact?.familyName ?? ""
+                } else {
+                    firstName = user.firstName ?? ""
+                    lastName = user.lastName ?? ""
+                }
+                EVLog("Firstname: \(firstName), Lastname: \(lastName), RecordId: \(userIdTo)")
             }
             dispatch_semaphore_signal(sema);
             }, errorHandler: { error in

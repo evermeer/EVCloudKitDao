@@ -85,9 +85,17 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
             cell.selectedBackgroundView = UIView()
             cell.textLabel?.textAlignment = .Right
         }
-        let firstname:String = contacts[indexPath.row].firstName ?? ""
-        let lastname:String = contacts[indexPath.row].lastName ?? ""
-        cell.textLabel?.text = "\(firstname) \(lastname)" ;
+        var firstName: String = ""
+        var lastName: String = ""
+        if #available(iOS 9.0, *) {
+            firstName = contacts[indexPath.row].displayContact?.givenName ?? ""
+            lastName = contacts[indexPath.row].displayContact?.familyName ?? ""
+        } else {
+            firstName = contacts[indexPath.row].firstName ?? ""
+            lastName = contacts[indexPath.row].lastName ?? ""
+        }
+        
+        cell.textLabel?.text = "\(firstName) \(lastName)" ;
         return cell;
     }
 

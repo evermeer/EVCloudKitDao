@@ -98,8 +98,15 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
         // Sender settings for the component
         self.senderId = EVCloudData.publicDB.dao.activeUser?.userRecordID!.recordName
-        senderFirstName = "\(EVCloudData.publicDB.dao.activeUser!.firstName)"
-        senderLastName = "\(EVCloudData.publicDB.dao.activeUser!.lastName)"
+        
+        if #available(iOS 9.0, *) {
+            senderFirstName = EVCloudData.publicDB.dao.activeUser!.displayContact?.givenName ?? ""
+            senderLastName = EVCloudData.publicDB.dao.activeUser!.displayContact?.familyName ?? ""
+        } else {
+            senderFirstName = EVCloudData.publicDB.dao.activeUser!.firstName ?? ""
+            senderLastName = EVCloudData.publicDB.dao.activeUser!.lastName ?? ""
+       }
+ 
         self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
 
         // The data connection to the conversation
@@ -520,7 +527,16 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         let message = getMessageForId(indexPath.row)
         var initials: String = ""
         if message.senderId == self.senderId {
-            initials = "\(Array(arrayLiteral: EVCloudData.publicDB.dao.activeUser.firstName)[0]) \(Array(arrayLiteral: EVCloudData.publicDB.dao.activeUser.lastName)[0])"
+            var firstName: String = ""
+            var lastName: String = ""
+            if #available(iOS 9.0, *) {
+                firstName = EVCloudData.publicDB.dao.activeUser!.displayContact?.givenName ?? ""
+                lastName = EVCloudData.publicDB.dao.activeUser!.displayContact?.familyName ?? ""
+            } else {
+                firstName = EVCloudData.publicDB.dao.activeUser!.firstName ?? ""
+                lastName = EVCloudData.publicDB.dao.activeUser!.lastName ?? ""
+            }
+            initials = "\(Array(arrayLiteral: firstName)[0]) \(Array(arrayLiteral: lastName)[0])"
         } else {
             initials = "\(Array(arrayLiteral: chatWithFirstName)[0]) \(Array(arrayLiteral: chatWithLastName)[0])"
         }
