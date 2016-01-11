@@ -306,7 +306,7 @@ class TestsViewController: UIViewController {
         myObj.saveString = "save this"
         myObj.ignoreString = "Forget about this"
         
-        let record = EVCloudKitDao().toCKRecord(myObj)
+        let record = self.dao.toCKRecord(myObj)
         EVLog("record from object: \(record)")
     }
 }

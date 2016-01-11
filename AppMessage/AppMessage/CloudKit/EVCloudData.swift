@@ -824,27 +824,29 @@ public class EVCloudData: NSObject {
             }
             
             // If we have a cache for this filter, then first return that.
-            let cacheSema = dispatch_semaphore_create(0)
-            restoreDataForFilter(filterId) { result in
-                if result {
-                    if let filterData = self.data[filterId] as? [T] {
-                        self.postDataCompletedNotification(filterId, results: filterData, status: .FromCache)
-                        if let handler = completionHandler {
-                            handler(results: filterData, status: .FromCache)
+            if cachingStrategy != CachingStrategy.None {
+                let cacheSema = dispatch_semaphore_create(0)
+                restoreDataForFilter(filterId) { result in
+                    if result {
+                        if let filterData = self.data[filterId] as? [T] {
+                            self.postDataCompletedNotification(filterId, results: filterData, status: .FromCache)
+                            if let handler = completionHandler {
+                                handler(results: filterData, status: .FromCache)
+                            }
                         }
+                        if let handler = dataChangedHandler {
+                            handler()
+                        }
+                    } else {
+                        if let handler = completionHandler {
+                            handler(results: [], status: .Retrieving)
+                        }
+                        self.postDataCompletedNotification(filterId, results: [], status: .Retrieving)
                     }
-                    if let handler = dataChangedHandler {
-                        handler()
-                    }
-                } else {
-                    if let handler = completionHandler {
-                        handler(results: [], status: .Retrieving)
-                    }
-                    self.postDataCompletedNotification(filterId, results: [], status: .Retrieving)
+                    dispatch_semaphore_signal(cacheSema)
                 }
-                dispatch_semaphore_signal(cacheSema)
+                dispatch_semaphore_wait(cacheSema, DISPATCH_TIME_FOREVER)
             }
-            dispatch_semaphore_wait(cacheSema, DISPATCH_TIME_FOREVER)
             
             // setting the connection properties
             if data[filterId] == nil {

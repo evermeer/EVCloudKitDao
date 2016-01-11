@@ -142,7 +142,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in
                 //notificationInfo.alertBody = "News update"
-                notificationInfo.shouldSendContentAvailable = true
+                notificationInfo.shouldSendContentAvailable = true // is already the default
                 notificationInfo.alertLocalizationKey = "News: %1$@"
                 notificationInfo.alertLocalizationArgs = ["Subject"]
                 notificationInfo.shouldBadge = true
