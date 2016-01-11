@@ -76,7 +76,11 @@ class RootViewController: UIViewController {
         }
         
         EVCloudKitDao.publicDB.discoverUserInfo({ (user) -> Void in
-                EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.firstName) \(user.lastName)")
+                if #available(iOS 9.0, *) {
+                    EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.displayContact?.givenName ?? "") \(user.displayContact?.familyName ?? "")")
+                } else {
+                    EVLog("discoverUserInfo : \(user.userRecordID?.recordName) = \(user.firstName) \(user.lastName)")
+                }
 
                 Async.main {
                     let storyboard = UIStoryboard(name: "Storyboard", bundle: nil);
