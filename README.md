@@ -182,7 +182,7 @@ and you are ready to go!
 Below is all the code you need to setup a news feed including push notification handling for any changes.
 
 
-```
+```swift
 // Just enherit from EVCloudKitDataObject so that you have access to the CloudKit metadata
 class News : EVCloudKitDataObject {
     var Subject : String = ""
