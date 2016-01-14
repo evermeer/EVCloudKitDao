@@ -123,13 +123,13 @@ You do have to use cocoapods version 0.36. At this moment this can be installed 
 
 If you have installed cocoapods version 0.36 or later, then you can just add EVCloudKitDao to your workspace by adding the folowing 2 lines to your Podfile:
 
-```
+```ruby
 use_frameworks!
 pod "EVCloudKitDao"
 ```
 
 I have now moved on to Swift 2. If you want to use EVCloudKitDao with Swift 1.2, then get that version by using the podfile command:
-```
+```ruby
 use_frameworks!
 pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift1.2'
 pod 'SwiftTryCatch'
@@ -139,7 +139,7 @@ pod 'EVCloudKitDao', '~> 2.6'
 
 Version 0.36 of cocoapods will make a dynamic framework of all the pods that you use. Because of that it's only supported in iOS 8.0 or later. When using a framework, you also have to add an import at the top of your swift file like this:
 
-```
+```swift
 import EVCloudKitDao
 ```
 
@@ -275,7 +275,7 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
 
 
 ## How to use the EVCloudKitDao
-```
+```swift
 // Just enherit from EVCloudKitDataObject so that you have access to the CloudKit metadata
 class Message : EVCloudKitDataObject {
     var From : String = ""
@@ -307,7 +307,7 @@ dao.query(Message()
 ```
 
 ## All you need for a keyword search (async autocomplete)
-```
+```swift
 var queryRunning:Int = 0
 var data:[Message] = []
 
@@ -364,7 +364,7 @@ override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:
 ##Error handling
 All cloudkit function have an errorHandler codeblock. You should handle the error appropriate. There is a helper function for getting a functional error status. In most cases you would get something like the code below. When you are doing data manupilations you should also handle the .RecoverableError
 
-```
+```swift
 func initializeCommunication(retryCount: Double = 1) {
     ...
     }, errorHandler: { error in
