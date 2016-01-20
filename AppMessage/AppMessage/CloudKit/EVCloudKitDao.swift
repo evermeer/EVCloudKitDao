@@ -582,9 +582,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T:EVCloudKitDataObject>(type:T, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
        let recordType = EVReflection.swiftStringFromClass(type)
         let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        query.sortDescriptors = orderBy.sortDescriptors()
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
@@ -598,11 +599,12 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, referenceRecordName: String, referenceField: String ,completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T:EVCloudKitDataObject>(type:T, referenceRecordName: String, referenceField: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let parentId = CKRecordID(recordName: referenceRecordName)
         let parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
         let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", referenceField ,parent))
+        query.sortDescriptors = orderBy.sortDescriptors()
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
@@ -615,9 +617,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil){
+    public func query<T:EVCloudKitDataObject>(type:T, predicate: NSPredicate, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil){
         let recordType = EVReflection.swiftStringFromClass(type)
         let query: CKQuery = CKQuery(recordType: recordType, predicate: predicate)
+        query.sortDescriptors = orderBy.sortDescriptors()
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
@@ -630,9 +633,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T:EVCloudKitDataObject>(type:T, tokens: String ,completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func query<T:EVCloudKitDataObject>(type:T, tokens: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
+        query.sortDescriptors = orderBy.sortDescriptors()
         queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
 
@@ -1093,3 +1097,96 @@ public class EVCloudKitDao {
         return dictionary
     }
 }
+
+
+
+/**
+ Enum that will be used to specify the order
+ 
+ - Ascending: Sort in ascending order
+ - Descending: Sort in descending order
+ */
+public enum SortDirection {
+    case Ascending,
+    Descending
+}
+
+/// Base class for the sort object
+public class OrderBy {
+    var field: String = ""
+    var direction: SortDirection = .Descending
+    var parent: OrderBy?
+    
+    /**
+     Convenience init for creating an order object with all the parameters
+     
+     - parameter field:     Sort on what field
+     - parameter parent:    When we sort on multiple fields then we need a chaing of OrderBy objects
+     - parameter direction: Do we sort ascending or descending
+     */
+    public convenience init(field: String, parent: OrderBy? = nil, direction: SortDirection) {
+        self.init()
+        self.field = field
+        self.direction = direction
+        self.parent = parent
+    }
+    
+    /**
+     Chain a second sort in ascending order
+     
+     - parameter field: The field that we want to sort on
+     
+     - returns: An OrderBy object
+     */
+    public func Ascending(field: String) -> OrderBy {
+        return OrderBy(field: field, parent: self, direction: .Ascending)
+    }
+    
+    /**
+     Chain a second sort in descending order
+     
+     - parameter field: The field that we want to sort on
+     
+     - returns: An OrderBy object
+     */
+    public func Descending(field: String) -> OrderBy {
+        return OrderBy(field: field, parent: self, direction: .Descending)
+    }
+    
+    /**
+     Build up an array of sortDescriptors
+     
+     - returns: The array of sortDescriptors
+     */
+    public func sortDescriptors() -> [NSSortDescriptor] {
+        var result: [NSSortDescriptor] = parent?.sortDescriptors() ?? []
+        result.append( NSSortDescriptor(key: field, ascending: (direction == .Ascending)))
+        return result
+    }
+}
+
+/// The initial OrderBy class for an ascending order
+public class Ascending: OrderBy {
+    /**
+     Initialise an ascending OrderBy object
+     
+     - parameter field:  The field where to sort on
+     */
+    public convenience required init(field: String) {
+        self.init(field: field, parent: nil, direction: .Ascending)
+    }
+}
+
+// The initial OrderBy class for a descending order
+public class Descending: OrderBy {
+    /**
+     Initialise an descending OrderBy object
+     
+     - parameter field:  The field where to sort on
+     */
+    public convenience required init(field: String) {
+        self.init(field: field, parent: nil, direction: .Descending)
+    }
+}
+
+

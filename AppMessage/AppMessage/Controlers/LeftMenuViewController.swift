@@ -148,6 +148,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         EVCloudData.publicDB.connect(
             News()
             , predicate: NSPredicate(value: true)
+            , orderBy: Ascending(field: "Subject").Descending("creationDate")
             , filterId: "News_All"
             , configureNotificationInfo: { notificationInfo in
                 //notificationInfo.alertBody = "News update"
