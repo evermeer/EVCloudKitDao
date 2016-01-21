@@ -20,7 +20,7 @@ class Message: EVCloudKitDataObject {
     var From_ID: String = ""
     func setFromFields(id: String) {
         self.From_ID = id
-        self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
+        self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.DeleteSelf)
     }
     var FromFirstName: String = ""
     var FromLastName: String = ""
@@ -30,7 +30,7 @@ class Message: EVCloudKitDataObject {
     var To_ID: String = ""
     func setToFields(id: String) {
         self.To_ID = id
-        self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
+        self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.DeleteSelf)
     }
     var ToFirstName: String = ""
     var ToLastName: String = ""

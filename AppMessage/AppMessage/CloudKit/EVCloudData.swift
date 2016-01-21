@@ -229,6 +229,10 @@ public class EVCloudData: NSObject {
      */
     public var predicates = Dictionary<String, NSPredicate>()
     /**
+     A dictionary of sort orders. Each filterId is a dictionary entry containging the sortOrder for that filter.
+     */
+    public var sortOrders = Dictionary<String, OrderBy>()
+    /**
      A dictionary of insert event handlers. Each filterId is a dictionary entry containing a insert event handler
      */
     public var insertedHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
@@ -668,6 +672,7 @@ public class EVCloudData: NSObject {
                         }
                         dataIsUpdated(filter)
                     }
+                    data[filter] = (data[filter]! as NSArray).sortedArrayUsingDescriptors(sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
                 } else { // An update of a field that is used in the predicate could trigger a delete from that set.
                     EVLog("Object not for filter \(filter)")
                     if itemID != nil {
@@ -807,6 +812,7 @@ public class EVCloudData: NSObject {
     public func connect<T:EVCloudKitDataObject>(
         type: T,
         predicate: NSPredicate,
+        orderBy: OrderBy = Descending(field: "creationDate"),
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.Direct,
         postNotifications: Bool? = nil,
@@ -854,6 +860,7 @@ public class EVCloudData: NSObject {
             }
             self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
             self.predicates[filterId] = predicate
+            self.sortOrders[filterId] = orderBy
             self.cachingLastWrite[filterId] = NSDate()
             self.cachingChangesCount[filterId] = 0
             self.cachingStrategies[filterId] = cachingStrategy
@@ -899,7 +906,7 @@ public class EVCloudData: NSObject {
             
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
             
-            dao.query(type, predicate: predicate, completionHandler: { results, isFinished in
+            dao.query(type, predicate: predicate, orderBy: orderBy, completionHandler: { results, isFinished in
                 if self.data[filterId] != nil && self.data[filterId]! == results && self.data[filterId]!.count > 0 {
                     // Post notification and call completion handler if available
                     self.postDataCompletedNotification(filterId, results: results, status: .FinalResult)
