@@ -982,8 +982,10 @@ public class EVCloudData: NSObject {
     - parameter error: Non-nil if an error occurred while attempting to access the current iCloud account
     :return: No return value
     */
-    private func defaultDBInitializationCompleteHandler(_: CKAccountStatus, error: NSError?) {
-        disconnectAll()
+    private func defaultDBInitializationCompleteHandler(accountStatus: CKAccountStatus, error: NSError?) {
+        if accountStatus != .Available, let _ = error {
+            disconnectAll()
+        }
     }
     
     // ------------------------------------------------------------------------
