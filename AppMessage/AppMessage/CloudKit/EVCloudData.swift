@@ -113,17 +113,7 @@ public class EVCloudData: NSObject {
     /**
      Overriding the default innit so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
      */
-    override init() {
-        let pathDir = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
-        if pathDir.count > 0 {
-            fileDirectory = pathDir[0]
-        } else
-        {
-            fileDirectory = ""
-        }
-        filemanager = NSFileManager.defaultManager()
-        ioQueue = dispatch_queue_create("NL.EVICT.CloudKit.ioQueue", DISPATCH_QUEUE_SERIAL) as dispatch_queue_t
-        
+    override init() {        
         super.init()
         NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
     }
@@ -189,11 +179,7 @@ public class EVCloudData: NSObject {
     // ------------------------------------------------------------------------
     // MARK: - Store data to local file cache
     // ------------------------------------------------------------------------
-    
-    private let fileDirectory: NSString
-    private let filemanager: NSFileManager
-    private let ioQueue: dispatch_queue_t
-    
+        
     /**
      Write the data for a specific filter to a file if the corresponding backup strategy has been met.
      
@@ -270,7 +256,7 @@ public class EVCloudData: NSObject {
      */
     public func backupDataForFilter(filterId: String) {
         if let theData = data[filterId] {
-            backupData(theData, toFile: "Filter_\(filterId).bak" )
+            dao.backupData(theData, toFile: "Filter_\(filterId).bak" )
             self.cachingLastWrite[filterId] = NSDate()
             self.cachingChangesCount[filterId] = 0
         }
@@ -282,7 +268,7 @@ public class EVCloudData: NSObject {
      - parameter filterId: The filter id for the data that will be restored from file
      */
     public func restoreDataForFilter(filterId: String) -> Bool {
-        if let theData = restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
+        if let theData = dao.restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
             data[filterId] = theData
             return true
         }
@@ -295,60 +281,9 @@ public class EVCloudData: NSObject {
      - parameter filterId: The filter id for the backup file that will be removed
      */
     public func removeBackupForFilter(filterId: String) {
-        removeBackup("Filter_\(filterId).bak")
+        dao.removeBackup("Filter_\(filterId).bak")
     }
-    
-    /**
-     Write data to a file
-     
-     - parameter data: The data that will be written to the file (Needs to implement NSCoding like the EVCloudKitDataObject)
-     - parameter toFile: The file that will be written to
-     */
-    public func backupData(data: AnyObject, toFile: String){
-        let filePath = fileDirectory.stringByAppendingPathComponent(toFile)
-        dispatch_sync(ioQueue) {
-            NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
-            addSkipBackupAttributeToItemAtPath(filePath)
-            EVLog("Data is written to \(filePath))")
-        }
-    }
-    
-    /**
-     Read a backup file and return it as an unarchived object
-     
-     - parameter fromFile: The file that will be read and parsed to objects
-     */
-    public func restoreData(fromFile: String) -> AnyObject? {
-        let filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
-        var result: AnyObject? = nil
-        dispatch_sync(ioQueue) {
-            if self.filemanager.fileExistsAtPath(filePath) {
-                result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
-                EVLog("Data is restored from \(filePath))")
-            }
-        }
-        return result
-    }
-    
-    /**
-     Remove a backup file
-     
-     - parameter file: The file that will be removed from the backup folder (EVCloudDataBackup)
-     */
-    public func removeBackup(file: String) {
-        let filePath = fileDirectory.stringByAppendingPathComponent(file)
-        dispatch_sync(ioQueue) {
-            if self.filemanager.fileExistsAtPath(filePath) {
-                do {
-                    try self.filemanager.removeItemAtPath(filePath)
-                } catch  _ as NSError {
-                } catch {
-                    fatalError()
-                }
-            }
-        }
-    }
-    
+        
     // ------------------------------------------------------------------------
     // MARK: - Internal app notifications via NSNotificationManager
     // ------------------------------------------------------------------------
