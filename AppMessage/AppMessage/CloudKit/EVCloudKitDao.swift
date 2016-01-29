@@ -319,6 +319,13 @@ public class EVCloudKitDao {
     */
     public var isType: InstanceType = .IsPublic
     
+    // Fast access to the file directory
+    private var fileDirectory: NSString!
+    // Fast access to the filemanager
+    private var filemanager: NSFileManager!
+    // Fast access to the queue
+    private var ioQueue: dispatch_queue_t!
+
     /**
     Reference to the handlers that should be called by this instance from the initializeDatabase method
     :return: The completion handlers assigned to this instance
@@ -354,7 +361,17 @@ public class EVCloudKitDao {
     - parameter containerIdentifier: Passing on the name of the container
     - parameter initializationCompleteHandlers: ConnectStatusCompletionHandlerWrapper instances to be invoked once initialization is completed. Provides account status and error state. Will be called again if the iCloud account status changes, as database must be reinitalized in that case.
     */
-    private func initializeDatabase(containerIdentifier: String? = nil) {
+    public func initializeDatabase(containerIdentifier: String? = nil) {
+        let pathDir = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
+        if pathDir.count > 0 {
+            fileDirectory = pathDir[0]
+        } else
+        {
+            fileDirectory = ""
+        }
+        filemanager = NSFileManager.defaultManager()
+        ioQueue = dispatch_queue_create("NL.EVICT.CloudKit.ioQueue", DISPATCH_QUEUE_SERIAL) as dispatch_queue_t
+
         if let identifier = containerIdentifier {
             container = CKContainer(identifier: identifier)
         } else {
@@ -672,18 +689,18 @@ public class EVCloudKitDao {
             self.handleCallback(error, errorHandler:errorHandler, completionHandler: {
                 if let returnData = users {
                     if returnData.count == 0 {
-                        if let restoreData = EVCloudData.publicDB.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
+                        if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
                             completionHandler(users:restoreData)
                         } else {
                             completionHandler(users:returnData)
                         }
                     } else {
-                        EVCloudData.publicDB.backupData(returnData, toFile: "allContactsUserInfo.bak")
+                        self.backupData(returnData, toFile: "allContactsUserInfo.bak")
                         completionHandler(users:returnData)
                     }
 
                 } else {
-                    if let restoreData = EVCloudData.publicDB.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
+                    if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
                         completionHandler(users:restoreData)
                     }
                 }
@@ -693,6 +710,66 @@ public class EVCloudKitDao {
     #endif
 
     
+    
+    
+    
+    
+    
+    // ------------------------------------------------------------------------
+    // MARK: - Reading and writing to file
+    // ------------------------------------------------------------------------
+    
+    
+    /**
+     Write data to a file
+     
+     - parameter data: The data that will be written to the file (Needs to implement NSCoding like the EVCloudKitDataObject)
+     - parameter toFile: The file that will be written to
+     */
+    public func backupData(data: AnyObject, toFile: String){
+        let filePath = fileDirectory.stringByAppendingPathComponent(toFile)
+        dispatch_sync(ioQueue) {
+            NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
+            addSkipBackupAttributeToItemAtPath(filePath)
+            EVLog("Data is written to \(filePath))")
+        }
+    }
+    
+    /**
+     Read a backup file and return it as an unarchived object
+     
+     - parameter fromFile: The file that will be read and parsed to objects
+     */
+    public func restoreData(fromFile: String) -> AnyObject? {
+        let filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
+        var result: AnyObject? = nil
+        dispatch_sync(ioQueue) {
+            if self.filemanager.fileExistsAtPath(filePath) {
+                result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
+                EVLog("Data is restored from \(filePath))")
+            }
+        }
+        return result
+    }
+    
+    /**
+     Remove a backup file
+     
+     - parameter file: The file that will be removed from the backup folder (EVCloudDataBackup)
+     */
+    public func removeBackup(file: String) {
+        let filePath = fileDirectory.stringByAppendingPathComponent(file)
+        dispatch_sync(ioQueue) {
+            if self.filemanager.fileExistsAtPath(filePath) {
+                do {
+                    try self.filemanager.removeItemAtPath(filePath)
+                } catch  _ as NSError {
+                } catch {
+                    fatalError()
+                }
+            }
+        }
+    }
     
     // ------------------------------------------------------------------------
     // MARK: - Data methods - CRUD
@@ -747,7 +824,7 @@ public class EVCloudKitDao {
      :return: No return value
      */
     public func saveItems(items: [EVCloudKitDataObject], completionHandler: (records: [CKRecord]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        let recordsToSave: [CKRecord] = items.map({EVCloudKitDao.publicDB.toCKRecord($0)})
+        let recordsToSave: [CKRecord] = items.map({self.toCKRecord($0)})
         let operation = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
         operation.atomic = false
         operation.database = database
@@ -1175,7 +1252,8 @@ public class EVCloudKitDao {
                     if queryNotification.queryNotificationReason == .RecordDeleted {
                         deleted(recordId: recordID!.recordName)
                     } else {
-                        EVCloudKitDao.publicDB.getItem(recordID!.recordName, completionHandler: { item in
+                        // Notification could be for pulbic and private db. Errors are ignored
+                        getItem(recordID!.recordName, completionHandler: { item in
                             EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                             EVReflection.logObject(item)
                             if queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated {
@@ -1223,7 +1301,7 @@ public class EVCloudKitDao {
                         if queryNotification.queryNotificationReason == .RecordDeleted {
                             deleted(recordId: queryNotification.recordID!.recordName)
                         } else {
-                            EVCloudKitDao.publicDB.getItem(queryNotification.recordID!.recordName, completionHandler: { item in
+                            self.getItem(queryNotification.recordID!.recordName, completionHandler: { item in
                                 EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                                 EVReflection.logObject(item)
                                 if queryNotification.queryNotificationReason == .RecordCreated {
@@ -1259,7 +1337,8 @@ public class EVCloudKitDao {
     */
     private var previousChangeToken: CKServerChangeToken? {
         get {
-            let encodedObjectData = NSUserDefaults.standardUserDefaults().objectForKey("lastFetchNotificationId") as? NSData
+            
+            let encodedObjectData = NSUserDefaults.standardUserDefaults().objectForKey("\(container.containerIdentifier)_lastFetchNotificationId") as? NSData
             var decodedData: CKServerChangeToken? = nil
             if encodedObjectData != nil {
                 decodedData = NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData!) as? CKServerChangeToken
@@ -1268,7 +1347,7 @@ public class EVCloudKitDao {
         }
         set(newToken) {
             if newToken != nil {
-                NSUserDefaults.standardUserDefaults().setObject(NSKeyedArchiver.archivedDataWithRootObject(newToken!), forKey:"lastFetchNotificationId")
+                NSUserDefaults.standardUserDefaults().setObject(NSKeyedArchiver.archivedDataWithRootObject(newToken!), forKey:"\(container.containerIdentifier)_lastFetchNotificationId")
             }
         }
     }
