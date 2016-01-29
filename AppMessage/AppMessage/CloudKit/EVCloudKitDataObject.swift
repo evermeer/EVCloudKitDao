@@ -11,10 +11,25 @@ import EVReflection
 /**
 */
 public class EVCloudKitDataObject: EVObject {
+    public required init() {
+        // Initial setting required as recordID's didSet observer isn't called during initialization
+        recordIDName = recordID.recordName
+
+        super.init()
+    }
     /**
     The unique ID of the record.
     */
-    public var recordID: CKRecordID = CKRecordID(recordName: NSUUID().UUIDString)
+    public var recordID: CKRecordID = CKRecordID(recordName: NSUUID().UUIDString) {
+        didSet {
+            recordIDName = recordID.recordName
+        }
+    }
+
+    /**
+    String containing unique ID of the record for use in predicates with CloudKit subscriptions
+    */
+    public var recordIDName: String
 
     /**
     The app-defined string that identifies the type of the record.
