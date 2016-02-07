@@ -38,6 +38,7 @@
 		7F61CA3C19829CC7005EF254 /* MessageOutgoing.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 7F61CA3919829CC7005EF254 /* MessageOutgoing.aiff */; };
 		7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F76554B197FF0FE008AD0D5 /* Asset.swift */; };
 		7F7C03621A382C3C00054ED7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7F7C03611A382C3C00054ED7 /* Localizable.strings */; };
+		7F9E68101C675F9E00F0F4D3 /* EVSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9E680F1C675F9E00F0F4D3 /* EVSort.swift */; };
 		7FC46F651981259A000A875F /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = 7FC46F641981259A000A875F /* test.png */; };
 		7FC46F6719812ECA000A875F /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 7FC46F6619812ECA000A875F /* Podfile */; };
 		7FC46F7B198134C8000A875F /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FC46F6A198134C8000A875F /* Storyboard.storyboard */; };
@@ -97,6 +98,7 @@
 		7F61CA3919829CC7005EF254 /* MessageOutgoing.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = MessageOutgoing.aiff; sourceTree = "<group>"; };
 		7F76554B197FF0FE008AD0D5 /* Asset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
 		7F7C03611A382C3C00054ED7 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = ../Localizable.strings; sourceTree = "<group>"; };
+		7F9E680F1C675F9E00F0F4D3 /* EVSort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVSort.swift; sourceTree = "<group>"; };
 		7FC46F641981259A000A875F /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		7FC46F6619812ECA000A875F /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7FC46F6A198134C8000A875F /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 				7F41BB841A2B2B92003FE1DD /* EVCloudKitDataObject.swift */,
 				7F07C54C1AF0C127000DF1F3 /* EVglobal.swift */,
 				7F3C164F1C1341ED0057B5E1 /* EVCloudKitEnums.swift */,
+				7F9E680F1C675F9E00F0F4D3 /* EVSort.swift */,
 			);
 			path = CloudKit;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 				7F434A4C1962AE780081F35C /* Message.swift in Sources */,
 				7FF11C411ACBEA6000A18FA3 /* SearchViewController.swift in Sources */,
 				7FC46F9A19828082000A875F /* TestsViewController.swift in Sources */,
+				7F9E68101C675F9E00F0F4D3 /* EVSort.swift in Sources */,
 				7FC46F8619813D77000A875F /* RootViewController.swift in Sources */,
 				7FD41611199666F3003C2CE9 /* EVCloudData.swift in Sources */,
 				7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */,

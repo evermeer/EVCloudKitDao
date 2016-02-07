@@ -1,6 +1,5 @@
 //
 //  EVCloudKitEnums.swift
-//  AppMessage
 //
 //  Created by Edwin Vermeer on 12/5/15.
 //  Copyright © 2015 mirabeau. All rights reserved.
