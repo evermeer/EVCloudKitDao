@@ -446,12 +446,7 @@ public class EVCloudData: NSObject {
                     }
                     if existingItem != nil  {
                         EVLog("Update object for filter \(filter)")
-
-                        data[filter]!.removeAtIndex(itemID!)
-                        data[filter]!.insert(item, atIndex: itemID!)
-                        
                         EVReflection.setPropertiesfromDictionary(item.toDictionary(), anyObject: data[filter]![itemID!])                        
-                        
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.updateHandlers[filter]!)(item: item, dataIndex:itemID!)
                             (self.dataChangedHandlers[filter]!)()
