@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Only call this line once. It will make sure the recordType are there in iCloud.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
         // If you use this in your own project, then make sure that the fields are not nil otherwise the field will not be created.
-//        EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News(), Invoice()])
+        //EVCloudKitDao.publicDB.createRecordTypes([Message(), Asset(), News(), Invoice()])
 
         
         // During development you will probably play around with subscriptins.
@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
     
-    #if os(tvOS)
+//    #if os(tvOS)
     //This will only be called when your app is active. So this is what you should use on tvOS
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         EVLog("Push received")
@@ -53,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             EVLog("All notifications are processed")
         })
     }
-    #else
+//    #else
     // Process al notifications even if we are in the background. tvOS will not have this event
     // Make sure you enable background notifications in the app settings. (entitlements: pushnotifications and  backgrounds modes - notifications plus background fetch)
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 completionHandler(.NewData)
         })
     }
-    #endif
+//    #endif
     
     func applicationDidEnterBackground(application: UIApplication) {
         // Just to make sure that all updates are written do the cache.

@@ -370,7 +370,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         picker.dismissViewControllerAnimated(true, completion: nil)
         var i:Int = 0
         for asset in assets {
-            i = i++
+            i += 1
             let mediaType = (asset as! ALAsset).valueForProperty("ALAssetPropertyType") as! String
             if mediaType == "ALAssetTypePhoto" {
                 JSQSystemSoundPlayer.jsq_playMessageSentSound()

@@ -15,7 +15,7 @@ Replacement function for NSLog that will also output the filename, linenumber an
 - parameter line: Will be auto populated by the line number in the file from where this function is called
 - parameter funcname: Will be auto populated by the function name from where this function is called
 */
-public func EVLog<T>(object: T, filename: String = __FILE__, line: Int = __LINE__, funcname: String = __FUNCTION__) {
+public func EVLog<T>(object: T, filename: String = #file, line: Int = #line, funcname: String = #function) {
     let dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
     let process = NSProcessInfo.processInfo()

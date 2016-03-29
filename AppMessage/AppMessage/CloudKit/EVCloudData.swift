@@ -115,7 +115,7 @@ public class EVCloudData: NSObject {
      */
     override init() {        
         super.init()
-        NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: Selector("backupAllData"), userInfo: nil, repeats: true)
+        NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: #selector(EVCloudData.backupAllData), userInfo: nil, repeats: true)
     }
     
     // ------------------------------------------------------------------------
@@ -296,12 +296,13 @@ public class EVCloudData: NSObject {
     
     - returns: ?
     */
-    public class func getNotificationCenterId(filterId: String, var changeType: DataChangeNotificationType? = nil) -> String {
+    public class func getNotificationCenterId(filterId: String, changeType: DataChangeNotificationType? = nil) -> String {
         if changeType == nil {
-            changeType = DataChangeNotificationType.DataChanged
+            return "NL.EVICT.CloudKit.\(filterId).\(DataChangeNotificationType.DataChanged)"
+        } else {
+            return "NL.EVICT.CloudKit.\(filterId).\(changeType!)"
         }
         
-        return "NL.EVICT.CloudKit.\(filterId).\(changeType!)"
     }
     
      /**
@@ -614,7 +615,7 @@ public class EVCloudData: NSObject {
         deletedHandler:((recordId: String, dataIndex: Int) -> Void)? = nil,
         dataChangedHandler:(() -> Void)? = nil,
         errorHandler:((error: NSError) -> Void)? = nil
-        ) -> Void {
+        ) -> CKQueryOperation {
             // Set the post notifications flag for this filter ID before checking the cache
             if postNotifications != nil && postNotifications! {
                 self.postNotifications[filterId] = postNotifications!
@@ -690,7 +691,7 @@ public class EVCloudData: NSObject {
             
             dao.subscribe(type, predicate:predicate, filterId: filterId, configureNotificationInfo:configureNotificationInfo ,errorHandler: errorHandler)
             
-            dao.query(type, predicate: predicate, orderBy: orderBy, completionHandler: { results, isFinished in
+            return dao.query(type, predicate: predicate, orderBy: orderBy, completionHandler: { results, isFinished in
                 if self.data[filterId] != nil && self.data[filterId]! == results && self.data[filterId]!.count > 0 {
                     return false // Result was already returned from cache
                 }
