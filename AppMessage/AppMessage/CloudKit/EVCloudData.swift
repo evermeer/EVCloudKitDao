@@ -448,6 +448,7 @@ public class EVCloudData: NSObject {
                     if existingItem != nil  {
                         EVLog("Update object for filter \(filter)")
                         EVReflection.setPropertiesfromDictionary(item.toDictionary(), anyObject: data[filter]![itemID!])                        
+                        data[filter] = (data[filter]! as NSArray).sortedArrayUsingDescriptors(sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.updateHandlers[filter]!)(item: item, dataIndex:itemID!)
                             (self.dataChangedHandlers[filter]!)()
@@ -457,6 +458,7 @@ public class EVCloudData: NSObject {
                     } else {
                         EVLog("Insert object for filter \(filter)")
                         data[filter]!.insert(item, atIndex: 0)
+                        data[filter] = (data[filter]! as NSArray).sortedArrayUsingDescriptors(sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
                         NSOperationQueue.mainQueue().addOperationWithBlock {
                             (self.insertedHandlers[filter]!)(item: item)
                             (self.dataChangedHandlers[filter]!)()
@@ -464,7 +466,6 @@ public class EVCloudData: NSObject {
                         }
                         dataIsUpdated(filter)
                     }
-                    data[filter] = (data[filter]! as NSArray).sortedArrayUsingDescriptors(sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
                 } else { // An update of a field that is used in the predicate could trigger a delete from that set.
                     EVLog("Object not for filter \(filter)")
                     if itemID != nil {

@@ -558,19 +558,43 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        database.fetchRecordWithID(CKRecordID(recordName: recordId), completionHandler: {record, error in
-            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                if let parsed = self.fromCKRecord(record) {
-                    completionHandler(result: parsed);
-                } else {
-                    if let handler = errorHandler {
-                        let error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
-                        handler(error: error)
-                    }
+    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:((error: NSError) -> Void)? = nil) -> CKFetchRecordsOperation {
+        let operation = CKFetchRecordsOperation(recordIDs: [CKRecordID(recordName: recordId)])
+        operation.qualityOfService = .UserInitiated
+        operation.queuePriority = .VeryHigh
+        operation.perRecordCompletionBlock = { record, id, error in
+            if let parsed = self.fromCKRecord(record) {
+                completionHandler(result: parsed);
+            } else {
+                if let handler = errorHandler {
+                    let error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
+                    handler(error: error)
                 }
+            }
+        }
+        database.addOperation(operation)
+        return operation
+    }
+    
+    /**
+     Get multiple Items for their recordIds
+     - parameter recordIds: The CloudKit record ids that we want to get.
+     - parameter completionHandler: The function that will be called with the objects that we aksed for
+     - parameter errorHandler: The function that will be called when there was an error
+     :return: No return value
+     */
+    public func getItems(recordIds: [String], completionHandler: (results: [EVCloudKitDataObject]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) -> CKFetchRecordsOperation {
+        let operation = CKFetchRecordsOperation(recordIDs: recordIds.map({CKRecordID(recordName: $0)}))
+        operation.qualityOfService = .UserInitiated
+        operation.queuePriority = .VeryHigh
+        operation.fetchRecordsCompletionBlock = { result, error in
+            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+                let r: [EVCloudKitDataObject] = result!.map({ (key, value) in self.fromCKRecord(value)!})
+                completionHandler(results: r)
             })
-        })
+        }
+        database.addOperation(operation)
+        return operation
     }
 
     /**
