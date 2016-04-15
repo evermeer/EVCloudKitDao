@@ -401,3 +401,5 @@ Also see my other open source iOS libraries:
 - [PassportScanner](https://github.com/evermeer/PassportScanner) - Scan the MRZ code of a passport and extract the firstname, lastname, passport number, nationality, date of birth, expiration date and personal numer.
 
 
+## Evolution of EVReflection (Gource Visualization)
+[![Evolution of EVReflection (Gource Visualization)](https://img.youtube.com/vi/1MQd1tlE8mM/0.jpg)](https://www.youtube.com/watch?v=1MQd1tlE8mM)
