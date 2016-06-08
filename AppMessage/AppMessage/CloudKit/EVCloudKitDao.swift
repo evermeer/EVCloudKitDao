@@ -1115,7 +1115,7 @@ public class EVCloudKitDao {
         if record == nil {
             return nil
         }
-        if let theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType, convertionOptions: .None) as? EVCloudKitDataObject {
+        if let theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType, conversionOptions: .DefaultComparing) as? EVCloudKitDataObject {
             theObject.recordID = record.recordID
             theObject.recordType = record.recordType
             theObject.creationDate = record.creationDate ?? NSDate()
@@ -1150,7 +1150,7 @@ public class EVCloudKitDao {
         if record == nil {
             record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
         }
-        let (fromDict, _) = EVReflection.toDictionary(theObject, convertionOptions: .None)
+        let (fromDict, _) = EVReflection.toDictionary(theObject, conversionOptions: .DefaultComparing)
         dictToCKRecord(record, dict: fromDict)
 
         return record
