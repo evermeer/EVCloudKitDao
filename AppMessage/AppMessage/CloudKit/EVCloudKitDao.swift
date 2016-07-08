@@ -1127,8 +1127,8 @@ public class EVCloudKitDao {
             let data = NSMutableData()
             let coder = NSKeyedArchiver(forWritingWithMutableData: data)
             record.encodeSystemFieldsWithCoder(coder)
-            theObject.encodedSystemFields = data
             coder.finishEncoding()
+            theObject.encodedSystemFields = data
             return theObject
         }
         return nil
