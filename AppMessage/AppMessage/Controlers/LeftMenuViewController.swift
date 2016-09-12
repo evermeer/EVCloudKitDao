@@ -78,7 +78,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         return titles.count
     }
 
-    var cellIdentifier = "LeftMenuCell";
+    var cellIdentifier = "LeftMenuCell"
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
@@ -95,7 +95,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         cell.textLabel?.text = titles[indexPath.row]
         cell.imageView?.image = UIImage(named: images[indexPath.row])
 
-        return cell;
+        return cell
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -146,11 +146,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     func connectToNews(retryCount: Double = 1) {
 
         EVCloudData.publicDB.connect(
-            News()
-            , predicate: NSPredicate(value: true)
-            , orderBy: Ascending(field: "Subject").Descending("creationDate")
-            , filterId: "News_All"
-            , configureNotificationInfo: { notificationInfo in
+            News(), predicate: NSPredicate(value: true), orderBy: Ascending(field: "Subject").Descending("creationDate"), filterId: "News_All", configureNotificationInfo: { notificationInfo in
                 //notificationInfo.alertBody = "News update"
                 notificationInfo.shouldSendContentAvailable = true // is already the default
                 notificationInfo.alertLocalizationKey = "News: %1$@"
@@ -160,8 +156,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 // notificationInfo.alertLaunchImage = "alertImage"
                 // notificationInfo.soundName = "alertSound"
                 // notificationInfo.desiredKeys = [""]
-            }
-            , completionHandler: { results, status in
+            }, completionHandler: { results, status in
                 EVLog("There are \(results.count) existing news items")
                 return status == CompletionStatus.PartialResult && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: {item in
@@ -190,15 +185,12 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         })
     }
 
-    func connectToMessagesToMe(retryCount:Double = 1) {
+    func connectToMessagesToMe(retryCount: Double = 1) {
         let recordIdMe: String? = EVCloudData.publicDB.dao.activeUser?.userRecordID?.recordName
         if recordIdMe == nil {
             return
         }
-        EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "To_ID = %@", recordIdMe!)
-            , filterId: "Message_ToMe"
-            , configureNotificationInfo:{ notificationInfo in
+        EVCloudData.publicDB.connect(Message(), predicate: NSPredicate(format: "To_ID = %@", recordIdMe!), filterId: "Message_ToMe", configureNotificationInfo: { notificationInfo in
                 notificationInfo.alertLocalizationKey = "%1$@ %2$@ : %3$@"
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results, status in
@@ -223,7 +215,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 default: // For here there is no need to handle the .Success and .RecoverableError
                     break
                 }
-                
+
         })
     }
 }

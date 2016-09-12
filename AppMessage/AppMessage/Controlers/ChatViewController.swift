@@ -34,7 +34,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     var recordIdOtherForConnection: String = ""
     var viewAppeared = false
 
-    var pscope:PermissionScope = PermissionScope()
+    var pscope: PermissionScope = PermissionScope()
 
     // Start the conversation
     func setContact(recordId: String, firstName: String, lastName: String) {
@@ -69,7 +69,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
         self.senderId = "~"
         self.senderDisplayName = "~"
-    
+
         pscope.headerLabel.text = "Setting permissions"
         pscope.bodyLabel.text = "For optimal usage we need some permissions."
         pscope.addPermission(PhotosPermission(), message: "For if you want to send a photo")
@@ -87,7 +87,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     // MARK: - Handle Message data plus attached Assets
     // ------------------------------------------------------------------------
 
-    func initializeCommunication(retryCount:Double = 1) {
+    func initializeCommunication(retryCount: Double = 1) {
         if !viewAppeared || (recordIdMeForConnection == EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName && recordIdOtherForConnection == chatWithId) {
             return //Already connected or not ready yet
         }
@@ -98,7 +98,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
         // Sender settings for the component
         self.senderId = EVCloudData.publicDB.dao.activeUser?.userRecordID!.recordName
-        
+
         if #available(iOS 9.0, *) {
             senderFirstName = EVCloudData.publicDB.dao.activeUser!.displayContact?.givenName ?? ""
             senderLastName = EVCloudData.publicDB.dao.activeUser!.displayContact?.familyName ?? ""
@@ -106,14 +106,11 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             senderFirstName = EVCloudData.publicDB.dao.activeUser!.firstName ?? ""
             senderLastName = EVCloudData.publicDB.dao.activeUser!.lastName ?? ""
        }
- 
+
         self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
 
         // The data connection to the conversation
-        EVCloudData.publicDB.connect(Message()
-            , predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection])
-            , filterId: dataID
-            , configureNotificationInfo:{ notificationInfo in
+        EVCloudData.publicDB.connect(Message(), predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection]), filterId: dataID, configureNotificationInfo: { notificationInfo in
             }, completionHandler: { results, status in
                 EVLog("Conversation message results = \(results.count)")
                 self.localData = [JSQMessage?](count:results.count, repeatedValue:nil)
@@ -127,8 +124,8 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 if item.MessageType == MessageTypeEnum.Picture.rawValue {
                     self.getAttachment((item as Message).Asset_ID)
                 }
-                JSQSystemSoundPlayer.jsq_playMessageReceivedSound();
-                self.finishReceivingMessage();
+                JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
+                self.finishReceivingMessage()
             }, updatedHandler: { item, dataIndex in
                 EVLog("Conversation message updated \(item)")
                 self.localData[dataIndex] = nil
@@ -227,7 +224,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     override func didPressAccessoryButton(sender: UIButton!) {
         showPermissionScope()
     }
-    
+
 
     func hasPermissions() -> Bool {
         let statusses = pscope.permissionStatuses([.Photos, .LocationInUse])
@@ -238,13 +235,13 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         }
         return false
     }
-    
+
     func showPermissionScope() {
         if hasPermissions() {
             self.showActionSheet()
             return
         }
-    
+
         pscope.show({ (finished, results) -> Void in
 
             if finished {
@@ -254,7 +251,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 self.showActionSheet()
             }
             }, cancelled: { (results: [PermissionResult]) -> Void in
-                if (results.filter {$0.status == .Authorized}).count > 0  {
+                if (results.filter {$0.status == .Authorized}).count > 0 {
                     self.showActionSheet()
                 } else {
                     Helper.showStatus("You should enable permissions for photos or location in the Settings")
@@ -262,20 +259,20 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 print("WARNING: PermissionScope was cancelled")
         })
     }
-    
+
     func showActionSheet() {
         Async.main {
             let sheet = UIActionSheet(title: "Media", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Send photo", "Send location", "Send video")
             sheet.showFromToolbar(self.inputToolbar!)
         }
     }
-    
+
     // ------------------------------------------------------------------------
     // MARK: - Accessory button actions
     // ------------------------------------------------------------------------
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
         if buttonIndex == actionSheet.cancelButtonIndex {
-            return;
+            return
         }
         switch buttonIndex {
         case 1:
@@ -291,21 +288,21 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
     func addPhoto() {
         picker.delegate = self
-        picker.maximumNumberOfSelectionVideo = 0;
-        picker.maximumNumberOfSelectionPhoto = 5;
+        picker.maximumNumberOfSelectionVideo = 0
+        picker.maximumNumberOfSelectionPhoto = 5
         self.presentViewController(picker, animated:true, completion:nil)
     }
 
     func addVideo() {
         picker.delegate = self
-        picker.maximumNumberOfSelectionVideo = 1;
-        picker.maximumNumberOfSelectionPhoto = 0;
+        picker.maximumNumberOfSelectionVideo = 1
+        picker.maximumNumberOfSelectionPhoto = 0
         self.presentViewController(picker, animated:true, completion:nil)
     }
 
     func addLocation() {
-        do {
-            try SwiftLocation.shared.currentLocation(.Room, timeout: 20, onSuccess: { (location) -> Void in
+/*        do {
+            try LocationManager.shared.currentLocation(.Room, timeout: 20, onSuccess: { (location) -> Void in
                 if location == nil {
                     return
                 }
@@ -336,7 +333,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             })
         } catch {
             Helper.showError("Location authorization has been refused, unable to  send location")
-        }
+        } */
     }
 
     // Get the direction indicator for a degree
@@ -368,7 +365,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     // Callback from the asset picker
     func uzysAssetsPickerController(picker: UzysAssetsPickerController!, didFinishPickingAssets assets: [AnyObject]!) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-        var i:Int = 0
+        var i: Int = 0
         for asset in assets {
             i += 1
             let mediaType = (asset as! ALAsset).valueForProperty("ALAssetPropertyType") as! String
@@ -391,7 +388,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
                 // Save the asset
                 EVCloudData.publicDB.saveItem(assetC, completionHandler: {record in
-                    EVLog("saveItem Asset: \(record.recordID.recordName)");
+                    EVLog("saveItem Asset: \(record.recordID.recordName)")
 
                     // rename the image to recordId for a quick cache reference
                     let filemanager = NSFileManager.defaultManager()
@@ -400,7 +397,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                     do {
                         try filemanager.moveItemAtPath(fromFilePath, toPath: toPath)
                     } catch {}
-                    
+
                     // Create the message object that represents the asset
                     let message = Message()
                     message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
@@ -413,7 +410,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                     message.setAssetFields(record.recordID.recordName)
 
                     EVCloudData.publicDB.saveItem(message, completionHandler: {record in
-                        EVLog("saveItem Message: \(record.recordID.recordName)");
+                        EVLog("saveItem Message: \(record.recordID.recordName)")
                         self.finishSendingMessage()
                     }, errorHandler: {error in
                         Helper.showError("Could not send picture message!  \(error.description)")
@@ -424,7 +421,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                     Helper.showError("Could not send picture!  \(error.description)")
                     self.finishSendingMessage()
                 })
-            } else if mediaType == "ALAssetTypeVideo"  {
+            } else if mediaType == "ALAssetTypeVideo" {
                 Helper.showError("Sending video's is not supported yet")
             } else {
                 Helper.showError("Unknown media type")
@@ -434,7 +431,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
     // The image picker will return an CTAsset. We need an UIImage.
     func getUIImageFromCTAsset(asset: ALAsset) -> UIImage {
-        let representation: ALAssetRepresentation = (asset as ALAsset).defaultRepresentation();
+        let representation: ALAssetRepresentation = (asset as ALAsset).defaultRepresentation()
         let img: CGImage = representation.fullResolutionImage().takeUnretainedValue()
         let scale: CGFloat = CGFloat(representation.scale())
         let orientation: UIImageOrientation = UIImageOrientation(rawValue: representation.orientation().rawValue)!
@@ -460,7 +457,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             } else {
                 cell.textView!.textColor = UIColor.whiteColor()
             }
-            cell.textView!.linkTextAttributes = [NSForegroundColorAttributeName : cell.textView!.textColor!,NSUnderlineStyleAttributeName : NSUnderlineStyle.StyleSingle.rawValue]
+            cell.textView!.linkTextAttributes = [NSForegroundColorAttributeName : cell.textView!.textColor!, NSUnderlineStyleAttributeName : NSUnderlineStyle.StyleSingle.rawValue]
         }
         return cell
     }
@@ -496,7 +493,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         let message = getMessageForId(indexPath.row)
         if message.senderId == self.senderId {
-            return nil;
+            return nil
         }
         if indexPath.row > 1 {
             let previousMessage = getMessageForId(indexPath.row - 1)
@@ -511,7 +508,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         let message = getMessageForId(indexPath.row)
         if message.senderId == self.senderId {
-            return 0;
+            return 0
         }
         if indexPath.row > 1 {
             let previousMessage = getMessageForId(indexPath.row - 1)
@@ -597,7 +594,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             self.navigationController!.pushViewController(viewController, animated: true)
         }
     }
-    
+
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, didChangeDragState newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
         mapView.setRegion(MKCoordinateRegionMakeWithDistance(view.annotation!.coordinate, 1000, 1000), animated: true)
     }
@@ -612,7 +609,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
     func getDataForId(id: Int) -> (Message, Int) {
         var data: Message!
-        var count : Int = 0
+        var count: Int = 0
         let lockQueue = dispatch_queue_create("nl.evict.AppMessage.ChatLockQueue", nil)
         dispatch_sync(lockQueue) {
             count = EVCloudData.publicDB.data[self.dataID]!.count
@@ -638,7 +635,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         }
 
         // The JSQMessage was already created before
-        if let localMessage = self.localData[count - id - 1]  {
+        if let localMessage = self.localData[count - id - 1] {
             return localMessage
         }
 
@@ -655,7 +652,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
         // normal, location or media message
         if data.MessageType == MessageTypeEnum.Text.rawValue {
-            message = JSQMessage(senderId: sender, senderDisplayName: senderName,date: data.creationDate, text: data.Text)
+            message = JSQMessage(senderId: sender, senderDisplayName: senderName, date: data.creationDate, text: data.Text)
         } else if data.MessageType == MessageTypeEnum.Location.rawValue {
             let location = CLLocation(latitude: CLLocationDegrees(data.Latitude), longitude: CLLocationDegrees(data.Longitude))
             let locationItem = JSQLocationMediaItem()
@@ -682,7 +679,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             }
         }
         localData[count - id - 1] = message
-        return message;
+        return message
     }
 
 
