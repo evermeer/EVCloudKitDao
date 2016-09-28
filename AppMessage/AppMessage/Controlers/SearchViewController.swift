@@ -15,7 +15,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     var queryRunning: Int = 0
     var data: [Message] = []
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         doFilter()
     }
 
@@ -31,16 +31,16 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         }
     }
 
-    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         doFilter()
     }
 
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         doFilter()
     }
 
     // Token search (search for complete words in the entire record
-    func filterContentForSearchText(searchText: String) {
+    func filterContentForSearchText(_ searchText: String) {
         EVLog("Filter for \(searchText)")
         networkSpinner(1)
         EVCloudKitDao.publicDB.query(Message(), tokens: searchText, completionHandler: { results, isFinished in
@@ -58,7 +58,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     }
 
     // Just search the Message.Text field if it contains the searchText
-    func filterContentForSearchTextV2(searchText: String) {
+    func filterContentForSearchTextV2(_ searchText: String) {
         EVLog("Filter for \(searchText)")
         networkSpinner(1)
         EVCloudKitDao.publicDB.query(Message(), predicate: NSPredicate(format: "Text BEGINSWITH %@", searchText), completionHandler: { results, isFinished in
@@ -75,28 +75,28 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         })
     }
 
-    func networkSpinner(adjust: Int) {
+    func networkSpinner(_ adjust: Int) {
         self.queryRunning = self.queryRunning + adjust
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = self.queryRunning > 0
+        UIApplication.shared.isNetworkActivityIndicatorVisible = self.queryRunning > 0
     }
 
     // ------------------------------------------------------------------------
     // MARK: - tableView - Search result items
     // ------------------------------------------------------------------------
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return data.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "Folowin_Search_Cell";
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+        var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
                 if cell == nil {
-            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellIdentifier)
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
             cell.selectedBackgroundView = UIView()
         }
 
-        let item: Message = data[indexPath.row]
+        let item: Message = data[(indexPath as NSIndexPath).row]
         cell.textLabel?.text = item.Text
         return cell;
     }

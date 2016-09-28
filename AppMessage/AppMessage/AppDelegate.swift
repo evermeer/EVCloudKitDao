@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         // Only call this line once. It will make sure the recordType are there in iCloud.
         // After this, go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // During development you will probably play around with subscriptins.
         // To be sure you do not have any old subscriptions left over,  just clear them all on startup.
-        if EVCloudKitDao.publicDB.accountStatus == .Available {
+        if EVCloudKitDao.publicDB.accountStatus == .available {
             EVCloudKitDao.publicDB.unsubscribeAll( { count in
                 EVLog("\(count) subscriptions removed")
             })            
@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // The app is alredy loaded and the .connect calls are setup. So we can process any notifications that have arived and not processed. 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         EVCloudData.publicDB.fetchChangeNotifications({
             EVLog("All change notifications are processed")
             EVCloudKitDao.publicDB.setBadgeCounter(0)
@@ -56,18 +56,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     #else
     // Process al notifications even if we are in the background. tvOS will not have this event
     // Make sure you enable background notifications in the app settings. (entitlements: pushnotifications and  backgrounds modes - notifications plus background fetch)
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         EVLog("Push received")
         EVCloudData.publicDB.didReceiveRemoteNotification(userInfo, executeIfNonQuery: {
             EVLog("Not a CloudKit Query notification.")
             }, completed: {
                 EVLog("All notifications are processed")
-                completionHandler(.NewData)
+                completionHandler(.newData)
         })
     }
     #endif
     
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Just to make sure that all updates are written do the cache.
         EVCloudData.publicDB.backupAllData()
     }

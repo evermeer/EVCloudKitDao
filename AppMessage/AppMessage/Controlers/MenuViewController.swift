@@ -9,7 +9,7 @@ import UIKit
 
 class MenuViewController: SSASideMenu {
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupMenu()
     }
@@ -17,8 +17,8 @@ class MenuViewController: SSASideMenu {
     func setupMenu() {
         // Setting menu properties
         self.animationDuration = 0.2
-        self.contentViewShadowColor = .blackColor()
-        self.contentViewShadowOffset = CGSizeMake(0, 0)
+        self.contentViewShadowColor = .black
+        self.contentViewShadowOffset = CGSize(width: 0, height: 0)
         self.contentViewShadowOpacity = 0.6
         self.contentViewShadowRadius = 12
         self.contentViewShadowEnabled = true

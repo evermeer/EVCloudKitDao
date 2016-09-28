@@ -3,11 +3,9 @@ use_frameworks!
 
 target 'AppMessage' do
     platform :ios, '8.0'
-    pod 'EVReflection'
+    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift3'
     pod 'SwiftLocation'
-    #pod 'Async', :git => 'https://github.com/duemunk/Async.git', :branch => 'feature/Swift_2.0'
     pod 'AsyncSwift'
-    pod 'PermissionScope', :git => 'https://github.com/nickoneill/PermissionScope.git', :branch => 'cloudkit'
 
     pod 'JSQMessagesViewController'
     pod 'CRToast'
@@ -19,10 +17,10 @@ end
 
 target 'OSXTest' do
     platform :osx, '10.10'
-    pod 'EVReflection'
+    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift3'
 end
 
 target 'tvOSTest' do
     platform :tvos, '9.0'
-    pod 'EVReflection'
+    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift3'
 end

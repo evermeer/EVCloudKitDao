@@ -15,12 +15,12 @@ Replacement function for NSLog that will also output the filename, linenumber an
 - parameter line: Will be auto populated by the line number in the file from where this function is called
 - parameter funcname: Will be auto populated by the function name from where this function is called
 */
-public func EVLog<T>(object: T, filename: String = #file, line: Int = #line, funcname: String = #function) {
-    let dateFormatter = NSDateFormatter()
+public func EVLog<T>(_ object: T, filename: String = #file, line: Int = #line, funcname: String = #function) {
+    let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "MM/dd/yyyy HH:mm:ss:SSS"
-    let process = NSProcessInfo.processInfo()
+    let process = ProcessInfo.processInfo
     let threadId = "." //NSThread.currentThread().threadDictionary
-    print("\(dateFormatter.stringFromDate(NSDate())) \(process.processName))[\(process.processIdentifier):\(threadId)] \((filename as NSString).lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
+    print("\(dateFormatter.string(from: Date())) \(process.processName))[\(process.processIdentifier):\(threadId)] \((filename as NSString).lastPathComponent)(\(line)) \(funcname):\r\t\(object)\n")
 }
 
 /**
@@ -28,13 +28,12 @@ Make sure the file is not backed up to iCloud
 
 - parameter filePath: the url of the file we want to set the attribute for
 */
-public func addSkipBackupAttributeToItemAtPath(filePath:String) {
-    if let url:NSURL = NSURL(fileURLWithPath: filePath) {
-        do {
-            try url.setResourceValue(NSNumber(bool: true), forKey: NSURLIsExcludedFromBackupKey)
-        } catch _ as NSError {
-            EVLog("ERROR: Could not set 'exclude from backup' attribute for file \(filePath)\n\\tERROR:(error?.description)")
-        }
+public func addSkipBackupAttributeToItemAtPath(_ filePath:String) {
+    let url:URL = URL(fileURLWithPath: filePath)
+    do {
+        try (url as NSURL).setResourceValue(NSNumber(value: true as Bool), forKey: URLResourceKey.isExcludedFromBackupKey)
+    } catch {
+        EVLog("ERROR: Could not set 'exclude from backup' attribute for file \(filePath)\n\\tERROR:(error?.description)")
     }
 }
 

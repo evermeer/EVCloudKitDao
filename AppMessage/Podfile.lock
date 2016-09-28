@@ -1,12 +1,11 @@
 PODS:
-  - AsyncSwift (1.7.3)
+  - AsyncSwift (2.0.0)
   - CRToast (0.0.9)
-  - EVReflection (2.42.2)
+  - EVReflection (3.0.3)
   - JSQMessagesViewController (7.3.4):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
-  - PermissionScope (0.7)
-  - SwiftLocation (0.9.0)
+  - SwiftLocation (1.1.0)
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
@@ -14,36 +13,34 @@ PODS:
 DEPENDENCIES:
   - AsyncSwift
   - CRToast
-  - EVReflection
+  - EVReflection (from `https://github.com/evermeer/EVReflection.git`, branch `Swift3`)
   - JSQMessagesViewController
-  - PermissionScope (from `https://github.com/nickoneill/PermissionScope.git`, branch `cloudkit`)
   - SwiftLocation
   - UIImage-Resize
   - UzysAssetsPickerController
   - VIPhotoView
 
 EXTERNAL SOURCES:
-  PermissionScope:
-    :branch: cloudkit
-    :git: https://github.com/nickoneill/PermissionScope.git
+  EVReflection:
+    :branch: Swift3
+    :git: https://github.com/evermeer/EVReflection.git
 
 CHECKOUT OPTIONS:
-  PermissionScope:
-    :commit: 6053912a1d1ef814fdb81b33aad3d50d32ca799a
-    :git: https://github.com/nickoneill/PermissionScope.git
+  EVReflection:
+    :commit: ad676ba078b4d41742d0f1678127e4d564bb30ac
+    :git: https://github.com/evermeer/EVReflection.git
 
 SPEC CHECKSUMS:
-  AsyncSwift: f3ad5dd077bbd1477e7573e87071a532fedaca1a
+  AsyncSwift: 6ba6ed9ecb51344458063f7c86fe447ab824e313
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVReflection: 82ca5595f84e51474017eb11ebecc4a67bb151cb
+  EVReflection: affca845a5584b102b84a9568f7a4cb65ad4b8e1
   JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
-  PermissionScope: 1d27791185cca10c26f84d1aab905117dde50f39
-  SwiftLocation: f18e71300a89f2a81001c9615b7694150e6b84de
+  SwiftLocation: f1bf5acb7992dd96c6f773c383f9c0479f07727d
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
 
-PODFILE CHECKSUM: 6d9aeea31a80cdd639a154c69e2be5e4d0822389
+PODFILE CHECKSUM: f0988ab15db58a52180efda9307b517346de7605
 
-COCOAPODS: 1.0.0
+COCOAPODS: 1.1.0.rc.2

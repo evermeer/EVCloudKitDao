@@ -25,31 +25,31 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     func setupContactsTableViewLayout() {
-        let rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
+        let rect = CGRect(x: 0, y: ((self.view.frame.size.height - 54 * 5) / 2.0), width: self.view.frame.size.width, height: 54 * 5)
         self.tableView = UITableView(frame: rect)
-        tableView.autoresizingMask = [.FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleWidth]
+        tableView.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin, .flexibleWidth]
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.opaque = false
-        tableView.backgroundColor = UIColor.clearColor()
+        tableView.isOpaque = false
+        tableView.backgroundColor = UIColor.clear
         tableView.backgroundView = nil
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         tableView.bounces = true
         tableView.scrollsToTop = true
         self.view.addSubview(self.tableView)
     }
 
-    func loadContacts(retryCount:Double = 1) {        
+    func loadContacts(_ retryCount:Double = 1) {        
         // Look who of our contact is also using this app.        
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
-                EVLog("AllContactUserInfo count = \(users.count)");
+                EVLog("AllContactUserInfo count = \(users?.count)");
                 Async.main{
                     self.contacts = users
                     self.tableView.reloadData()
                 }
             }, errorHandler: { error in
                 switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
-                case .Retry(let timeToWait):
+                case .retry(let timeToWait):
                     Async.background(after: timeToWait) {
                         self.loadContacts(retryCount + 1)
                     }
@@ -65,41 +65,41 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     // ------------------------------------------------------------------------
 
 
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 54
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return contacts.count
     }
 
     var cellIdentifier = "RightMenuCell";
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         if cell == nil {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
-            cell.backgroundColor = UIColor.clearColor()
+            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+            cell.backgroundColor = UIColor.clear
             cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 21)
-            cell.textLabel?.textColor = UIColor.whiteColor()
-            cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
+            cell.textLabel?.textColor = UIColor.white
+            cell.textLabel?.highlightedTextColor = UIColor.lightGray
             cell.selectedBackgroundView = UIView()
-            cell.textLabel?.textAlignment = .Right
+            cell.textLabel?.textAlignment = .right
         }
         var firstName: String = ""
         var lastName: String = ""
         if #available(iOS 9.0, *) {
-            firstName = contacts[indexPath.row].displayContact?.givenName ?? ""
-            lastName = contacts[indexPath.row].displayContact?.familyName ?? ""
+            firstName = contacts[(indexPath as NSIndexPath).row].displayContact?.givenName ?? ""
+            lastName = contacts[(indexPath as NSIndexPath).row].displayContact?.familyName ?? ""
         } else {
-            firstName = contacts[indexPath.row].firstName ?? ""
-            lastName = contacts[indexPath.row].lastName ?? ""
+            firstName = contacts[(indexPath as NSIndexPath).row].firstName ?? ""
+            lastName = contacts[(indexPath as NSIndexPath).row].lastName ?? ""
         }
         
         cell.textLabel?.text = "\(firstName) \(lastName)" ;
         return cell;
     }
 
-    func tableView(tableView: UITableView,didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        leftMenu.startChat(self.contacts[indexPath.row])
+    func tableView(_ tableView: UITableView,didSelectRowAt indexPath: IndexPath) {
+        leftMenu.startChat(self.contacts[(indexPath as NSIndexPath).row])
     }
 }

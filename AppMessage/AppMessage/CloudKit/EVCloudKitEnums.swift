@@ -28,18 +28,18 @@ internal class DaoContainerWrapper {
  The functional statuses for a CloudKit error
  */
 public enum HandleCloudKitErrorAs {
-    case Success,
-    Retry(afterSeconds:Double),
-    RecoverableError,
-    Fail
+    case success,
+    retry(afterSeconds:Double),
+    recoverableError,
+    fail
 }
 
 /**
 Indicates if a dao is setup as private or public
 */
 public enum InstanceType {
-    case IsPrivate,
-    IsPublic
+    case isPrivate,
+    isPublic
 }
 
 
@@ -55,15 +55,15 @@ public enum CachingStrategy {
     /**
      Do not cache this
      */
-    case None,
+    case none,
     /**
     Always write changes to the cache immediately
     */
-    Direct,
+    direct,
     /**
     Only write to the cache once every .. minutes when there are changes (initial query result will always be written directly)
     */
-    Every(minute:Int)
+    every(minute:Int)
 }
 
 /**
@@ -73,27 +73,27 @@ public enum DataChangeNotificationType {
     /**
      Data retrieval is progressing/finished
      */
-    case Completed,
+    case completed,
     /**
     New item has been inserted
     */
-    Inserted,
+    inserted,
     /**
     Existing item has been updated
     */
-    Updated,
+    updated,
     /**
     Notification of any data modification (completion, inserted, updated or deleted)
     */
-    DataChanged,
+    dataChanged,
     /**
     Existing item has been deleted
     */
-    Deleted,
+    deleted,
     /**
     An error occurred while attempting a data operation
     */
-    Error
+    error
 }
 
 /**
@@ -103,19 +103,19 @@ public enum CompletionStatus: Int {
     /**
      The results were returned from the local cache
      */
-    case FromCache,
+    case fromCache,
     /**
     The requested data wasn't found in the local cache. It will be requested from iCloud
     */
-    Retrieving,
+    retrieving,
     /**
     Some data was received from iCloud, but more results are available if wanted (return true to request more results)
     */
-    PartialResult,
+    partialResult,
     /**
     All available data has been successfully retrieved from iCloud
     */
-    FinalResult
+    finalResult
 }
 
 /**
@@ -126,19 +126,19 @@ public enum CompletionStatus: Int {
  */
 func ==(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
     switch(leftPart) {
-    case .None:
+    case .none:
         switch(rightPart) {
-        case .None: return true
+        case .none: return true
         default: return false
         }
-    case .Direct:
+    case .direct:
         switch(rightPart) {
-        case .Direct: return true
+        case .direct: return true
         default: return false
         }
-    case .Every(let minutea):
+    case .every(let minutea):
         switch(rightPart) {
-        case .Every(let minuteb): return minutea == minuteb
+        case .every(let minuteb): return minutea == minuteb
         default: return false
         }
     }

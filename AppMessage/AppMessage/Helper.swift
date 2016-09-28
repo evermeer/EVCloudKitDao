@@ -12,31 +12,31 @@ import Async
 
 class Helper {
 
-    class func showMessage(message: String, color: UIColor) {
+    class func showMessage(_ message: String, color: UIColor) {
         let options: NSDictionary = [
             kCRToastTextKey : message,
-            kCRToastNotificationTypeKey : CRToastType.NavigationBar.rawValue,
-            kCRToastNotificationPresentationTypeKey : CRToastPresentationType.Cover.rawValue,
+            kCRToastNotificationTypeKey : CRToastType.navigationBar.rawValue,
+            kCRToastNotificationPresentationTypeKey : CRToastPresentationType.cover.rawValue,
             kCRToastTimeIntervalKey: 5.0,
-            kCRToastTextAlignmentKey : NSTextAlignment.Center.rawValue,
+            kCRToastTextAlignmentKey : NSTextAlignment.center.rawValue,
             kCRToastBackgroundColorKey : color,
-            kCRToastAnimationInTypeKey : CRToastAnimationType.Spring.rawValue,
-            kCRToastAnimationOutTypeKey : CRToastAnimationType.Spring.rawValue,
-            kCRToastAnimationInDirectionKey : CRToastAnimationDirection.Top.rawValue,
-            kCRToastAnimationOutDirectionKey : CRToastAnimationDirection.Bottom.rawValue,
+            kCRToastAnimationInTypeKey : CRToastAnimationType.spring.rawValue,
+            kCRToastAnimationOutTypeKey : CRToastAnimationType.spring.rawValue,
+            kCRToastAnimationInDirectionKey : CRToastAnimationDirection.top.rawValue,
+            kCRToastAnimationOutDirectionKey : CRToastAnimationDirection.bottom.rawValue,
         ]
         Async.main {
-            CRToastManager.showNotificationWithOptions(options as [NSObject : AnyObject], completionBlock: { })
+            CRToastManager.showNotification(options: options as! [AnyHashable: Any], completionBlock: { })
         }
     }
 
-    class func showError(message: String) {
+    class func showError(_ message: String) {
         EVLog("ERROR: \(message)")
-        showMessage(message, color: UIColor.redColor())
+        showMessage(message, color: UIColor.red)
     }
 
-    class func showStatus(message: String) {
+    class func showStatus(_ message: String) {
         EVLog("\(message)")
-        showMessage(message, color: UIColor.greenColor())
+        showMessage(message, color: UIColor.green)
     }
 }

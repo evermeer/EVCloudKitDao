@@ -8,6 +8,26 @@
 import Foundation
 import CloudKit
 import EVReflection
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 
 /**
@@ -23,7 +43,7 @@ private class DataContainerWrapper {
 /**
  Class for access to  Apple's CloudKit data the easiest way possible
  */
-public class EVCloudData: NSObject {
+open class EVCloudData: NSObject {
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -34,7 +54,7 @@ public class EVCloudData: NSObject {
     
     :return: The EVCloudData object
     */
-    public class var publicDB: EVCloudData {
+    open class var publicDB: EVCloudData {
         struct Static { static let instance: EVCloudData = EVCloudData() }
         return Static.instance
     }
@@ -44,7 +64,7 @@ public class EVCloudData: NSObject {
      
      :return: The EVCloudData object
      */
-    public class func sharedPublicDB() -> EVCloudData {
+    open class func sharedPublicDB() -> EVCloudData {
         return publicDB;
     }
     
@@ -53,7 +73,7 @@ public class EVCloudData: NSObject {
      
      :return: The EVCloudData object
      */
-    public class var privateDB: EVCloudData {
+    open class var privateDB: EVCloudData {
         struct Static { static let instance: EVCloudData = EVCloudData() }
         Static.instance.dao = EVCloudKitDao.privateDB
         return Static.instance
@@ -64,7 +84,7 @@ public class EVCloudData: NSObject {
      
      :return: The EVCloudData object
      */
-    public class func sharedPrivateDB() -> EVCloudData {
+    open class func sharedPrivateDB() -> EVCloudData {
         return privateDB;
     }
     
@@ -73,7 +93,7 @@ public class EVCloudData: NSObject {
      
      :return: The container wrapper class
      */
-    private class var containerWrapperInstance: DataContainerWrapper {
+    fileprivate class var containerWrapperInstance: DataContainerWrapper {
         struct Static { static var instance: DataContainerWrapper = DataContainerWrapper()}
         return Static.instance
     }
@@ -84,7 +104,7 @@ public class EVCloudData: NSObject {
      
      :return: The public container for the identifier.
      */
-    public class func publicDBForContainer(containerIdentifier: String) -> EVCloudData {
+    open class func publicDBForContainer(_ containerIdentifier: String) -> EVCloudData {
         if let containerInstance = containerWrapperInstance.publicContainers[containerIdentifier] {
             return containerInstance
         }
@@ -100,7 +120,7 @@ public class EVCloudData: NSObject {
      
      :return: The private container for the identifier.
      */
-    public class func privateDBForContainer(containerIdentifier: String) -> EVCloudData {
+    open class func privateDBForContainer(_ containerIdentifier: String) -> EVCloudData {
         if let containerInstance = containerWrapperInstance.privateContainers[containerIdentifier] {
             return containerInstance
         }
@@ -115,7 +135,7 @@ public class EVCloudData: NSObject {
      */
     override init() {        
         super.init()
-        NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: #selector(EVCloudData.backupAllData), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(EVCloudData.backupAllData), userInfo: nil, repeats: true)
     }
     
     // ------------------------------------------------------------------------
@@ -125,55 +145,55 @@ public class EVCloudData: NSObject {
     /**
     The EVCloudKitDao instance that will be used. Defaults to the publicDB
     */
-    public var dao = EVCloudKitDao.publicDB;
+    open var dao = EVCloudKitDao.publicDB;
     /**
      Save the recordType of the connection.
      */
-    public var recordType = Dictionary<String, String>()
+    open var recordType = Dictionary<String, String>()
     /**
      All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
      */
-    public var data = Dictionary<String, [EVCloudKitDataObject]>()
+    open var data = Dictionary<String, [EVCloudKitDataObject]>()
     /**
      The caching strategy for each filter for when incomming data should be written to a file
      */
-    public var cachingStrategies = Dictionary <String, CachingStrategy>()
+    open var cachingStrategies = Dictionary <String, CachingStrategy>()
     /**
      The timestamp of the last cach write for each filter
      */
-    public var cachingLastWrite = Dictionary <String, NSDate>()
+    open var cachingLastWrite = Dictionary <String, Date>()
     /**
      The number of changes since the last cache write for each filter
      */
-    public var cachingChangesCount = Dictionary <String, Int>()
+    open var cachingChangesCount = Dictionary <String, Int>()
     /**
      A dictionary of boolean flags that indicate if state change notifications should be broadcast via NSNotificationManager
      */
-    public var postNotifications = Dictionary<String, Bool>()
+    open var postNotifications = Dictionary<String, Bool>()
     /**
      A dictionary of predicates. Each filterId is a dictionary entry containing a predicate
      */
-    public var predicates = Dictionary<String, NSPredicate>()
+    open var predicates = Dictionary<String, NSPredicate>()
     /**
      A dictionary of sort orders. Each filterId is a dictionary entry containging the sortOrder for that filter.
      */
-    public var sortOrders = Dictionary<String, OrderBy>()
+    open var sortOrders = Dictionary<String, OrderBy>()
     /**
      A dictionary of insert event handlers. Each filterId is a dictionary entry containing a insert event handler
      */
-    public var insertedHandlers = Dictionary<String, (item: EVCloudKitDataObject) -> Void>()
+    open var insertedHandlers = Dictionary<String, (_ item: EVCloudKitDataObject) -> Void>()
     /**
      A dictionary of update event handlers. Each filterId is a dictionary entry containing a update event handler
      */
-    public var updateHandlers = Dictionary<String, (item: EVCloudKitDataObject, dataIndex: Int) -> Void>()
+    open var updateHandlers = Dictionary<String, (_ item: EVCloudKitDataObject, _ dataIndex: Int) -> Void>()
     /**
      A dictionary of dataChanged event handlers. Each filterId is a dictionary entry containing a dataChanged event handler
      */
-    public var dataChangedHandlers = Dictionary<String, () -> Void>()
+    open var dataChangedHandlers = Dictionary<String, () -> Void>()
     /**
      A dictionary of delete event handlers. Each filterId is a dictionary entry containing a delete event handler
      */
-    public var deletedHandlers = Dictionary<String, (recordId: String, dataIndex: Int) -> Void>()
+    open var deletedHandlers = Dictionary<String, (_ recordId: String, _ dataIndex: Int) -> Void>()
     
     
     // ------------------------------------------------------------------------
@@ -185,17 +205,17 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: The filter id for the data that needs to be written to a file
      */
-    private func backupDataWithStrategyTest(filterId: String) {
+    fileprivate func backupDataWithStrategyTest(_ filterId: String) {
         switch cachingStrategies[filterId]! {
-        case CachingStrategy.None:
+        case CachingStrategy.none:
             return
-        case CachingStrategy.Direct:
+        case CachingStrategy.direct:
             if cachingChangesCount[filterId] > 0 {
                 backupDataForFilter(filterId)
             }
-        case CachingStrategy.Every(let minute):
+        case CachingStrategy.every(let minute):
             if cachingChangesCount[filterId] > 0 {
-                if dateDiffInMinutes(cachingLastWrite[filterId]!, toDate: NSDate()) >= minute {
+                if dateDiffInMinutes(cachingLastWrite[filterId]!, toDate: Date()) >= minute {
                     backupDataForFilter(filterId)
                 }
             }
@@ -207,7 +227,7 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: The filter id for the data that was received from CloudKit
      */
-    private func dataIsUpdated(filterId: String) {
+    fileprivate func dataIsUpdated(_ filterId: String) {
         cachingChangesCount[filterId] = (cachingChangesCount[filterId] ?? 0) + 1
         backupDataWithStrategyTest(filterId)
     }
@@ -218,14 +238,14 @@ public class EVCloudData: NSObject {
      - parameter fromDate: The first date for the comparison
      - parameter toDate: The second date for the comparison
      */
-    private func dateDiffInMinutes(fromDate: NSDate, toDate: NSDate) -> Int {
-        return NSCalendar.currentCalendar().components(.Minute, fromDate: fromDate, toDate: toDate, options: NSCalendarOptions(rawValue: 0)).minute
+    fileprivate func dateDiffInMinutes(_ fromDate: Date, toDate: Date) -> Int {
+        return (Calendar.current as NSCalendar).components(.minute, from: fromDate, to: toDate, options: NSCalendar.Options(rawValue: 0)).minute!
     }
     
     /**
      Make sure that all data is backed up while taking into account the selected CachingStrategy. You should call this method right before exiting your app.
      */
-    public func backupAllData() {
+    open func backupAllData() {
         for (key, _) in cachingLastWrite {
             backupDataWithStrategyTest(key)
         }
@@ -234,7 +254,7 @@ public class EVCloudData: NSObject {
     /**
      Restore all previously backed up data for all initialized connections. Be aware that these already should have been restored.
      */
-    public func restoreAllData() {
+    open func restoreAllData() {
         for (key, _) in cachingLastWrite {
             restoreDataForFilter(key)
         }
@@ -243,7 +263,7 @@ public class EVCloudData: NSObject {
     /**
      Remove the backup files for all the initialized connections.
      */
-    public func removeAllBackups() {
+    open func removeAllBackups() {
         for (key, _) in cachingLastWrite {
             removeBackupForFilter(key)
         }
@@ -254,10 +274,10 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: The filter id for the data that needs to be written to a file
      */
-    public func backupDataForFilter(filterId: String) {
+    open func backupDataForFilter(_ filterId: String) {
         if let theData = data[filterId] {
-            dao.backupData(theData, toFile: "Filter_\(filterId).bak" )
-            self.cachingLastWrite[filterId] = NSDate()
+            dao.backupData(theData as AnyObject, toFile: "Filter_\(filterId).bak" )
+            self.cachingLastWrite[filterId] = Date()
             self.cachingChangesCount[filterId] = 0
         }
     }
@@ -267,7 +287,8 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: The filter id for the data that will be restored from file
      */
-    public func restoreDataForFilter(filterId: String) -> Bool {
+    @discardableResult
+    open func restoreDataForFilter(_ filterId: String) -> Bool {
         if let theData = dao.restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
             data[filterId] = theData
             return true
@@ -280,7 +301,7 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: The filter id for the backup file that will be removed
      */
-    public func removeBackupForFilter(filterId: String) {
+    open func removeBackupForFilter(_ filterId: String) {
         dao.removeBackup("Filter_\(filterId).bak")
     }
         
@@ -296,9 +317,9 @@ public class EVCloudData: NSObject {
     
     - returns: ?
     */
-    public class func getNotificationCenterId(filterId: String, changeType: DataChangeNotificationType? = nil) -> String {
+    open class func getNotificationCenterId(_ filterId: String, changeType: DataChangeNotificationType? = nil) -> String {
         if changeType == nil {
-            return "NL.EVICT.CloudKit.\(filterId).\(DataChangeNotificationType.DataChanged)"
+            return "NL.EVICT.CloudKit.\(filterId).\(DataChangeNotificationType.dataChanged)"
         } else {
             return "NL.EVICT.CloudKit.\(filterId).\(changeType!)"
         }
@@ -312,11 +333,11 @@ public class EVCloudData: NSObject {
      
      - returns: ?
      */
-    public class func getCompletionStatusFromNotification(notification: NSNotification) -> CompletionStatus? {
+    open class func getCompletionStatusFromNotification(_ notification: Notification) -> CompletionStatus? {
         var result: CompletionStatus?
         
-        if notification.userInfo?["status"] != nil {
-            result = CompletionStatus(rawValue: Int((notification.userInfo?["status"])! as! NSNumber))
+        if (notification as NSNotification).userInfo?["status"] != nil {
+            result = CompletionStatus(rawValue: Int(((notification as NSNotification).userInfo?["status"])! as! NSNumber))
         }
         
         return result
@@ -329,12 +350,12 @@ public class EVCloudData: NSObject {
      - parameter results:  ?
      - parameter status:   ?
      */
-    private func postDataCompletedNotification<T:EVCloudKitDataObject>(filterId: String, results: [T], status: CompletionStatus) {
+    fileprivate func postDataCompletedNotification<T:EVCloudKitDataObject>(_ filterId: String, results: [T], status: CompletionStatus) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Completed)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "results":results, "status": status.rawValue])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.completed)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationId), object: self, userInfo: ["filterId": filterId, "results":results, "status": status.rawValue])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -346,12 +367,12 @@ public class EVCloudData: NSObject {
      - parameter filterId: ?
      - parameter item:     ?
      */
-    private func postDataInsertedNotification<T:EVCloudKitDataObject>(filterId: String, item: T) {
+    fileprivate func postDataInsertedNotification<T:EVCloudKitDataObject>(_ filterId: String, item: T) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Inserted)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "item":item])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.inserted)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationId), object: self, userInfo: ["filterId": filterId, "item":item])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -364,12 +385,12 @@ public class EVCloudData: NSObject {
      - parameter item:      ?
      - parameter dataIndex: ?
      */
-    private func postDataUpdatedNotification<T:EVCloudKitDataObject>(filterId: String, item: T, dataIndex: Int) {
+    fileprivate func postDataUpdatedNotification<T:EVCloudKitDataObject>(_ filterId: String, item: T, dataIndex: Int) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Updated)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "item":item, "dataIndex":dataIndex])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.updated)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationId), object: self, userInfo: ["filterId": filterId, "item":item, "dataIndex":dataIndex])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -380,12 +401,12 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: ?
      */
-    private func postDataChangeNotification(filterId: String) {
+    fileprivate func postDataChangeNotification(_ filterId: String) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.DataChanged)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.dataChanged)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationId), object: self, userInfo: ["filterId": filterId])
         }
     }
     
@@ -396,12 +417,12 @@ public class EVCloudData: NSObject {
      - parameter recordId:  ?
      - parameter dataIndex: ?
      */
-    private func postDataDeletedNotification(filterId: String, recordId: String, dataIndex: Int) {
+    fileprivate func postDataDeletedNotification(_ filterId: String, recordId: String, dataIndex: Int) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Deleted)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "recordId":recordId, "dataIndex":dataIndex])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.deleted)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationId), object: self, userInfo: ["filterId": filterId, "recordId":recordId, "dataIndex":dataIndex])
             // Post universal "data changed" notification
             postDataChangeNotification(filterId)
         }
@@ -413,12 +434,12 @@ public class EVCloudData: NSObject {
      - parameter filterId: ?
      - parameter error:    ?
      */
-    private func postDataErrorNotification(filterId: String, error: NSError) {
+    fileprivate func postDataErrorNotification(_ filterId: String, error: Error) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
-            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.Error)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationId, object: self, userInfo: ["filterId": filterId, "error":error])
+            let notificationId = EVCloudData.getNotificationCenterId(filterId, changeType: DataChangeNotificationType.error)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: notificationId), object: self, userInfo: ["filterId": filterId, "error":error])
             // No universal "data changed" notification on errors
         }
     }
@@ -435,12 +456,12 @@ public class EVCloudData: NSObject {
     - parameter item: The object that will be processed
     :return: No return value
     */
-    private func upsertObject(recordId: String, item: EVCloudKitDataObject) {
+    fileprivate func upsertObject(_ recordId: String, item: EVCloudKitDataObject) {
         EVLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
                 let itemID: Int? = data[filter]!.EVindexOf {i in return i.recordID.recordName == recordId}
-                if predicate.evaluateWithObject(item) {
+                if predicate.evaluate(with: item) {
                     var existingItem: EVCloudKitDataObject?
                     if itemID != nil && itemID < data[filter]!.count {
                         existingItem = data[filter]![itemID!]
@@ -448,19 +469,19 @@ public class EVCloudData: NSObject {
                     if existingItem != nil  {
                         EVLog("Update object for filter \(filter)")
                         EVReflection.setPropertiesfromDictionary(item.toDictionary(), anyObject: data[filter]![itemID!])                        
-                        data[filter] = (data[filter]! as NSArray).sortedArrayUsingDescriptors(sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
-                        NSOperationQueue.mainQueue().addOperationWithBlock {
-                            (self.updateHandlers[filter]!)(item: item, dataIndex:itemID!)
+                        data[filter] = (data[filter]! as NSArray).sortedArray(using: sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
+                        OperationQueue.main.addOperation {
+                            (self.updateHandlers[filter]!)(item, itemID!)
                             (self.dataChangedHandlers[filter]!)()
                             self.postDataUpdatedNotification(filter, item: item, dataIndex: itemID!)
                         }
                         dataIsUpdated(filter)
                     } else {
                         EVLog("Insert object for filter \(filter)")
-                        data[filter]!.insert(item, atIndex: 0)
-                        data[filter] = (data[filter]! as NSArray).sortedArrayUsingDescriptors(sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
-                        NSOperationQueue.mainQueue().addOperationWithBlock {
-                            (self.insertedHandlers[filter]!)(item: item)
+                        data[filter]!.insert(item, at: 0)
+                        data[filter] = (data[filter]! as NSArray).sortedArray(using: sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
+                        OperationQueue.main.addOperation {
+                            (self.insertedHandlers[filter]!)(item)
                             (self.dataChangedHandlers[filter]!)()
                             self.postDataInsertedNotification(filter, item: item)
                         }
@@ -469,9 +490,9 @@ public class EVCloudData: NSObject {
                 } else { // An update of a field that is used in the predicate could trigger a delete from that set.
                     EVLog("Object not for filter \(filter)")
                     if itemID != nil {
-                        data[filter]!.removeAtIndex(itemID!)
-                        NSOperationQueue.mainQueue().addOperationWithBlock {
-                            (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID!)
+                        data[filter]!.remove(at: itemID!)
+                        OperationQueue.main.addOperation {
+                            (self.deletedHandlers[filter]!)(recordId, itemID!)
                             (self.dataChangedHandlers[filter]!)()
                             self.postDataDeletedNotification(filter, recordId: recordId, dataIndex: itemID!)
                         }
@@ -488,12 +509,12 @@ public class EVCloudData: NSObject {
      - parameter recordId: The recordId of the object that will be deleted
      :return: No return value
      */
-    private func deleteObject(recordId: String) {
+    fileprivate func deleteObject(_ recordId: String) {
         for (filter, _) in self.data {
             if let itemID: Int = data[filter]?.EVindexOf({item in return item.recordID.recordName == recordId}) {
-                data[filter]!.removeAtIndex(itemID)
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    (self.deletedHandlers[filter]!)(recordId: recordId, dataIndex:itemID)
+                data[filter]!.remove(at: itemID)
+                OperationQueue.main.addOperation {
+                    (self.deletedHandlers[filter]!)(recordId, itemID)
                     (self.dataChangedHandlers[filter]!)()
                     self.postDataDeletedNotification(filter, recordId: recordId, dataIndex: itemID)
                 }
@@ -515,15 +536,15 @@ public class EVCloudData: NSObject {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:(error: NSError) -> Void) {
+    open func getItem(_ recordId: String, completionHandler: @escaping (_ result: EVCloudKitDataObject) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
         dao.getItem(recordId, completionHandler: { result in
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            OperationQueue.main.addOperation {
                 self.upsertObject(result.recordID.recordName, item: result)
-                completionHandler(result: result)
+                completionHandler(result)
             }
             }, errorHandler: {error in
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    errorHandler(error: error)
+                OperationQueue.main.addOperation {
+                    errorHandler(error)
                 }
         })
     }
@@ -536,8 +557,8 @@ public class EVCloudData: NSObject {
      - parameter errorHandler: The function that will be called when there was an error
      :return: No return value
      */
-    public func saveItem<T:EVCloudKitDataObject>(item: T, completionHandler: (item: T) -> Void, errorHandler:(error: NSError) -> Void) {
-        NSOperationQueue().addOperationWithBlock() {
+    open func saveItem<T:EVCloudKitDataObject>(_ item: T, completionHandler: @escaping (_ item: T) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
+        OperationQueue().addOperation() {
             self.upsertObject(item.recordID.recordName, item: item)
         }
         dao.saveItem(item, completionHandler: { record in
@@ -547,13 +568,13 @@ public class EVCloudData: NSObject {
                 item.lastModifiedUserRecordID = savedItem.lastModifiedUserRecordID
                 item.modificationDate = savedItem.modificationDate
                 item.encodedSystemFields = savedItem.encodedSystemFields
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    completionHandler(item: savedItem)
+                OperationQueue.main.addOperation {
+                    completionHandler(savedItem)
                 }
             }
             }, errorHandler: {error in
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    errorHandler(error: error)
+                OperationQueue.main.addOperation {
+                    errorHandler(error)
                 }
         })
     }
@@ -566,16 +587,16 @@ public class EVCloudData: NSObject {
      - parameter errorHandler: The function that will be called when there was an error
      :return: No return value
      */
-    public func deleteItem(recordId: String, completionHandler: (recordId: CKRecordID) -> Void, errorHandler:(error: NSError) -> Void) {
+    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordId: CKRecordID) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
         self.deleteObject(recordId)
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-                completionHandler(recordId: recordId)
+            OperationQueue.main.addOperation {
+                completionHandler(recordId)
             }
             }, errorHandler: {error in
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    errorHandler(error: error)
+                OperationQueue.main.addOperation {
+                    errorHandler(error)
                 }
         })
     }
@@ -602,20 +623,21 @@ public class EVCloudData: NSObject {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func connect<T:EVCloudKitDataObject>(
-        type: T,
+    @discardableResult
+    open func connect<T:EVCloudKitDataObject>(
+        _ type: T,
         predicate: NSPredicate,
         orderBy: OrderBy = Descending(field: "creationDate"),
         filterId: String,
-        cachingStrategy: CachingStrategy = CachingStrategy.Direct,
+        cachingStrategy: CachingStrategy = CachingStrategy.direct,
         postNotifications: Bool? = nil,
-        configureNotificationInfo:((notificationInfo:CKNotificationInfo ) -> Void)? = nil,
-        completionHandler: ((results: [T], status: CompletionStatus) -> Bool)? = nil,
-        insertedHandler:((item: T) -> Void)? = nil,
-        updatedHandler:((item: T, dataIndex: Int) -> Void)? = nil,
-        deletedHandler:((recordId: String, dataIndex: Int) -> Void)? = nil,
+        configureNotificationInfo:((_ notificationInfo:CKNotificationInfo ) -> Void)? = nil,
+        completionHandler: ((_ results: [T], _ status: CompletionStatus) -> Bool)? = nil,
+        insertedHandler:((_ item: T) -> Void)? = nil,
+        updatedHandler:((_ item: T, _ dataIndex: Int) -> Void)? = nil,
+        deletedHandler:((_ recordId: String, _ dataIndex: Int) -> Void)? = nil,
         dataChangedHandler:(() -> Void)? = nil,
-        errorHandler:((error: NSError) -> Void)? = nil
+        errorHandler:((_ error: Error) -> Void)? = nil
         ) -> CKQueryOperation {
             // Set the post notifications flag for this filter ID before checking the cache
             if postNotifications != nil && postNotifications! {
@@ -623,11 +645,11 @@ public class EVCloudData: NSObject {
             }
             
             // If we have a cache for this filter, then first return that.
-            if cachingStrategy != CachingStrategy.None  && restoreDataForFilter(filterId) {
+            if cachingStrategy != CachingStrategy.none  && restoreDataForFilter(filterId) {
                 if let filterData = self.data[filterId] as? [T] {
-                    postDataCompletedNotification(filterId, results: filterData, status: .FromCache)
+                    postDataCompletedNotification(filterId, results: filterData, status: .fromCache)
                     if let handler = completionHandler {
-                        handler(results: filterData, status: .FromCache)
+                        let _ = handler(filterData, .fromCache)
                     }
                 }
                 if let handler = dataChangedHandler {
@@ -635,9 +657,9 @@ public class EVCloudData: NSObject {
                 }
             } else {
                 if let handler = completionHandler {
-                    handler(results: [], status: .Retrieving)
+                    let _ = handler([], .retrieving)
                 }
-                postDataCompletedNotification(filterId, results: [], status: .Retrieving)
+                postDataCompletedNotification(filterId, results: [], status: .retrieving)
             }
             
             // setting the connection properties
@@ -647,39 +669,39 @@ public class EVCloudData: NSObject {
             self.recordType[filterId] = EVReflection.swiftStringFromClass(type)
             self.predicates[filterId] = predicate
             self.sortOrders[filterId] = orderBy
-            self.cachingLastWrite[filterId] = NSDate()
+            self.cachingLastWrite[filterId] = Date()
             self.cachingChangesCount[filterId] = 0
             self.cachingStrategies[filterId] = cachingStrategy
             
             // Wrapping (Type and optional) the generic function so that we can add it to the collection and prevent nil reference exceptions
             if insertedHandler != nil {
-                func insertedHandlerWrapper(item: EVCloudKitDataObject) -> Void {
+                func insertedHandlerWrapper(_ item: EVCloudKitDataObject) -> Void {
                     if let insertedItem = item as? T {
-                        insertedHandler!(item: insertedItem)
+                        insertedHandler!(insertedItem)
                     }
                 }
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             } else {
-                func insertedHandlerWrapper(item: EVCloudKitDataObject) -> Void { }
+                func insertedHandlerWrapper(_ item: EVCloudKitDataObject) -> Void { }
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             }
             
             if updatedHandler != nil {
-                func updatedHandlerWrapper(item: EVCloudKitDataObject, dataIndex: Int) -> Void {
+                func updatedHandlerWrapper(_ item: EVCloudKitDataObject, dataIndex: Int) -> Void {
                     if let updatedItem = item as? T {
-                        updatedHandler!(item: updatedItem, dataIndex: dataIndex)
+                        updatedHandler!(updatedItem, dataIndex)
                     }
                 }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
             } else {
-                func updatedHandlerWrapper(item: EVCloudKitDataObject, dataIndex: Int) -> Void { }
+                func updatedHandlerWrapper(_ item: EVCloudKitDataObject, dataIndex: Int) -> Void { }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
             }
             
             if deletedHandler != nil {
                 self.deletedHandlers[filterId] = deletedHandler!
             } else {
-                func emptyDeletedHandler(recordId: String, dataIndex: Int) -> Void {}
+                func emptyDeletedHandler(_ recordId: String, dataIndex: Int) -> Void {}
                 self.deletedHandlers[filterId] = emptyDeletedHandler
             }
             
@@ -699,27 +721,27 @@ public class EVCloudData: NSObject {
                 
                 var continueReading: Bool = false
                 self.data[filterId] = results
-                let sema = dispatch_semaphore_create(0)
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    let status = isFinished ? CompletionStatus.FinalResult : CompletionStatus.PartialResult
+                let sema = DispatchSemaphore(value: 0)
+                OperationQueue.main.addOperation {
+                    let status = isFinished ? CompletionStatus.finalResult : CompletionStatus.partialResult
                     self.postDataCompletedNotification(filterId, results: results, status: status)
                     if completionHandler != nil {
-                        continueReading = completionHandler!(results: results, status: status)
+                        continueReading = completionHandler!(results, status)
                     }
-                    dispatch_semaphore_signal(sema);
+                    sema.signal();
                     if dataChangedHandler != nil {
                         dataChangedHandler!()
                     }
                 }
-                if self.cachingStrategies[filterId]! != CachingStrategy.None {
+                if self.cachingStrategies[filterId]! != CachingStrategy.none {
                     self.backupDataForFilter(filterId)
                 }
-                dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+                let _ = sema.wait(timeout: DispatchTime.distantFuture);
                 return continueReading
                 }, errorHandler: {error in
-                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                    OperationQueue.main.addOperation {
                         if errorHandler != nil {
-                            errorHandler!(error: error)
+                            errorHandler!(error)
                         }
                     }
             })
@@ -730,14 +752,14 @@ public class EVCloudData: NSObject {
      
      - parameter filterId: The filterId
      */
-    public func disconnect(filterId: String) {
+    open func disconnect(_ filterId: String) {
         let changed = dataChangedHandlers[filterId]
-        insertedHandlers.removeValueForKey(filterId)
-        updateHandlers.removeValueForKey(filterId)
-        deletedHandlers.removeValueForKey(filterId)
-        dataChangedHandlers.removeValueForKey(filterId)
-        predicates.removeValueForKey(filterId)
-        data.removeValueForKey(filterId)
+        insertedHandlers.removeValue(forKey: filterId)
+        updateHandlers.removeValue(forKey: filterId)
+        deletedHandlers.removeValue(forKey: filterId)
+        dataChangedHandlers.removeValue(forKey: filterId)
+        predicates.removeValue(forKey: filterId)
+        data.removeValue(forKey: filterId)
         if changed != nil {
             changed!()
         }
@@ -746,7 +768,7 @@ public class EVCloudData: NSObject {
     /**
      Disconnect all connections
      */
-    public func disconnectAll() {
+    open func disconnectAll() {
         for (key, _) in data {
             disconnect(key)
         }
@@ -765,7 +787,7 @@ public class EVCloudData: NSObject {
     - parameter completed: Executed when all notifications are processed
     :return: No return value
     */
-    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject], executeIfNonQuery:() -> Void, completed:()-> Void) {
+    open func didReceiveRemoteNotification(_ userInfo: [AnyHashable: Any], executeIfNonQuery:() -> Void, completed:@escaping ()-> Void) {
         dao.didReceiveRemoteNotification(userInfo, executeIfNonQuery: executeIfNonQuery, inserted: {recordId, item in
             self.upsertObject(recordId, item: item)
             }, updated: {recordId, item in
@@ -783,7 +805,7 @@ public class EVCloudData: NSObject {
      - parameter completed: Executed when all notifications are processed
      :return: No return value
      */
-    public func fetchChangeNotifications(completed:()-> Void) {
+    open func fetchChangeNotifications(_ completed:@escaping ()-> Void) {
         dao.fetchChangeNotifications(nil, inserted: {recordId, item in
             self.upsertObject(recordId, item: item)
             }, updated : {recordId, item in
@@ -806,8 +828,8 @@ extension Array {
      - parameter condition: A function which returns a boolean if an element satisfies a given condition or not.
      - returns: Index of the first matched item or nil
      */
-    func EVindexOf (condition: Element -> Bool) -> Int? {
-        for (index, element) in self.enumerate() {
+    func EVindexOf (_ condition: (Element) -> Bool) -> Int? {
+        for (index, element) in self.enumerated() {
             if condition(element) {
                 return index
             }

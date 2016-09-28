@@ -16,7 +16,7 @@ class Asset: EVCloudKitDataObject {
 
     func image() -> UIImage? {
         if let file = File {
-            if let data = NSData(contentsOfURL: file.fileURL) {
+            if let data = try? Data(contentsOf: file.fileURL) {
                 return UIImage(data: data)
             }
         }
