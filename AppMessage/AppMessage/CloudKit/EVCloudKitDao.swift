@@ -14,7 +14,7 @@ import EVReflection
 /**
 Class for simplified access to  Apple's CloudKit data where you still have full control
 */
-public class EVCloudKitDao {
+open class EVCloudKitDao {
 
     // ------------------------------------------------------------------------
     // MARK: - For getting the various instances
@@ -25,7 +25,7 @@ public class EVCloudKitDao {
 
     :return: The EVCLoudKitDao object
     */
-    public class var publicDB: EVCloudKitDao {
+    open class var publicDB: EVCloudKitDao {
         /**
         Singleton structure
         */
@@ -38,7 +38,7 @@ public class EVCloudKitDao {
 
     :return: The EVCLoudKitDao object
     */
-    public class func sharedPublicDB() -> EVCloudKitDao {
+    open class func sharedPublicDB() -> EVCloudKitDao {
         return publicDB
     }
 
@@ -47,9 +47,9 @@ public class EVCloudKitDao {
 
     :return: The EVCLoudKitDao object
     */
-    public class var privateDB: EVCloudKitDao {
+    open class var privateDB: EVCloudKitDao {
         struct Static { static let instance: EVCloudKitDao = EVCloudKitDao() }
-        Static.instance.isType = .IsPrivate
+        Static.instance.isType = .isPrivate
         Static.instance.database = Static.instance.container.privateCloudDatabase
         return Static.instance
     }
@@ -59,7 +59,7 @@ public class EVCloudKitDao {
 
     :return: The EVCLoudKitDao object
     */
-    public class func sharedPrivateDB() -> EVCloudKitDao {
+    open class func sharedPrivateDB() -> EVCloudKitDao {
         return privateDB
     }
 
@@ -68,7 +68,7 @@ public class EVCloudKitDao {
 
     :return: The container wrapper class
     */
-    private class var containerWrapperInstance: DaoContainerWrapper {
+    fileprivate class var containerWrapperInstance: DaoContainerWrapper {
         struct Static { static var instance: DaoContainerWrapper = DaoContainerWrapper()}
         return Static.instance
     }
@@ -79,7 +79,7 @@ public class EVCloudKitDao {
 
     :return: The public container for the identifier.
     */
-    public class func publicDBForContainer(containterIdentifier: String) -> EVCloudKitDao {
+    open class func publicDBForContainer(_ containterIdentifier: String) -> EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.publicContainers[containterIdentifier] {
             return containerInstance
         }
@@ -93,12 +93,12 @@ public class EVCloudKitDao {
 
     :return: The private container for the identifier.
     */
-    public class func privateDBForContainer(containterIdentifier: String) -> EVCloudKitDao {
+    open class func privateDBForContainer(_ containterIdentifier: String) -> EVCloudKitDao {
         if let containerInstance = containerWrapperInstance.privateContainers[containterIdentifier] {
             return containerInstance
         }
         let dao = EVCloudKitDao(containerIdentifier: containterIdentifier)
-        dao.isType = .IsPrivate
+        dao.isType = .isPrivate
         dao.database = dao.container.privateCloudDatabase
         containerWrapperInstance.privateContainers[containterIdentifier] = dao
         return dao
@@ -114,7 +114,7 @@ public class EVCloudKitDao {
 
     :return: The default CloudKit container
     */
-    private var container: CKContainer!
+    fileprivate var container: CKContainer!
 
 
     /**
@@ -122,21 +122,21 @@ public class EVCloudKitDao {
 
     :return: The public database
     */
-    private var database: CKDatabase!
+    fileprivate var database: CKDatabase!
 
     /**
     The iClout account status of the current user
 
     :return: The account status of the current user
     */
-    public var accountStatus: CKAccountStatus?
+    open var accountStatus: CKAccountStatus?
 
     /**
     The iCloud account information of the current user
 
     :return: The account information of the current user
     */
-    public var activeUser: CKDiscoveredUserInfo!
+    open var activeUser: CKDiscoveredUserInfo!
 
 
     /**
@@ -144,14 +144,14 @@ public class EVCloudKitDao {
 
     :return: Public or private
     */
-    public var isType: InstanceType = .IsPublic
+    open var isType: InstanceType = .isPublic
 
     // Fast access to the file directory
-    private var fileDirectory: NSString!
+    fileprivate var fileDirectory: NSString!
     // Fast access to the filemanager
-    private var filemanager: NSFileManager!
+    fileprivate var filemanager: FileManager!
     // Fast access to the queue
-    private var ioQueue: dispatch_queue_t!
+    fileprivate var ioQueue: DispatchQueue!
 
     /**
     On init set a quick refrence to the container and database
@@ -174,38 +174,38 @@ public class EVCloudKitDao {
 
     - parameter containerIdentifier: Passing on the name of the container
     */
-    public func initializeDatabase(containerIdentifier: String? = nil) {
-        let pathDir = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
+    open func initializeDatabase(_ containerIdentifier: String? = nil) {
+        let pathDir = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)
         if pathDir.count > 0 {
-            fileDirectory = pathDir[0]
+            fileDirectory = pathDir[0] as NSString!
         } else {
             fileDirectory = ""
         }
-        filemanager = NSFileManager.defaultManager()
-        ioQueue = dispatch_queue_create("NL.EVICT.CloudKit.ioQueue", DISPATCH_QUEUE_SERIAL) as dispatch_queue_t
+        filemanager = FileManager.default
+        ioQueue = DispatchQueue(label: "NL.EVICT.CloudKit.ioQueue", attributes: []) as DispatchQueue
 
         if let identifier = containerIdentifier {
             container = CKContainer(identifier: identifier)
         } else {
-            container = CKContainer.defaultContainer()
+            container = CKContainer.default()
         }
-        if self.isType == .IsPublic {
+        if self.isType == .isPublic {
             database = container.publicCloudDatabase
         } else {
             database = container.privateCloudDatabase
         }
 
-        let sema = dispatch_semaphore_create(0)
-        container.accountStatusWithCompletionHandler({status, error in
+        let sema = DispatchSemaphore(value: 0)
+        container.accountStatus(completionHandler: {status, error in
             if error != nil {
-                EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.description)")
+                EVLog("Error: Initialising EVCloudKitDao - accountStatusWithCompletionHandler.\n\(error!.localizedDescription)")
             } else {
                 self.accountStatus = status
             }
             EVLog("Account status = \(status.hashValue) (0=CouldNotDetermine/1=Available/2=Restricted/3=NoAccount)")
-            dispatch_semaphore_signal(sema)
+            sema.signal()
         })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+        let _ = sema.wait(timeout: DispatchTime.distantFuture)
         EVLog("Container identifier = \(container.containerIdentifier)")
     }
 
@@ -222,11 +222,11 @@ public class EVCloudKitDao {
     - parameter completionHandler: The function that will be called if ther is no error
     :return: No return value
     */
-    internal func handleCallback(error: NSError?, errorHandler: ((error: NSError) -> Void)? = nil, completionHandler: () -> Void) {
+    internal func handleCallback(_ error: Error?, errorHandler: ((_ error: Error) -> Void)? = nil, completionHandler: () -> Void) {
         if error != nil {
-            EVLog("Error: \(error?.code) = \(error?.description) \n\(error?.userInfo)")
+            EVLog("Error: \(error?._code) = \(error?.localizedDescription)")
             if let handler = errorHandler {
-                handler(error: error!)
+                handler(error!)
             }
         } else {
             completionHandler()
@@ -239,7 +239,7 @@ public class EVCloudKitDao {
      - parameter error: The original error
      - parameter value: The value that should not be nil
      */
-    internal func nilNotAllowed(error: NSError?, value: AnyObject?) -> NSError? {
+    internal func nilNotAllowed(_ error: Error?, value: AnyObject?) -> Error? {
         if error != nil || value != nil {
             return error
         }
@@ -253,24 +253,24 @@ public class EVCloudKitDao {
     - parameter error: The CloudKit error for which you want a functional status.
     - parameter retryAttempt: In case we are retrying a function this parameter has to be incremented each time.
     */
-    public static func handleCloudKitErrorAs(error: NSError?, retryAttempt: Double = 1) -> HandleCloudKitErrorAs {
+    open static func handleCloudKitErrorAs(_ error: Error?, retryAttempt: Double = 1) -> HandleCloudKitErrorAs {
         // There is no error
         if error == nil {
-            return .Success
+            return .success
         }
 
         // Or if there is a retry delay specified in the error, then use that.
-        if let userInfo = error?.userInfo {
+        if let userInfo = error?._userInfo as? NSDictionary {
             if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
                 let seconds = Double(retry)
                 NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
-                return .Retry(afterSeconds: seconds)
+                return .retry(afterSeconds: seconds)
             }
         }
 
-        let errorCode: CKErrorCode = CKErrorCode(rawValue: error!.code)!
-        switch errorCode {
-        case .NotAuthenticated, .NetworkUnavailable, .NetworkFailure, .ServiceUnavailable, .RequestRateLimited, .ZoneBusy, .ResultsTruncated:
+        let errorCode: CKError = CKError(_nsError: error! as NSError)
+        switch errorCode.code {
+        case .notAuthenticated, .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy, .resultsTruncated:
             // Probably handled by the userInfo[CKErrorRetryAfterKey] but if not, then:
             // Use an exponential retry delay which maxes out at half an hour.
             var seconds = Double(pow(2, Double(retryAttempt)))
@@ -278,19 +278,19 @@ public class EVCloudKitDao {
                 seconds = 1800
             }
             NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
-            return .Retry(afterSeconds: seconds)
-        case .UnknownItem, .InvalidArguments, .IncompatibleVersion, .BadContainer, .MissingEntitlement, .PermissionFailure, .BadDatabase, .AssetFileNotFound, .OperationCancelled, .AssetFileModified, .BatchRequestFailed, .ZoneNotFound, .UserDeletedZone, .InternalError, .ServerRejectedRequest, .ConstraintViolation:
+            return .retry(afterSeconds: seconds)
+        case .unknownItem, .invalidArguments, .incompatibleVersion, .badContainer, .missingEntitlement, .permissionFailure, .badDatabase, .assetFileNotFound, .operationCancelled, .assetFileModified, .batchRequestFailed, .zoneNotFound, .userDeletedZone, .internalError, .serverRejectedRequest, .constraintViolation:
             NSLog("Error: \(error)")
-            return .Fail
-        case .QuotaExceeded, .LimitExceeded:
+            return .fail
+        case .quotaExceeded, .limitExceeded:
             NSLog("Warning: \(error)")
-            return .Fail
-        case .ChangeTokenExpired,  .ServerRecordChanged:
+            return .fail
+        case .changeTokenExpired,  .serverRecordChanged:
             NSLog("Info: \(error)")
-            return .RecoverableError
+            return .recoverableError
         default:
             NSLog("Error: \(error)") //New error introduced in iOS...?
-            return .Fail
+            return .fail
         }
     }
 
@@ -304,13 +304,14 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-  internal func queryRecords<T: EVCloudKitDataObject>(type: T, query: CKQuery, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+  internal func queryRecords<T: EVCloudKitDataObject>(_ type: T, query: CKQuery, completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         if !(query.sortDescriptors != nil) {
             query.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         }
         let operation = CKQueryOperation(query: query)
-        operation.qualityOfService = .UserInitiated
-        operation.queuePriority = .VeryHigh
+        operation.qualityOfService = .userInitiated
+        operation.queuePriority = .veryHigh
         var results = [T]()
         operation.recordFetchedBlock = { record in
             if let parsed = self.fromCKRecord(record) as? T {
@@ -318,17 +319,17 @@ public class EVCloudKitDao {
             }
         }
 
-        operation.queryCompletionBlock = { cursor, error in
+    operation.queryCompletionBlock = { cursor, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-              if completionHandler(results: results, isFinished: cursor == nil) {
+              if completionHandler(results, cursor == nil) {
                     if cursor != nil {
                         self.queryRecords(cursor!, continueWithResults: results, completionHandler: completionHandler, errorHandler: errorHandler)
                     }
                 }
             })
-        }
+        } as ((CKQueryCursor?, Error?) -> Void)
         operation.resultsLimit = CKQueryOperationMaximumResults
-        database.addOperation(operation)
+        database.add(operation)
         return operation
     }
 
@@ -342,10 +343,11 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    private func queryRecords<T: EVCloudKitDataObject>(cursor: CKQueryCursor, continueWithResults: [T], completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+    fileprivate func queryRecords<T: EVCloudKitDataObject>(_ cursor: CKQueryCursor, continueWithResults: [T], completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         var results = continueWithResults
         let operation = CKQueryOperation(cursor: cursor)
-        operation.qualityOfService = .UserInitiated
+        operation.qualityOfService = .userInitiated
         operation.recordFetchedBlock = { record in
             if let parsed = self.fromCKRecord(record) as? T {
                 results.append(parsed)
@@ -354,7 +356,7 @@ public class EVCloudKitDao {
 
         operation.queryCompletionBlock = { cursor, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                if completionHandler(results: results, isFinished: cursor == nil) {
+                if completionHandler(results, cursor == nil) {
                     if cursor != nil {
                         self.queryRecords(cursor!, continueWithResults: results, completionHandler: completionHandler, errorHandler: errorHandler)
                     }
@@ -362,7 +364,7 @@ public class EVCloudKitDao {
             })
         }
         operation.resultsLimit = CKQueryOperationMaximumResults
-        database.addOperation(operation)
+        database.add(operation)
         return operation
     }
 
@@ -374,8 +376,8 @@ public class EVCloudKitDao {
     - parameter recordId: The record id that will be converted to a CKReference
     :return: The CKReference that is created from the recordId
     */
-    public func referenceForId(recordId: String) -> CKReference {
-        return CKReference(recordID: CKRecordID(recordName: recordId), action: CKReferenceAction.DeleteSelf)
+    open func referenceForId(_ recordId: String) -> CKReference {
+        return CKReference(recordID: CKRecordID(recordName: recordId), action: CKReferenceAction.deleteSelf)
     }
 
     // ------------------------------------------------------------------------
@@ -389,19 +391,19 @@ public class EVCloudKitDao {
     - parameter types: An array of objects for which CloudKit record types should be generated
     :return: No return value
     */
-    public func createRecordTypes(types: [EVCloudKitDataObject]) {
+    open func createRecordTypes(_ types: [EVCloudKitDataObject]) {
         for item in types {
-            let sema = dispatch_semaphore_create(0)
+            let sema = DispatchSemaphore(value: 0)
             saveItem(item, completionHandler: {record in
                     EVLog("saveItem \(item): \(record.recordID.recordName)")
-                    dispatch_semaphore_signal(sema)
+                    sema.signal()
                 }, errorHandler: {error in
-                    EVLog("ERROR: saveItem\n\(error.description)")
-                    dispatch_semaphore_signal(sema)
+                    EVLog("ERROR: saveItem\n\(error.localizedDescription)")
+                    sema.signal()
                 })
-            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+            let _ = sema.wait(timeout: DispatchTime.distantFuture)
         }
-        NSException(name: "RunOnlyOnce", reason: "Call this method only once. Only here for easy debugging reasons for fast generation of the iCloud recordTypes. Sorry for the hard crash. Now disable the call to this method in the AppDelegate!  Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!", userInfo: nil).raise()
+        NSException(name: NSExceptionName(rawValue: "RunOnlyOnce"), reason: "Call this method only once. Only here for easy debugging reasons for fast generation of the iCloud recordTypes. Sorry for the hard crash. Now disable the call to this method in the AppDelegate!  Then go to the iCloud dashboard and make all metadata for each recordType queryable and sortable!", userInfo: nil).raise()
     }
 
     // ------------------------------------------------------------------------
@@ -415,13 +417,13 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func requestDiscoverabilityPermission(completionHandler: (granted: Bool) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        container.requestApplicationPermission(CKApplicationPermissions.UserDiscoverability, completionHandler: { (status: CKApplicationPermissionStatus, error: NSError?) -> Void in
+    open func requestDiscoverabilityPermission(_ completionHandler: @escaping (_ granted: Bool) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        container.requestApplicationPermission(CKApplicationPermissions.userDiscoverability, completionHandler: { (status: CKApplicationPermissionStatus, error: Error?) -> Void in
 
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                completionHandler(granted: status == CKApplicationPermissionStatus.Granted)
+                completionHandler(status == CKApplicationPermissionStatus.granted)
             })
-        })
+        } )
     }
 
     /**
@@ -431,13 +433,13 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func discoverUserInfo(completionHandler: (user: CKDiscoveredUserInfo) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        container.fetchUserRecordIDWithCompletionHandler({recordID, error in
-            self.handleCallback(self.nilNotAllowed(error, value: recordID), errorHandler: errorHandler, completionHandler: {
-                self.container.discoverUserInfoWithUserRecordID(recordID!, completionHandler: { user, error in
-                    self.handleCallback(self.nilNotAllowed(error, value: user), errorHandler: errorHandler, completionHandler: {
+    open func discoverUserInfo(_ completionHandler: @escaping (_ user: CKDiscoveredUserInfo) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        container.fetchUserRecordID(completionHandler: {recordID, error in
+            self.handleCallback(self.nilNotAllowed(error as Error?, value: recordID), errorHandler: errorHandler, completionHandler: {
+                self.container.discoverUserInfo(withUserRecordID: recordID!, completionHandler: { user, error in
+                    self.handleCallback(self.nilNotAllowed(error as Error?, value: user), errorHandler: errorHandler, completionHandler: {
                         self.activeUser = user
-                        completionHandler(user: user!)
+                        completionHandler(user!)
                     })
                 })
             })
@@ -447,7 +449,7 @@ public class EVCloudKitDao {
 
     // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
     #if os(tvOS)
-    public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+    public func allContactsUserInfo(completionHandler: (_ users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
         assert(true, "Sorry, discoverAllContactUserInfosWithCompletionHandler does not work on tvOS")
     }
     #else
@@ -458,24 +460,24 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func allContactsUserInfo(completionHandler: (users: [CKDiscoveredUserInfo]!) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        container.discoverAllContactUserInfosWithCompletionHandler({users, error in
-            self.handleCallback(error, errorHandler:errorHandler, completionHandler: {
+    open func allContactsUserInfo(_ completionHandler: @escaping (_ users: [CKDiscoveredUserInfo]?) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        container.discoverAllContactUserInfos(completionHandler: {users, error in
+            self.handleCallback(error as Error?, errorHandler:errorHandler, completionHandler: {
                 if let returnData = users {
                     if returnData.count == 0 {
                         if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
-                            completionHandler(users:restoreData)
+                            completionHandler(restoreData)
                         } else {
-                            completionHandler(users:returnData)
+                            completionHandler(returnData)
                         }
                     } else {
-                        self.backupData(returnData, toFile: "allContactsUserInfo.bak")
-                        completionHandler(users:returnData)
+                        self.backupData(returnData as AnyObject, toFile: "allContactsUserInfo.bak")
+                        completionHandler(returnData)
                     }
 
                 } else {
                     if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
-                        completionHandler(users:restoreData)
+                        completionHandler(restoreData)
                     }
                 }
             })
@@ -500,9 +502,9 @@ public class EVCloudKitDao {
      - parameter data: The data that will be written to the file (Needs to implement NSCoding like the EVCloudKitDataObject)
      - parameter toFile: The file that will be written to
      */
-    public func backupData(data: AnyObject, toFile: String) {
-        let filePath = fileDirectory.stringByAppendingPathComponent(toFile)
-        dispatch_sync(ioQueue) {
+    open func backupData(_ data: AnyObject, toFile: String) {
+        let filePath = fileDirectory.appendingPathComponent(toFile)
+        ioQueue.sync {
             NSKeyedArchiver.archiveRootObject(data, toFile: filePath)
             addSkipBackupAttributeToItemAtPath(filePath)
             EVLog("Data is written to \(filePath))")
@@ -514,12 +516,12 @@ public class EVCloudKitDao {
 
      - parameter fromFile: The file that will be read and parsed to objects
      */
-    public func restoreData(fromFile: String) -> AnyObject? {
-        let filePath = fileDirectory.stringByAppendingPathComponent(fromFile)
+    open func restoreData(_ fromFile: String) -> AnyObject? {
+        let filePath = fileDirectory.appendingPathComponent(fromFile)
         var result: AnyObject? = nil
-        dispatch_sync(ioQueue) {
-            if self.filemanager.fileExistsAtPath(filePath) {
-                result = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath)
+        ioQueue.sync {
+            if self.filemanager.fileExists(atPath: filePath) {
+                result = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as AnyObject?
                 EVLog("Data is restored from \(filePath))")
             }
         }
@@ -531,13 +533,12 @@ public class EVCloudKitDao {
 
      - parameter file: The file that will be removed from the backup folder (EVCloudDataBackup)
      */
-    public func removeBackup(file: String) {
-        let filePath = fileDirectory.stringByAppendingPathComponent(file)
-        dispatch_sync(ioQueue) {
-            if self.filemanager.fileExistsAtPath(filePath) {
+    open func removeBackup(_ file: String) {
+        let filePath = fileDirectory.appendingPathComponent(file)
+        ioQueue.sync {
+            if self.filemanager.fileExists(atPath: filePath) {
                 do {
-                    try self.filemanager.removeItemAtPath(filePath)
-                } catch  _ as NSError {
+                    try self.filemanager.removeItem(atPath: filePath)
                 } catch {
                     fatalError()
                 }
@@ -557,21 +558,22 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func getItem(recordId: String, completionHandler: (result: EVCloudKitDataObject) -> Void, errorHandler:((error: NSError) -> Void)? = nil) -> CKFetchRecordsOperation {
+    @discardableResult
+    open func getItem(_ recordId: String, completionHandler: @escaping (_ result: EVCloudKitDataObject) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKFetchRecordsOperation {
         let operation = CKFetchRecordsOperation(recordIDs: [CKRecordID(recordName: recordId)])
-        operation.qualityOfService = .UserInitiated
-        operation.queuePriority = .VeryHigh
+        operation.qualityOfService = .userInitiated
+        operation.queuePriority = .veryHigh
         operation.perRecordCompletionBlock = { record, id, error in
             if let parsed = self.fromCKRecord(record) {
-                completionHandler(result: parsed)
+                completionHandler(parsed)
             } else {
                 if let handler = errorHandler {
                     let error = NSError(domain: "EVCloudKitDao", code: 1, userInfo:nil)
-                    handler(error: error)
+                    handler(error)
                 }
             }
         }
-        database.addOperation(operation)
+        database.add(operation)
         return operation
     }
 
@@ -582,17 +584,18 @@ public class EVCloudKitDao {
      - parameter errorHandler: The function that will be called when there was an error
      :return: No return value
      */
-    public func getItems(recordIds: [String], completionHandler: (results: [EVCloudKitDataObject]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) -> CKFetchRecordsOperation {
+    @discardableResult
+    open func getItems(_ recordIds: [String], completionHandler: @escaping (_ results: [EVCloudKitDataObject]) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKFetchRecordsOperation {
         let operation = CKFetchRecordsOperation(recordIDs: recordIds.map({CKRecordID(recordName: $0)}))
-        operation.qualityOfService = .UserInitiated
-        operation.queuePriority = .VeryHigh
+        operation.qualityOfService = .userInitiated
+        operation.queuePriority = .veryHigh
         operation.fetchRecordsCompletionBlock = { result, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
                 let r: [EVCloudKitDataObject] = result!.map({ (key, value) in self.fromCKRecord(value)!})
-                completionHandler(results: r)
+                completionHandler(r)
             })
         }
-        database.addOperation(operation)
+        database.add(operation)
         return operation
     }
 
@@ -604,11 +607,12 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func saveItem(item: EVCloudKitDataObject, completionHandler: (record: CKRecord) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
+    @discardableResult
+    open func saveItem(_ item: EVCloudKitDataObject, completionHandler: @escaping (_ record: CKRecord) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
         let theRecord = self.toCKRecord(item)
-        database.saveRecord(theRecord, completionHandler: { record, error in
+        database.save(theRecord, completionHandler: { record, error in
             self.handleCallback(self.nilNotAllowed(error, value: record), errorHandler: errorHandler, completionHandler: {
-                completionHandler(record: record!)
+                completionHandler(record!)
             })
         })
     }
@@ -621,14 +625,15 @@ public class EVCloudKitDao {
      - parameter errorHandler:      The function that will be called when there was an error
      :return: No return value
      */
-    public func saveItems(items: [EVCloudKitDataObject], completionHandler: (records: [CKRecord]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) -> CKModifyRecordsOperation {
+    @discardableResult
+    open func saveItems(_ items: [EVCloudKitDataObject], completionHandler: @escaping (_ records: [CKRecord]) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKModifyRecordsOperation {
         let recordsToSave: [CKRecord] = items.map({self.toCKRecord($0)})
         let operation = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
-        operation.atomic = false
+        operation.isAtomic = false
         operation.database = database
-        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: NSError?) -> Void in
-            self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords), errorHandler: errorHandler, completionHandler: {
-                completionHandler(records: savedRecords!)
+        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: Error?) -> Void in
+            self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords as AnyObject?), errorHandler: errorHandler, completionHandler: {
+                completionHandler(savedRecords!)
             })
         }
         operation.start()
@@ -644,10 +649,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func deleteItem(recordId: String, completionHandler: (recordID: CKRecordID) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        database.deleteRecordWithID(CKRecordID(recordName: recordId), completionHandler: {recordID, error in
-            self.handleCallback(self.nilNotAllowed(error, value: recordID), errorHandler: errorHandler, completionHandler: {
-                completionHandler(recordID: recordID!)
+    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordID: CKRecordID) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        database.delete(withRecordID: CKRecordID(recordName: recordId), completionHandler: {recordID, error in
+            self.handleCallback(self.nilNotAllowed(error as Error?, value: recordID), errorHandler: errorHandler, completionHandler: {
+                completionHandler(recordID!)
             })
         })
     }
@@ -661,14 +666,15 @@ public class EVCloudKitDao {
      - parameter errorHandler:      The function that will be called when there was an error
      :return: No return value
      */
-    public func deleteItems(items: [EVCloudKitDataObject], completionHandler: (records: [CKRecord]) -> Void, errorHandler:((error: NSError) -> Void)? = nil) -> CKModifyRecordsOperation {
+    @discardableResult
+    open func deleteItems(_ items: [EVCloudKitDataObject], completionHandler: @escaping (_ records: [CKRecord]) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKModifyRecordsOperation {
         let recordsToDelete: [CKRecordID] = items.map({$0.recordID})
         let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordsToDelete)
-        operation.atomic = false
+        operation.isAtomic = false
         operation.database = database
-        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: NSError?) -> Void in
-            self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords), errorHandler: errorHandler, completionHandler: {
-                completionHandler(records: savedRecords!)
+        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: Error?) -> Void in
+            self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords as AnyObject?), errorHandler: errorHandler, completionHandler: {
+                completionHandler(savedRecords!)
             })
         }
         operation.start()
@@ -688,9 +694,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T: EVCloudKitDataObject>(type: T, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+    open func query<T: EVCloudKitDataObject>(_ type: T, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
        let recordType = EVReflection.swiftStringFromClass(type)
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        let query = CKQuery(recordType: recordType!, predicate: NSPredicate(value: true))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -705,11 +712,12 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T: EVCloudKitDataObject>(type: T, referenceRecordName: String, referenceField: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+    open func query<T: EVCloudKitDataObject>(_ type: T, referenceRecordName: String, referenceField: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType = EVReflection.swiftStringFromClass(type)
         let parentId = CKRecordID(recordName: referenceRecordName)
-        let parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", referenceField, parent))
+        let parent = CKReference(recordID: parentId, action: CKReferenceAction.none)
+        let query = CKQuery(recordType: recordType!, predicate: NSPredicate(format: "%K == %@", referenceField, parent))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -727,9 +735,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T: EVCloudKitDataObject>(type: T, predicate: NSPredicate, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+    open func query<T: EVCloudKitDataObject>(_ type: T, predicate: NSPredicate, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType = EVReflection.swiftStringFromClass(type)
-        let query: CKQuery = CKQuery(recordType: recordType, predicate: predicate)
+        let query: CKQuery = CKQuery(recordType: recordType!, predicate: predicate)
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -743,9 +752,10 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T: EVCloudKitDataObject>(type: T, tokens: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+    open func query<T: EVCloudKitDataObject>(_ type: T, tokens: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType = EVReflection.swiftStringFromClass(type)
-        let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
+        let query = CKQuery(recordType: recordType!, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -762,7 +772,8 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func query<T: EVCloudKitDataObject>(type: T, fieldname: String, latitude: Double, longitude: Double, distance: Int, completionHandler: (results: [T], isFinished: Bool) -> Bool, errorHandler:((error: NSError) -> Void)? = nil) -> CKQueryOperation {
+    @discardableResult
+    open func query<T: EVCloudKitDataObject>(_ type: T, fieldname: String, latitude: Double, longitude: Double, distance: Int, completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType: String = EVReflection.swiftStringFromClass(type)
         let location: CLLocation = CLLocation(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
         let predecate: NSPredicate =  NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %@", [fieldname, location, distance])
@@ -784,12 +795,12 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type: EVCloudKitDataObject, predicate: NSPredicate, filterId: String, configureNotificationInfo:((notificationInfo: CKNotificationInfo ) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    open func subscribe(_ type: EVCloudKitDataObject, predicate: NSPredicate, filterId: String, configureNotificationInfo:((_ notificationInfo: CKNotificationInfo ) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let key = "type_\(recordType)_id_\(filterId)"
 
         let createSubscription = { () -> () in
-            let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.FiresOnRecordCreation, .FiresOnRecordUpdate, .FiresOnRecordDeletion])
+            let subscription = CKSubscription(recordType: recordType!, predicate: predicate, subscriptionID:key, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
 // tvOS does not have visible remote notifications. This property is not available.
 #if os(tvOS)
@@ -798,17 +809,17 @@ public class EVCloudKitDao {
 #endif
 
             if let configure = configureNotificationInfo {
-                configure(notificationInfo: subscription.notificationInfo!)
+                configure(subscription.notificationInfo!)
             }
-            self.database.saveSubscription(subscription, completionHandler: { savedSubscription, error in
-                self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
+            self.database.save(subscription, completionHandler: { savedSubscription, error in
+                self.handleCallback(error as Error?, errorHandler: errorHandler, completionHandler: {
                     EVLog("Subscription created for key \(key)")
                 })
             })
         }
 
         // If the subscription exists and the predicate is the same, then we don't need to create this subscrioption. If the predicate is difrent, then we first need to delete the old
-        database.fetchSubscriptionWithID(key, completionHandler: { (subscription, error) in
+        database.fetch(withSubscriptionID: key, completionHandler: { (subscription, error) in
             if let deleteSubscription: CKSubscription = subscription {
                 if predicate.predicateFormat != deleteSubscription.predicate?.predicateFormat {
                     self.unsubscribeWithoutTest(key, completionHandler:createSubscription, errorHandler: errorHandler)
@@ -829,11 +840,11 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type: EVCloudKitDataObject, filterId: String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    open func unsubscribe(_ type: EVCloudKitDataObject, filterId: String, completionHandler:(()->())? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let key = "type_\(recordType)_id_\(filterId)"
 
-        database.fetchSubscriptionWithID(key, completionHandler: { (subscription, error) in
+        database.fetch(withSubscriptionID: key, completionHandler: { (subscription, error) in
             if  subscription != nil {
                 self.unsubscribeWithoutTest(key, completionHandler: completionHandler, errorHandler: errorHandler)
             } else {
@@ -852,7 +863,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    private func unsubscribeWithoutTest(key: String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    fileprivate func unsubscribeWithoutTest(_ key: String, completionHandler:(()->())? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         let modifyOperation = CKModifySubscriptionsOperation()
         modifyOperation.subscriptionIDsToDelete = [key]
         modifyOperation.modifySubscriptionsCompletionBlock = { savedSubscriptions, deletedSubscriptions, error in
@@ -863,7 +874,7 @@ public class EVCloudKitDao {
                 EVLog("Subscription with id \(key) was removed : \(savedSubscriptions?.description)")
             })
         }
-        self.database.addOperation(modifyOperation)
+        self.database.add(modifyOperation)
     }
 
     /**
@@ -876,9 +887,9 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type: EVCloudKitDataObject, referenceRecordName: String, referenceField: String, configureNotificationInfo:((notificationInfo: CKNotificationInfo) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    open func subscribe(_ type: EVCloudKitDataObject, referenceRecordName: String, referenceField: String, configureNotificationInfo:((_ notificationInfo: CKNotificationInfo) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         let parentId = CKRecordID(recordName: referenceRecordName)
-        let parent = CKReference(recordID: parentId, action: CKReferenceAction.None)
+        let parent = CKReference(recordID: parentId, action: CKReferenceAction.none)
         let predicate = NSPredicate(format: "%K == %@", referenceField, parent)
         subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)_\(referenceRecordName)", configureNotificationInfo: configureNotificationInfo, errorHandler: errorHandler)
     }
@@ -892,7 +903,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type: EVCloudKitDataObject, referenceRecordName: String, referenceField: String, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    open func unsubscribe(_ type: EVCloudKitDataObject, referenceRecordName: String, referenceField: String, completionHandler:(()->())? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         unsubscribe(type, filterId:"reference_\(referenceField)_\(referenceRecordName)", completionHandler:completionHandler, errorHandler: errorHandler)
     }
 
@@ -904,7 +915,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func subscribe(type: EVCloudKitDataObject, configureNotificationInfo:((notificationInfo: CKNotificationInfo) -> Void)? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    open func subscribe(_ type: EVCloudKitDataObject, configureNotificationInfo:((_ notificationInfo: CKNotificationInfo) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         subscribe(type, predicate: NSPredicate(value: true), filterId: "all", configureNotificationInfo: configureNotificationInfo, errorHandler: errorHandler)
     }
 
@@ -915,7 +926,7 @@ public class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    public func unsubscribe(type: EVCloudKitDataObject, completionHandler:(()->())? = nil, errorHandler:((error: NSError) -> Void)? = nil) {
+    open func unsubscribe(_ type: EVCloudKitDataObject, completionHandler:(()->())? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         unsubscribe(type, filterId:"all", completionHandler:completionHandler, errorHandler:errorHandler)
     }
 
@@ -926,19 +937,17 @@ public class EVCloudKitDao {
     - parameter completionHandler: The function that will be called with a number which is the count of messages removed.
     :return: No return value
     */
-    public func unsubscribeAll(completionHandler:(subscriptionCount: Int) -> Void, errorHandler:((error: NSError) -> Void)? = nil) {
-        database.fetchAllSubscriptionsWithCompletionHandler({subscriptions, error in
-            self.handleCallback(self.nilNotAllowed(error, value: subscriptions), errorHandler: errorHandler, completionHandler: {
-                for subscriptionObject in subscriptions! {
-                    if let  subscription: CKSubscription = subscriptionObject {
-                        self.database.deleteSubscriptionWithID(subscription.subscriptionID, completionHandler: {subscriptionId, error in
-                            self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                                EVLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
-                            })
+    open func unsubscribeAll(_ completionHandler:@escaping (_ subscriptionCount: Int) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        database.fetchAllSubscriptions(completionHandler: {subscriptions, error in
+            self.handleCallback(self.nilNotAllowed(error as Error?, value: subscriptions as AnyObject?), errorHandler: errorHandler, completionHandler: {
+                for subscription: CKSubscription in subscriptions! {
+                    self.database.delete(withSubscriptionID: subscription.subscriptionID, completionHandler: {subscriptionId, error in
+                        self.handleCallback(error as Error?, errorHandler: errorHandler, completionHandler: {
+                            EVLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
                         })
-                    }
+                    })
                 }
-                completionHandler(subscriptionCount: subscriptions!.count)
+                completionHandler(subscriptions!.count)
             })
         })
     }
@@ -958,7 +967,7 @@ public class EVCloudKitDao {
     - parameter completed: Executed if all notifications are processed
     :return: No return value
     */
-    public func didReceiveRemoteNotification(userInfo: [NSObject : AnyObject], executeIfNonQuery:() -> Void, inserted:(recordID: String, item: EVCloudKitDataObject) -> Void, updated:(recordID: String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void, completed:()-> Void) {
+    open func didReceiveRemoteNotification(_ userInfo: [AnyHashable: Any], executeIfNonQuery:() -> Void, inserted:@escaping (_ recordID: String, _ item: EVCloudKitDataObject) -> Void, updated:@escaping (_ recordID: String, _ item: EVCloudKitDataObject) -> Void, deleted:@escaping (_ recordId: String) -> Void, completed:@escaping ()-> Void) {
         var converedUserInfo: [String:NSObject] = [String:NSObject]()
         for (key, value) in userInfo {
             if let setValue = value as? NSObject {
@@ -971,25 +980,25 @@ public class EVCloudKitDao {
 
         // Handle CloudKit subscription notifications
         var recordID: CKRecordID?
-        if cloudNotification.notificationType == CKNotificationType.Query {
+        if cloudNotification.notificationType == CKNotificationType.query {
             if let queryNotification = cloudNotification as? CKQueryNotification {
                 if queryNotification.recordID != nil {
                     recordID = queryNotification.recordID
                     EVLog("recordID of notified record = \(recordID)")
-                    if queryNotification.queryNotificationReason == .RecordDeleted {
-                        deleted(recordId: recordID!.recordName)
+                    if queryNotification.queryNotificationReason == .recordDeleted {
+                        deleted(recordID!.recordName)
                     } else {
                         // Notification could be for pulbic and private db. Errors are ignored
                         getItem(recordID!.recordName, completionHandler: { item in
                             EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                             EVReflection.logObject(item)
-                            if queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordCreated {
-                                inserted(recordID: recordID!.recordName, item: item)
-                            } else if queryNotification.queryNotificationReason == CKQueryNotificationReason.RecordUpdated {
-                                updated(recordID: recordID!.recordName, item: item)
+                            if queryNotification.queryNotificationReason == CKQueryNotificationReason.recordCreated {
+                                inserted(recordID!.recordName, item)
+                            } else if queryNotification.queryNotificationReason == CKQueryNotificationReason.recordUpdated {
+                                updated(recordID!.recordName, item)
                             }
                             }, errorHandler: { error in
-                                EVLog("ERROR: getItem for notification.\n\(error.description)")
+                                EVLog("ERROR: getItem for notification.\n\(error.localizedDescription)")
                         })
                     }
                 } else {
@@ -1017,27 +1026,27 @@ public class EVCloudKitDao {
     - parameter completed: Executed if all notifications are processed
     :return: No return value
     */
-    public func fetchChangeNotifications(skipRecordID: CKRecordID?, inserted:(recordID: String, item: EVCloudKitDataObject) -> Void, updated:(recordID: String, item: EVCloudKitDataObject) -> Void, deleted:(recordId: String) -> Void, completed:()-> Void) {
+    open func fetchChangeNotifications(_ skipRecordID: CKRecordID?, inserted:@escaping (_ recordID: String, _ item: EVCloudKitDataObject) -> Void, updated:@escaping (_ recordID: String, _ item: EVCloudKitDataObject) -> Void, deleted:@escaping (_ recordId: String) -> Void, completed:@escaping ()-> Void) {
         var array: [CKNotificationID] = [CKNotificationID]()
         let operation = CKFetchNotificationChangesOperation(previousServerChangeToken: self.previousChangeToken)
         operation.notificationChangedBlock = { notification in
-            if notification.notificationType == .Query {
+            if notification.notificationType == .query {
                 if let queryNotification = notification as? CKQueryNotification {
                     array.append(notification.notificationID!)
                     if skipRecordID != nil && skipRecordID?.recordName != queryNotification.recordID?.recordName {
-                        if queryNotification.queryNotificationReason == .RecordDeleted {
-                            deleted(recordId: queryNotification.recordID!.recordName)
+                        if queryNotification.queryNotificationReason == .recordDeleted {
+                            deleted(queryNotification.recordID!.recordName)
                         } else {
                             self.getItem(queryNotification.recordID!.recordName, completionHandler: { item in
                                 EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                                 EVReflection.logObject(item)
-                                if queryNotification.queryNotificationReason == .RecordCreated {
-                                    inserted(recordID: queryNotification.recordID!.recordName, item: item)
-                                } else if queryNotification.queryNotificationReason == .RecordUpdated {
-                                    updated(recordID: queryNotification.recordID!.recordName, item: item)
+                                if queryNotification.queryNotificationReason == .recordCreated {
+                                    inserted(queryNotification.recordID!.recordName, item)
+                                } else if queryNotification.queryNotificationReason == .recordUpdated {
+                                    updated(queryNotification.recordID!.recordName, item)
                                 }
                             }, errorHandler: { error in
-                                EVLog("ERROR: getItem for change notification.\n\(error.description)")
+                                EVLog("ERROR: getItem for change notification.\n\(error.localizedDescription)")
                             })
                         }
                     }
@@ -1062,19 +1071,19 @@ public class EVCloudKitDao {
     /**
     Property for saving the changetoken in the userdefaults
     */
-    private var previousChangeToken: CKServerChangeToken? {
+    fileprivate var previousChangeToken: CKServerChangeToken? {
         get {
 
-            let encodedObjectData = NSUserDefaults.standardUserDefaults().objectForKey("\(container.containerIdentifier)_lastFetchNotificationId") as? NSData
+            let encodedObjectData = UserDefaults.standard.object(forKey: "\(container.containerIdentifier)_lastFetchNotificationId") as? Data
             var decodedData: CKServerChangeToken? = nil
             if encodedObjectData != nil {
-                decodedData = NSKeyedUnarchiver.unarchiveObjectWithData(encodedObjectData!) as? CKServerChangeToken
+                decodedData = NSKeyedUnarchiver.unarchiveObject(with: encodedObjectData!) as? CKServerChangeToken
             }
             return decodedData
         }
         set(newToken) {
             if newToken != nil {
-                NSUserDefaults.standardUserDefaults().setObject(NSKeyedArchiver.archivedDataWithRootObject(newToken!), forKey:"\(container.containerIdentifier)_lastFetchNotificationId")
+                UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: newToken!), forKey:"\(container.containerIdentifier)_lastFetchNotificationId")
             }
         }
     }
@@ -1083,22 +1092,22 @@ public class EVCloudKitDao {
     Setting the application badge count to a specific number
     - parameter count: The number for the badge
     */
-    public func setBadgeCounter(count: Int) {
+    open func setBadgeCounter(_ count: Int) {
         let badgeResetOperation = CKModifyBadgeOperation(badgeValue: count)
         badgeResetOperation.modifyBadgeCompletionBlock = { (error) -> Void in
-            func handleError(error: NSError) -> Void {
+            func handleError(_ error: Error) -> Void {
                 EVLog("Error: could not reset badge: \n\(error)")
             }
-            self.handleCallback(error, errorHandler: handleError, completionHandler: {
+            self.handleCallback(error as Error?, errorHandler: handleError, completionHandler: {
                 #if os(iOS)
-                    UIApplication.sharedApplication().applicationIconBadgeNumber = count
+                    UIApplication.shared.applicationIconBadgeNumber = count
                 #elseif os(OSX)
                     //TODO: Set badge?
                     NSLog("How to set the badge on OSX?")
                 #endif
                 })
         }
-        container.addOperation(badgeResetOperation)
+        container.add(badgeResetOperation)
     }
 
     // ------------------------------------------------------------------------
@@ -1111,24 +1120,24 @@ public class EVCloudKitDao {
     - parameter record: The CKRecord that will be converted to an object
     :return: The object that is created from the record
     */
-    public func fromCKRecord(record: CKRecord!) -> EVCloudKitDataObject? {
+    open func fromCKRecord(_ record: CKRecord!) -> EVCloudKitDataObject? {
         if record == nil {
             return nil
         }
         if let theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType) as? EVCloudKitDataObject {
             theObject.recordID = record.recordID
             theObject.recordType = record.recordType
-            theObject.creationDate = record.creationDate ?? NSDate()
+            theObject.creationDate = record.creationDate ?? Date()
             theObject.creatorUserRecordID = record.creatorUserRecordID
-            theObject.modificationDate = record.modificationDate ?? NSDate()
+            theObject.modificationDate = record.modificationDate ?? Date()
             theObject.lastModifiedUserRecordID = record.lastModifiedUserRecordID
             theObject.recordChangeTag = record.recordChangeTag
 
             let data = NSMutableData()
-            let coder = NSKeyedArchiver(forWritingWithMutableData: data)
-            record.encodeSystemFieldsWithCoder(coder)
+            let coder = NSKeyedArchiver(forWritingWith: data)
+            record.encodeSystemFields(with: coder)
             coder.finishEncoding()
-            theObject.encodedSystemFields = data
+            theObject.encodedSystemFields = data as Data
             return theObject
         }
         return nil
@@ -1140,10 +1149,10 @@ public class EVCloudKitDao {
     - parameter theObject: The object that will be converted to a CKRecord
     :return: The CKRecord that is created from theObject
     */
-    public func toCKRecord(theObject: EVCloudKitDataObject) -> CKRecord {
+    open func toCKRecord(_ theObject: EVCloudKitDataObject) -> CKRecord {
         var record: CKRecord!
         if theObject.encodedSystemFields != nil {
-            let coder = NSKeyedUnarchiver(forReadingWithData: theObject.encodedSystemFields!)
+            let coder = NSKeyedUnarchiver(forReadingWith: theObject.encodedSystemFields! as Data)
             record = CKRecord(coder: coder)
             coder.finishDecoding()
         }
@@ -1163,7 +1172,7 @@ public class EVCloudKitDao {
      - parameter dict:   the dictionary
      - parameter root:   used for expanding the property name
      */
-    private func dictToCKRecord(record: CKRecord, dict: NSDictionary, root: String = "") {
+    fileprivate func dictToCKRecord(_ record: CKRecord, dict: NSDictionary, root: String = "") {
         for (key, value) in dict {
             if !(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"]).contains(key as! String) {
                 if value is NSNull {
@@ -1183,13 +1192,13 @@ public class EVCloudKitDao {
     - parameter record: The CKRecord that will be converted to a dictionary
     :return: The dictionary that is created from the record
     */
-    public func CKRecordToDictionary(record: CKRecord) -> NSDictionary {
+    open func CKRecordToDictionary(_ record: CKRecord) -> NSDictionary {
         let dictionary = NSMutableDictionary()
         for key in record.allKeys() {
-            if let value = record.objectForKey(key) {
-                var path: [String] = key.componentsSeparatedByString("__")
+            if let value = record.object(forKey: key) {
+                var path: [String] = key.components(separatedBy: "__")
                 if path.count == 1 {
-                    dictionary.setObject(value, forKey: key)
+                    dictionary.setObject(value, forKey: key as NSCopying)
                 } else {
                     var tempDict = dictionary
                     var tempKey = key
@@ -1198,11 +1207,11 @@ public class EVCloudKitDao {
                     for item in path {
                         tempKey = item
                         if tempDict[tempKey] == nil {
-                            tempDict.setObject(NSMutableDictionary(), forKey: tempKey)
+                            tempDict.setObject(NSMutableDictionary(), forKey: tempKey as NSCopying)
                         }
                         tempDict = (tempDict[tempKey] as? NSMutableDictionary) ?? NSMutableDictionary()
                     }
-                    tempDict.setObject(value, forKey: lastKey)
+                    tempDict.setObject(value, forKey: lastKey as NSCopying)
                }
             }
         }

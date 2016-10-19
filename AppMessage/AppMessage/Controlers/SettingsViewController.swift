@@ -8,10 +8,10 @@
 import UIKit
 
 class SettingsViewController: UIViewController {
-    func pushViewController(sender: UIViewController) {
+    func pushViewController(_ sender: UIViewController) {
         let viewController = UIViewController()
         viewController.title = "Pushed Controller"
-        viewController.view.backgroundColor = UIColor.whiteColor()
+        viewController.view.backgroundColor = UIColor.white
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

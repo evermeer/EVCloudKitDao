@@ -18,9 +18,9 @@ class Message: EVCloudKitDataObject {
     // From which Channel is this message
     var From: CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var From_ID: String = ""
-    func setFromFields(id: String) {
+    func setFromFields(_ id: String) {
         self.From_ID = id
-        self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.DeleteSelf)
+        self.From = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.deleteSelf)
     }
     var FromFirstName: String = ""
     var FromLastName: String = ""
@@ -28,9 +28,9 @@ class Message: EVCloudKitDataObject {
     // To what Channel or Group is this message
     var To: CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var To_ID: String = ""
-    func setToFields(id: String) {
+    func setToFields(_ id: String) {
         self.To_ID = id
-        self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.DeleteSelf)
+        self.To = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.deleteSelf)
     }
     var ToFirstName: String = ""
     var ToLastName: String = ""
@@ -44,9 +44,9 @@ class Message: EVCloudKitDataObject {
     // From which Channel is this message
     var Asset: CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var Asset_ID: String = ""
-    func setAssetFields(id: String) {
+    func setAssetFields(_ id: String) {
         self.Asset_ID = id
-        self.Asset = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.None)
+        self.Asset = CKReference(recordID: CKRecordID(recordName: id), action: CKReferenceAction.none)
     }
 
     var Latitude: Double = 52.8350711

@@ -22,15 +22,15 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     func setupMenuTableViewLayout() {
-        let rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
+        let rect = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
         tableView = UITableView(frame: rect)
-        tableView.autoresizingMask = [.FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleWidth]
+        tableView.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin, .flexibleWidth]
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.opaque = false
-        tableView.backgroundColor = UIColor.clearColor()
+        tableView.isOpaque = false
+        tableView.backgroundColor = UIColor.clear
         tableView.backgroundView = nil
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         tableView.bounces = true
         tableView.scrollsToTop = true
         self.view.addSubview(self.tableView)
@@ -40,34 +40,34 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - tableView - menu items
     // ------------------------------------------------------------------------
 
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 54
     }
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //To prevent copying the dictionary never assign it to a variable first.
         return EVCloudData.publicDB.data["News_All"]!.count
     }
 
     var cellIdentifier = "NewsCell";
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
 
         if cell == nil {
-            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellIdentifier)
-            cell.backgroundColor = UIColor.clearColor()
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
+            cell.backgroundColor = UIColor.clear
             cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 21)
-            cell.textLabel?.textColor = UIColor.blackColor()
-            cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
+            cell.textLabel?.textColor = UIColor.black
+            cell.textLabel?.highlightedTextColor = UIColor.lightGray
             cell.selectedBackgroundView = UIView()
         }
 
         //This line all you need to get the correct data for the cell
-        if let news: News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as? News {
+        if let news: News = EVCloudData.publicDB.data["News_All"]![(indexPath as NSIndexPath).row] as? News {
             cell.textLabel?.text = "\(news.Subject)"
             cell.detailTextLabel?.text = "(\(news.creationDate)) - \(news.Body)"
         }
@@ -75,11 +75,11 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
         return cell;
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //This line all you need to get the correct data for cell that is selected
-        if let news: News = EVCloudData.publicDB.data["News_All"]![indexPath.row] as? News {
-            if let url: NSURL = NSURL(string: news.ActionUrl) {
-                UIApplication.sharedApplication().openURL(url)
+        if let news: News = EVCloudData.publicDB.data["News_All"]![(indexPath as NSIndexPath).row] as? News {
+            if let url: URL = URL(string: news.ActionUrl) {
+                UIApplication.shared.openURL(url)
             }
         }
 

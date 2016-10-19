@@ -10,44 +10,44 @@ import EVReflection
 
 /**
 */
-public class EVCloudKitDataObject: EVObject {
+open class EVCloudKitDataObject: EVObject {
     /**
     The unique ID of the record.
     */
-    public var recordID: CKRecordID = CKRecordID(recordName: NSUUID().UUIDString)
+    open var recordID: CKRecordID = CKRecordID(recordName: UUID().uuidString)
 
     /**
     The app-defined string that identifies the type of the record.
     */
-    public var recordType: String!
+    open var recordType: String!
 
     /**
     The time when the record was first saved to the server.
     */
-    public var creationDate: NSDate = NSDate()
+    open var creationDate: Date = Date()
 
     /**
     The ID of the user who created the record.
     */
-    public var creatorUserRecordID: CKRecordID?
+    open var creatorUserRecordID: CKRecordID?
 
     /**
     The time when the record was last saved to the server.
     */
-    public var modificationDate: NSDate = NSDate()
+    open var modificationDate: Date = Date()
 
     /**
     The ID of the user who last modified the record.
     */
-    public var lastModifiedUserRecordID: CKRecordID?
+    open var lastModifiedUserRecordID: CKRecordID?
 
     /**
     A string containing the server change token for the record.
     */
-    public var recordChangeTag: String?
+    open var recordChangeTag: String?
 
     /**
     Encoding the system fields so that we can create a new CKRecord based on this
     */
-    public var encodedSystemFields: NSData?
+    open var encodedSystemFields: Data?
 }

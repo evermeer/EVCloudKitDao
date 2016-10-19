@@ -36,20 +36,20 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func setupMenuTableViewLayout() {
-        let rect = CGRectMake(0, ((self.view.frame.size.height - 54 * 5) / 2.0), self.view.frame.size.width, 54 * 5)
+        let rect = CGRect(x: 0, y: ((self.view.frame.size.height - 54 * 5) / 2.0), width: self.view.frame.size.width, height: 54 * 5)
         self.tableView = UITableView(frame: rect)
-        tableView.autoresizingMask = [.FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleWidth]
+        tableView.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin, .flexibleWidth]
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.opaque = false
-        tableView.backgroundColor = UIColor.clearColor()
+        tableView.isOpaque = false
+        tableView.backgroundColor = UIColor.clear
         tableView.backgroundView = nil
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         tableView.bounces = false
         tableView.scrollsToTop = false
         self.view.addSubview(self.tableView)
 
-        newsController = self.storyboard?.instantiateViewControllerWithIdentifier("newsViewController") as? NewsViewController
+        newsController = self.storyboard?.instantiateViewController(withIdentifier: "newsViewController") as? NewsViewController
     }
 
     deinit {
@@ -66,47 +66,47 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     var images = ["IconHome", "IconProfile", "IconSettings", "IconEmpty", "IconEmpty"]
     var controllers = ["homeViewController", "newsViewController", "settingsViewController", "searchViewController", "testsViewController"]
 
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 54
     }
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return titles.count
     }
 
     var cellIdentifier = "LeftMenuCell"
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+        var cell: UITableViewCell! = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
 
         if cell == nil {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
-            cell.backgroundColor = UIColor.clearColor()
+            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+            cell.backgroundColor = UIColor.clear
             cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 21)
-            cell.textLabel?.textColor = UIColor.whiteColor()
-            cell.textLabel?.highlightedTextColor = UIColor.lightGrayColor()
+            cell.textLabel?.textColor = UIColor.white
+            cell.textLabel?.highlightedTextColor = UIColor.lightGray
             cell.selectedBackgroundView = UIView()
         }
 
-        cell.textLabel?.text = titles[indexPath.row]
-        cell.imageView?.image = UIImage(named: images[indexPath.row])
+        cell.textLabel?.text = titles[(indexPath as NSIndexPath).row]
+        cell.imageView?.image = UIImage(named: images[(indexPath as NSIndexPath).row])
 
         return cell
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.row < controllers.count {
-            let controllerName: String = controllers[indexPath.row]
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath as NSIndexPath).row < controllers.count {
+            let controllerName: String = controllers[(indexPath as NSIndexPath).row]
 
             var controller: UIViewController?
             if controllerName == "newsViewController" {
                 controller = newsController
             } else {
-                controller = self.storyboard?.instantiateViewControllerWithIdentifier(controllerName)
+                controller = self.storyboard?.instantiateViewController(withIdentifier: controllerName)
             }
             if controller != nil {
                 self.sideMenuViewController?.contentViewController = UINavigationController(rootViewController: controller!)
@@ -115,7 +115,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         self.sideMenuViewController?.hideMenuViewController()
     }
 
-    func startChat(user: CKDiscoveredUserInfo) {
+    func startChat(_ user: CKDiscoveredUserInfo) {
         var firstName: String = ""
         var lastName: String = ""
         if #available(iOS 9.0, *) {
@@ -128,9 +128,9 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
         startChat(user.userRecordID!.recordName, firstName: firstName, lastName: lastName)
     }
 
-    func startChat(recordId: String, firstName: String, lastName: String) {
+    func startChat(_ recordId: String, firstName: String, lastName: String) {
         if self.chatViewController == nil {
-            self.chatViewController = self.storyboard?.instantiateViewControllerWithIdentifier("chatViewController") as? ChatViewController
+            self.chatViewController = self.storyboard?.instantiateViewController(withIdentifier: "chatViewController") as? ChatViewController
         }
         self.sideMenuViewController?.contentViewController = UINavigationController(rootViewController: self.chatViewController!)
         if self.chatViewController!.chatWithId != recordId {
@@ -143,7 +143,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - News data and events
     // ------------------------------------------------------------------------
 
-    func connectToNews(retryCount: Double = 1) {
+    func connectToNews(_ retryCount: Double = 1) {
 
         EVCloudData.publicDB.connect(
             News(), predicate: NSPredicate(value: true), orderBy: Ascending(field: "Subject").Descending("creationDate"), filterId: "News_All", configureNotificationInfo: { notificationInfo in
@@ -158,7 +158,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 // notificationInfo.desiredKeys = [""]
             }, completionHandler: { results, status in
                 EVLog("There are \(results.count) existing news items")
-                return status == CompletionStatus.PartialResult && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
+                return status == CompletionStatus.partialResult && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: {item in
                 EVLog("New News item: '\(item.Subject)'")
                 Helper.showStatus("New News item: '\(item.Subject)'")
@@ -173,19 +173,19 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.newsController.tableView.reloadData()
             }, errorHandler: {error in
                 switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
-                case .Retry(let timeToWait):
+                case .retry(let timeToWait):
                     Async.background(after: timeToWait) {
                         self.connectToNews(retryCount + 1)
                     }
-                case .Fail:
-                    Helper.showError("Could not load news: \(error.description)")
+                case .fail:
+                    Helper.showError("Could not load news: \(error.localizedDescription)")
                 default: // For here there is no need to handle the .Success and .RecoverableError
                     break
                 }
         })
     }
 
-    func connectToMessagesToMe(retryCount: Double = 1) {
+    func connectToMessagesToMe(_ retryCount: Double = 1) {
         let recordIdMe: String? = EVCloudData.publicDB.dao.activeUser?.userRecordID?.recordName
         if recordIdMe == nil {
             return
@@ -195,7 +195,7 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 notificationInfo.alertLocalizationArgs = ["FromFirstName", "FromLastName", "Text"]
             }, completionHandler: { results, status in
                 EVLog("Message to me results = \(results.count)")
-                return status == CompletionStatus.PartialResult && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
+                return status == CompletionStatus.partialResult && results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: { item in
                 EVLog("Message to me inserted \(item)")
                 self.startChat(item.From_ID, firstName: item.ToFirstName, lastName: item.ToLastName)
@@ -205,13 +205,13 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
                 EVLog("Message to me deleted : \(recordId)")
             }, errorHandler: { error in
                 switch EVCloudKitDao.handleCloudKitErrorAs(error, retryAttempt: retryCount) {
-                case .Retry(let timeToWait):
-                    Helper.showError("Could not load messages: \(error.description)")
+                case .retry(let timeToWait):
+                    Helper.showError("Could not load messages: \(error.localizedDescription)")
                     Async.background(after: timeToWait) {
                         self.connectToMessagesToMe(retryCount + 1)
                     }
-                case .Fail:
-                    Helper.showError("Could not load messages: \(error.description)")
+                case .fail:
+                    Helper.showError("Could not load messages: \(error.localizedDescription)")
                 default: // For here there is no need to handle the .Success and .RecoverableError
                     break
                 }

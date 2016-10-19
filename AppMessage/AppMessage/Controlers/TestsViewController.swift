@@ -18,7 +18,7 @@ class TestsViewController: UIViewController {
     var userId: String = ""
     var createdId = "";
 
-    @IBAction func runTest(sender: AnyObject) {
+    @IBAction func runTest(_ sender: AnyObject) {
         getUserInfoTest() // will set the self.userId
 
         ingnoreFieldTest()
@@ -46,7 +46,7 @@ class TestsViewController: UIViewController {
 
     func getUserInfoTest() {
         // retrieve our CloudKit user id. (made syncronous for this demo)
-        let sema = dispatch_semaphore_create(0)
+        let sema = DispatchSemaphore(value: 0)
         dao.discoverUserInfo({ (user) -> Void in
             self.userId = user.userRecordID?.recordName ?? ""
             var firstName: String = ""
@@ -59,12 +59,12 @@ class TestsViewController: UIViewController {
                 lastName = user.lastName ?? ""
             }
             EVLog("discoverUserInfo : \(self.userId) = \(firstName) \(lastName)");
-            dispatch_semaphore_signal(sema);
+            sema.signal();
         }) { (error) -> Void in
             EVLog("<--- ERROR in getUserInfo");
-            dispatch_semaphore_signal(sema);
+            sema.signal();
         }
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        let _ = sema.wait(timeout: DispatchTime.distantFuture);
 
         // Must be loged in to iCloud
         if userId.isEmpty {
@@ -84,11 +84,11 @@ class TestsViewController: UIViewController {
     func getAllContactsTest() {
         // Look who of our contact is also using this app.
         // the To for the test message will be the last contact in the list
-        let sema = dispatch_semaphore_create(0)
+        let sema = DispatchSemaphore(value: 0)
         var userIdTo: String = userId
         dao.allContactsUserInfo({ users in
-            EVLog("AllContactUserInfo count = \(users.count)");
-            for user in users {
+            EVLog("AllContactUserInfo count = \(users?.count)");
+            for user in users! {
                 userIdTo = user.userRecordID!.recordName
                 var firstName: String = ""
                 var lastName: String = ""
@@ -101,12 +101,12 @@ class TestsViewController: UIViewController {
                 }
                 EVLog("Firstname: \(firstName), Lastname: \(lastName), RecordId: \(userIdTo)")
             }
-            dispatch_semaphore_signal(sema);
+            sema.signal();
             }, errorHandler: { error in
-                EVLog("<-- ERROR in allContactsUserInfo : \(error.description)")
-                dispatch_semaphore_signal(sema);
+                EVLog("<-- ERROR in allContactsUserInfo : \(error.localizedDescription)")
+                sema.signal();
         })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        let _ = sema.wait(timeout: DispatchTime.distantFuture);
     }
 
     func saveObjectsTest() {
@@ -120,7 +120,7 @@ class TestsViewController: UIViewController {
 
         // The attachment
         let asset = Asset()
-        asset.File = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("test", ofType: "png")!))
+        asset.File = CKAsset(fileURL: URL(fileURLWithPath: Bundle.main.path(forResource: "test", ofType: "png")!))
         asset.FileName = "test"
         asset.FileType = "png"
 
@@ -148,17 +148,17 @@ class TestsViewController: UIViewController {
         message.Text = "This is the message text"
         message.MessageType = MessageTypeEnum.Text.rawValue
 
-        let sema = dispatch_semaphore_create(0);
+        let sema = DispatchSemaphore(value: 0);
         message.MessageType = MessageTypeEnum.Text.rawValue
         dao.saveItem(message, completionHandler: {record in
             self.createdId = record.recordID.recordName
             EVLog("saveItem Message: \(self.createdId)")
-            dispatch_semaphore_signal(sema)
+            sema.signal()
             }, errorHandler: {error in
                 EVLog("<--- ERROR saveItem message")
-                dispatch_semaphore_signal(sema)
+                sema.signal()
         })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        let _ = sema.wait(timeout: DispatchTime.distantFuture);
 
         // Get the just created data item
         dao.getItem(createdId
@@ -298,15 +298,15 @@ class TestsViewController: UIViewController {
         invoice.PostalAddress?.City = "The postal city"
         
         // Save the invoice and wait for it to complete
-        let sema = dispatch_semaphore_create(0);
+        let sema = DispatchSemaphore(value: 0);
         self.dao.saveItem(invoice, completionHandler: {record in
             EVLog("saveItem Invoice: \(record.recordID.recordName)");
-            dispatch_semaphore_signal(sema);
+            sema.signal();
         }, errorHandler: {error in
                 EVLog("<--- ERROR saveItem message");
-            dispatch_semaphore_signal(sema);
+            sema.signal();
         })
-        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        let _ = sema.wait(timeout: DispatchTime.distantFuture);
         
         
         // Now see if we can query the invoice
@@ -329,11 +329,11 @@ class TestsViewController: UIViewController {
     }
 }
 
-public class testObject: EVCloudKitDataObject {
-    private var ignoreString: String = ""
+open class testObject: EVCloudKitDataObject {
+    fileprivate var ignoreString: String = ""
     var saveString: String = ""
 
-    override public func propertyMapping() -> [(String?, String?)] {
+    override open func propertyMapping() -> [(String?, String?)] {
         return [("ignoreString", nil)]
     }
 }

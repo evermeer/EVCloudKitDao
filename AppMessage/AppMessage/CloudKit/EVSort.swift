@@ -14,14 +14,14 @@ import Foundation
  - Descending: Sort in descending order
  */
 public enum SortDirection {
-    case Ascending,
-    Descending
+    case ascending,
+    descending
 }
 
 /// Base class for the sort object
-public class OrderBy {
+open class OrderBy {
     var field: String = ""
-    var direction: SortDirection = .Descending
+    var direction: SortDirection = .descending
     var parent: OrderBy?
     
     /**
@@ -45,8 +45,8 @@ public class OrderBy {
      
      - returns: An OrderBy object
      */
-    public func Ascending(field: String) -> OrderBy {
-        return OrderBy(field: field, parent: self, direction: .Ascending)
+    open func Ascending(_ field: String) -> OrderBy {
+        return OrderBy(field: field, parent: self, direction: .ascending)
     }
     
     /**
@@ -56,8 +56,8 @@ public class OrderBy {
      
      - returns: An OrderBy object
      */
-    public func Descending(field: String) -> OrderBy {
-        return OrderBy(field: field, parent: self, direction: .Descending)
+    open func Descending(_ field: String) -> OrderBy {
+        return OrderBy(field: field, parent: self, direction: .descending)
     }
     
     /**
@@ -65,33 +65,33 @@ public class OrderBy {
      
      - returns: The array of sortDescriptors
      */
-    public func sortDescriptors() -> [NSSortDescriptor] {
+    open func sortDescriptors() -> [NSSortDescriptor] {
         var result: [NSSortDescriptor] = parent?.sortDescriptors() ?? []
-        result.append( NSSortDescriptor(key: field, ascending: (direction == .Ascending)))
+        result.append( NSSortDescriptor(key: field, ascending: (direction == .ascending)))
         return result
     }
 }
 
 /// The initial OrderBy class for an ascending order
-public class Ascending: OrderBy {
+open class Ascending: OrderBy {
     /**
      Initialise an ascending OrderBy object
      
      - parameter field:  The field where to sort on
      */
     public convenience required init(field: String) {
-        self.init(field: field, parent: nil, direction: .Ascending)
+        self.init(field: field, parent: nil, direction: .ascending)
     }
 }
 
 // The initial OrderBy class for a descending order
-public class Descending: OrderBy {
+open class Descending: OrderBy {
     /**
      Initialise an descending OrderBy object
      
      - parameter field:  The field where to sort on
      */
     public convenience required init(field: String) {
-        self.init(field: field, parent: nil, direction: .Descending)
+        self.init(field: field, parent: nil, direction: .descending)
     }
 }
