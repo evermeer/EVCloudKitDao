@@ -414,7 +414,7 @@
 				TargetAttributes = {
 					7F29764D1BB93D6A0074C85A = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = JPC3M2UF4R;
+						DevelopmentTeam = WTH4QGEA23;
 					};
 					7F434A2219628D490081F35C = {
 						CreatedOnToolsVersion = 6.0;
@@ -434,6 +434,7 @@
 					};
 					7F4A36FC1BDD90C600A0F73F = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = WTH4QGEA23;
 					};
 				};
 			};
@@ -705,6 +706,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = WTH4QGEA23;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = OSXTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -727,6 +729,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = WTH4QGEA23;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = OSXTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -879,6 +882,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = WTH4QGEA23;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = tvOSTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -897,6 +901,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = WTH4QGEA23;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = tvOSTest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
