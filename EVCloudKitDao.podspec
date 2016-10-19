@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "EVCloudKitDao"
-s.version      = "3.0.1"
+s.version      = "3.0.2"
 s.summary      = "iOS: Simplified access to Apple’s CloudKit"
 
 s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
@@ -48,15 +48,15 @@ s.social_media_url   = "http://twitter.com/evermeer"
 #  If this Pod runs only on iOS or OS X, then specify the platform and
 #  the deployment target. You can optionally include the target after the platform.
 #
-# s.platform     = :ios, "8.0"
+# s.platform     = :ios, "9.0"
 
 # ――― Deployment targets ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
 #  Specify the minimum deployment target
 #
-s.ios.deployment_target = '8.0'
-s.osx.deployment_target = '10.10'
-s.tvos.deployment_target = '9.0'
+s.ios.deployment_target = '9.0'
+s.osx.deployment_target = '10.11'
+#s.watchos.deployment_target = '2.0'
 
 # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 #
