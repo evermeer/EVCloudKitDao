@@ -31,3 +31,4 @@ class MenuViewController: SSASideMenu {
         }
     }
 }
+

@@ -3,7 +3,7 @@ use_frameworks!
 
 target 'AppMessage' do
     platform :ios, '8.0'
-    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift3'
+    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
     pod 'SwiftLocation'
     pod 'AsyncSwift'
 
@@ -17,10 +17,10 @@ end
 
 target 'OSXTest' do
     platform :osx, '10.10'
-    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift3'
+    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
 end
 
 target 'tvOSTest' do
     platform :tvos, '9.0'
-    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git', :branch => 'Swift3'
+    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
 end

@@ -45,7 +45,7 @@ class RootViewController: UIViewController {
                 Helper.showError("Discoverability has been denied. You will not be able to be found by other user. You can change this in the settings app, iCloud, iCloud drive, discover by email")
             }
             }) { (error) -> Void in
-                Helper.showError("Unable to request discoverability.")
+                Helper.showError("Unable to request discoverability.") //TODO: auto open app settings?
         }
         
         EVCloudKitDao.publicDB.discoverUserInfo({ (user) -> Void in

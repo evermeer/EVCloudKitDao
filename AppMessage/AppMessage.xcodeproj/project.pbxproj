@@ -43,6 +43,7 @@
 		7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F76554B197FF0FE008AD0D5 /* Asset.swift */; };
 		7F7C03621A382C3C00054ED7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7F7C03611A382C3C00054ED7 /* Localizable.strings */; };
 		7F9E68101C675F9E00F0F4D3 /* EVSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F9E680F1C675F9E00F0F4D3 /* EVSort.swift */; };
+		7FAE4DF91DB8079200D66B6F /* .swift-version in Resources */ = {isa = PBXBuildFile; fileRef = 7FAE4DF81DB8079200D66B6F /* .swift-version */; };
 		7FC46F651981259A000A875F /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = 7FC46F641981259A000A875F /* test.png */; };
 		7FC46F6719812ECA000A875F /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 7FC46F6619812ECA000A875F /* Podfile */; };
 		7FC46F7B198134C8000A875F /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FC46F6A198134C8000A875F /* Storyboard.storyboard */; };
@@ -101,6 +102,7 @@
 		7F76554B197FF0FE008AD0D5 /* Asset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
 		7F7C03611A382C3C00054ED7 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = ../Localizable.strings; sourceTree = "<group>"; };
 		7F9E680F1C675F9E00F0F4D3 /* EVSort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EVSort.swift; sourceTree = "<group>"; };
+		7FAE4DF81DB8079200D66B6F /* .swift-version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ".swift-version"; path = "../.swift-version"; sourceTree = "<group>"; };
 		7FC46F641981259A000A875F /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		7FC46F6619812ECA000A875F /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7FC46F6A198134C8000A875F /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 		7F434A1A19628D490081F35C = {
 			isa = PBXGroup;
 			children = (
+				7FAE4DF81DB8079200D66B6F /* .swift-version */,
 				7FED8E201A4B14A30071F7A9 /* .gitignore */,
 				7FED8E211A4B14AF0071F7A9 /* .travis.yml */,
 				7FED8DF91A4A30B70071F7A9 /* EVCloudKitDao.podspec */,
@@ -470,6 +473,7 @@
 				7F5DFB521A86C04100628235 /* JSQMessagesViewController.xib in Resources */,
 				7F61CA3B19829CC7005EF254 /* MessageIncoming.aiff in Resources */,
 				7F434A3019628D490081F35C /* Images.xcassets in Resources */,
+				7FAE4DF91DB8079200D66B6F /* .swift-version in Resources */,
 				7F61CA3A19829CC7005EF254 /* MessageBubble@2x.png in Resources */,
 				7FC46F6719812ECA000A875F /* Podfile in Resources */,
 				7F7C03621A382C3C00054ED7 /* Localizable.strings in Resources */,
