@@ -697,7 +697,7 @@ open class EVCloudKitDao {
     @discardableResult
     open func query<T: EVCloudKitDataObject>(_ type: T, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
        let recordType = EVReflection.swiftStringFromClass(type)
-        let query = CKQuery(recordType: recordType!, predicate: NSPredicate(value: true))
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -717,7 +717,7 @@ open class EVCloudKitDao {
         let recordType = EVReflection.swiftStringFromClass(type)
         let parentId = CKRecordID(recordName: referenceRecordName)
         let parent = CKReference(recordID: parentId, action: CKReferenceAction.none)
-        let query = CKQuery(recordType: recordType!, predicate: NSPredicate(format: "%K == %@", referenceField, parent))
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", referenceField, parent))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -738,7 +738,7 @@ open class EVCloudKitDao {
     @discardableResult
     open func query<T: EVCloudKitDataObject>(_ type: T, predicate: NSPredicate, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType = EVReflection.swiftStringFromClass(type)
-        let query: CKQuery = CKQuery(recordType: recordType!, predicate: predicate)
+        let query: CKQuery = CKQuery(recordType: recordType, predicate: predicate)
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -755,7 +755,7 @@ open class EVCloudKitDao {
     @discardableResult
     open func query<T: EVCloudKitDataObject>(_ type: T, tokens: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType = EVReflection.swiftStringFromClass(type)
-        let query = CKQuery(recordType: recordType!, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "allTokens TOKENMATCHES[cdl] %@", tokens))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
     }
@@ -800,7 +800,7 @@ open class EVCloudKitDao {
         let key = "type_\(recordType)_id_\(filterId)"
 
         let createSubscription = { () -> () in
-            let subscription = CKSubscription(recordType: recordType!, predicate: predicate, subscriptionID:key, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+            let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
             subscription.notificationInfo = CKNotificationInfo()
 // tvOS does not have visible remote notifications. This property is not available.
 #if os(tvOS)
