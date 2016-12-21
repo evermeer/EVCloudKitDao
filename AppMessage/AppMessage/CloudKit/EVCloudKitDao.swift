@@ -136,7 +136,7 @@ open class EVCloudKitDao {
 
     :return: The account information of the current user
     */
-    open var activeUser: CKDiscoveredUserInfo!
+    open var activeUser: AnyObject!  // CKDiscoverUserInfo or CKUserIdentity
 
 
     /**
@@ -433,15 +433,24 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func discoverUserInfo(_ completionHandler: @escaping (_ user: CKDiscoveredUserInfo) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+    open func discoverUserInfo(_ completionHandler: @escaping (_ user: AnyObject) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
         container.fetchUserRecordID(completionHandler: {recordID, error in
             self.handleCallback(self.nilNotAllowed(error as Error?, value: recordID), errorHandler: errorHandler, completionHandler: {
-                self.container.discoverUserInfo(withUserRecordID: recordID!, completionHandler: { user, error in
-                    self.handleCallback(self.nilNotAllowed(error as Error?, value: user), errorHandler: errorHandler, completionHandler: {
-                        self.activeUser = user
-                        completionHandler(user!)
+                if #available(iOS 10.0, *) {
+                    self.container.discoverUserIdentity(withUserRecordID: recordID!) { (user, error) in
+                        self.handleCallback(self.nilNotAllowed(error as Error?, value: user), errorHandler: errorHandler, completionHandler: {
+                            self.activeUser = user
+                            completionHandler(user!) // CKUserIdentity
+                        })
+                    }
+                } else {
+                    self.container.discoverUserInfo(withUserRecordID: recordID!, completionHandler: { user, error in
+                        self.handleCallback(self.nilNotAllowed(error as Error?, value: user), errorHandler: errorHandler, completionHandler: {
+                            self.activeUser = user
+                            completionHandler(user!) // CKDiscoverUserInfo
+                        })
                     })
-                })
+                }
             })
         })
     }
@@ -460,36 +469,54 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func allContactsUserInfo(_ completionHandler: @escaping (_ users: [CKDiscoveredUserInfo]?) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
-        container.discoverAllContactUserInfos(completionHandler: {users, error in
-            self.handleCallback(error as Error?, errorHandler:errorHandler, completionHandler: {
-                if let returnData = users {
-                    if returnData.count == 0 {
-                        if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
-                            completionHandler(restoreData)
+    open func allContactsUserInfo(_ completionHandler: @escaping (_ users: [AnyObject]?) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        if #available(iOS 10.0, *) {
+            container.discoverAllIdentities { (users, error) in
+                self.handleCallback(error as Error?, errorHandler:errorHandler, completionHandler: {
+                    if let returnData = users {
+                        if returnData.count == 0 {
+                            if let restoreData = self.restoreData("allContactsUserInfo10.bak") as? [CKUserIdentity] {
+                                completionHandler(restoreData)
+                            } else {
+                                completionHandler(returnData)
+                            }
                         } else {
+                            self.backupData(returnData as AnyObject, toFile: "allContactsUserInfo10.bak")
                             completionHandler(returnData)
                         }
+                        
                     } else {
-                        self.backupData(returnData as AnyObject, toFile: "allContactsUserInfo.bak")
-                        completionHandler(returnData)
+                        if let restoreData = self.restoreData("allContactsUserInfo10.bak") as? [CKUserIdentity] {
+                            completionHandler(restoreData)
+                        }
                     }
-
-                } else {
-                    if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
-                        completionHandler(restoreData)
+                })
+            }
+        } else {
+            container.discoverAllContactUserInfos(completionHandler: {users, error in
+                self.handleCallback(error as Error?, errorHandler:errorHandler, completionHandler: {
+                    if let returnData = users {
+                        if returnData.count == 0 {
+                            if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
+                                completionHandler(restoreData)
+                            } else {
+                                completionHandler(returnData)
+                            }
+                        } else {
+                            self.backupData(returnData as AnyObject, toFile: "allContactsUserInfo.bak")
+                            completionHandler(returnData)
+                        }
+                        
+                    } else {
+                        if let restoreData = self.restoreData("allContactsUserInfo.bak") as? [CKDiscoveredUserInfo] {
+                            completionHandler(restoreData)
+                        }
                     }
-                }
+                })
             })
-        })
+        }
     }
     #endif
-
-
-
-
-
-
 
     // ------------------------------------------------------------------------
     // MARK: - Reading and writing to file

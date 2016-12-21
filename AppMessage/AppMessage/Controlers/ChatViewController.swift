@@ -81,26 +81,24 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     // ------------------------------------------------------------------------
 
     func initializeCommunication(_ retryCount: Double = 1) {
-        if !viewAppeared || (recordIdMeForConnection == EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName && recordIdOtherForConnection == chatWithId) {
+        var recordIdMe: String?
+        if #available(iOS 10.0, *) {
+            recordIdMe = (EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.userRecordID?.recordName
+        } else {
+            recordIdMe = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.userRecordID?.recordName
+        }
+        
+        if !viewAppeared || (recordIdMeForConnection == recordIdMe && recordIdOtherForConnection == chatWithId) {
             return //Already connected or not ready yet
         }
 
         // Setup conversation for
-        recordIdMeForConnection = EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName
+        recordIdMeForConnection = recordIdMe ?? ""
         recordIdOtherForConnection = chatWithId
 
         // Sender settings for the component
-        self.senderId = EVCloudData.publicDB.dao.activeUser?.userRecordID!.recordName
-
-        if #available(iOS 9.0, *) {
-            senderFirstName = EVCloudData.publicDB.dao.activeUser!.displayContact?.givenName ?? ""
-            senderLastName = EVCloudData.publicDB.dao.activeUser!.displayContact?.familyName ?? ""
-        } else {
-            senderFirstName = EVCloudData.publicDB.dao.activeUser!.firstName ?? ""
-            senderLastName = EVCloudData.publicDB.dao.activeUser!.lastName ?? ""
-       }
-
-        self.senderDisplayName = "\(senderFirstName)  \(senderLastName)"
+        self.senderId = recordIdMe
+        self.senderDisplayName = showNameFor(EVCloudData.publicDB.dao.activeUser)
 
         // The data connection to the conversation
         EVCloudData.publicDB.connect(Message(), predicate: NSPredicate(format: "From_ID in %@ AND To_ID in %@", [recordIdMeForConnection, recordIdOtherForConnection], [recordIdOtherForConnection, recordIdMeForConnection]), filterId: dataID, configureNotificationInfo: { notificationInfo in
@@ -198,7 +196,13 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         let message = Message()
-        message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
+        
+        if #available(iOS 10.0, *) {
+            message.setFromFields((EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.userRecordID?.recordName ?? "")
+        } else {
+            message.setFromFields((EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.userRecordID?.recordName ?? "")
+        }
+        
         message.FromFirstName = self.senderFirstName
         message.FromLastName = self.senderLastName
         message.setToFields(chatWithId)
@@ -354,7 +358,13 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
 
                     // Create the message object that represents the asset
                     let message = Message()
-                    message.setFromFields(EVCloudData.publicDB.dao.activeUser.userRecordID!.recordName)
+                    
+                    if #available(iOS 10.0, *) {
+                        message.setFromFields((EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.userRecordID?.recordName ?? "")
+                    } else {
+                        message.setFromFields((EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.userRecordID?.recordName ?? "")
+                    }
+                   
                     message.FromFirstName = self.senderDisplayName
                     message.setToFields(self.chatWithId)
                     message.ToFirstName = self.chatWithFirstName
@@ -482,13 +492,15 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
          if message.senderId == self.senderId {
             var firstName: String = ""
             var lastName: String = ""
-            if #available(iOS 9.0, *) {
-                firstName = EVCloudData.publicDB.dao.activeUser!.displayContact?.givenName ?? ""
-                lastName = EVCloudData.publicDB.dao.activeUser!.displayContact?.familyName ?? ""
+            
+            if #available(iOS 10.0, *) {
+                firstName = (EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.nameComponents?.givenName ?? ""
+                lastName = (EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.nameComponents?.familyName ?? ""
             } else {
-                firstName = EVCloudData.publicDB.dao.activeUser!.firstName ?? ""
-                lastName = EVCloudData.publicDB.dao.activeUser!.lastName ?? ""
+                firstName = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.firstName ?? ""
+                lastName    = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.lastName ?? ""
             }
+
             initials = "\(String(describing: firstName.characters.first)) \(String(describing: lastName.characters.first))"
             //initials = "\(Array(arrayLiteral: firstName)[0]) \(Array(arrayLiteral: lastName)[0])"
         } else {

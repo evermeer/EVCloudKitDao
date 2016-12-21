@@ -10,7 +10,9 @@ import CloudKit
 import Async
 
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    var contacts: [CKDiscoveredUserInfo]! = []
+    //CKUserIdentity or CKDiscoveredUserInfo
+    var contacts: [AnyObject] = []
+    
     var tableView: UITableView!
     var leftMenu: LeftMenuViewController!
 
@@ -44,7 +46,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
                 EVLog("AllContactUserInfo count = \(users?.count)");
                 Async.main{
-                    self.contacts = users
+                    self.contacts = users ?? []
                     self.tableView.reloadData()
                 }
             }, errorHandler: { error in
@@ -85,21 +87,15 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
             cell.selectedBackgroundView = UIView()
             cell.textLabel?.textAlignment = .right
         }
-        var firstName: String = ""
-        var lastName: String = ""
-        if #available(iOS 9.0, *) {
-            firstName = contacts[(indexPath as NSIndexPath).row].displayContact?.givenName ?? ""
-            lastName = contacts[(indexPath as NSIndexPath).row].displayContact?.familyName ?? ""
-        } else {
-            firstName = contacts[(indexPath as NSIndexPath).row].firstName ?? ""
-            lastName = contacts[(indexPath as NSIndexPath).row].lastName ?? ""
-        }
         
-        cell.textLabel?.text = "\(firstName) \(lastName)" ;
+        let contact = contacts[(indexPath as NSIndexPath).row]
+        cell.textLabel?.text = showNameFor(contact);
         return cell;
     }
 
+    
     func tableView(_ tableView: UITableView,didSelectRowAt indexPath: IndexPath) {
         leftMenu.startChat(self.contacts[(indexPath as NSIndexPath).row])
     }
+
 }

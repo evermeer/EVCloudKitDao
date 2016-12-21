@@ -79,7 +79,11 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //This line all you need to get the correct data for cell that is selected
         if let news: News = EVCloudData.publicDB.data["News_All"]![(indexPath as NSIndexPath).row] as? News {
             if let url: URL = URL(string: news.ActionUrl) {
-                UIApplication.shared.openURL(url)
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
             }
         }
 

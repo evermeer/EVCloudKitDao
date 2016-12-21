@@ -48,17 +48,12 @@ class TestsViewController: UIViewController {
         // retrieve our CloudKit user id. (made syncronous for this demo)
         let sema = DispatchSemaphore(value: 0)
         dao.discoverUserInfo({ (user) -> Void in
-            self.userId = user.userRecordID?.recordName ?? ""
-            var firstName: String = ""
-            var lastName: String = ""
-            if #available(iOS 9.0, *) {
-                firstName = user.displayContact?.givenName ?? ""
-                lastName = user.displayContact?.familyName ?? ""
+            if #available(iOS 10.0, *) {
+                self.userId = (user as! CKUserIdentity).userRecordID?.recordName ?? ""
             } else {
-                firstName = user.firstName ?? ""
-                lastName = user.lastName ?? ""
+                self.userId = (user as! CKDiscoveredUserInfo).userRecordID?.recordName ?? ""
             }
-            EVLog("discoverUserInfo : \(self.userId) = \(firstName) \(lastName)");
+            EVLog("discoverUserInfo : \(showNameFor(user))");
             sema.signal();
         }) { (error) -> Void in
             EVLog("<--- ERROR in getUserInfo");
@@ -85,21 +80,10 @@ class TestsViewController: UIViewController {
         // Look who of our contact is also using this app.
         // the To for the test message will be the last contact in the list
         let sema = DispatchSemaphore(value: 0)
-        var userIdTo: String = userId
         dao.allContactsUserInfo({ users in
             EVLog("AllContactUserInfo count = \(users?.count)");
             for user in users! {
-                userIdTo = user.userRecordID!.recordName
-                var firstName: String = ""
-                var lastName: String = ""
-                if #available(iOS 9.0, *) {
-                    firstName = user.displayContact?.givenName ?? ""
-                    lastName = user.displayContact?.familyName ?? ""
-                } else {
-                    firstName = user.firstName ?? ""
-                    lastName = user.lastName ?? ""
-                }
-                EVLog("Firstname: \(firstName), Lastname: \(lastName), RecordId: \(userIdTo)")
+                EVLog("\(showNameFor(user))")
             }
             sema.signal();
             }, errorHandler: { error in
@@ -108,7 +92,7 @@ class TestsViewController: UIViewController {
         })
         let _ = sema.wait(timeout: DispatchTime.distantFuture);
     }
-
+    
     func saveObjectsTest() {
         let userIdTo: String = userId
         // New message
