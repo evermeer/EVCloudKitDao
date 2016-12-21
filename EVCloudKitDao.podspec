@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 #
 
 s.name         = "EVCloudKitDao"
-s.version      = "3.0.2"
+s.version      = "3.1.0"
 s.summary      = "iOS: Simplified access to Apple’s CloudKit"
 
 s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
@@ -41,6 +41,7 @@ s.license      = { :type => "MIT", :file => "LICENSE" }
 #
 
 s.author    = "evermeer"
+s.authors   = { 'Edwin Vermeer' => 'edwin@evict.nl' }
 s.social_media_url   = "http://twitter.com/evermeer"
 
 # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

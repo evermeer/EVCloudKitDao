@@ -409,7 +409,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = mirabeau;
 				TargetAttributes = {
 					7F29764D1BB93D6A0074C85A = {

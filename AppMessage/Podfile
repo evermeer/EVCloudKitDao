@@ -16,7 +16,7 @@ target 'AppMessage' do
 end
 
 target 'OSXTest' do
-    platform :osx, '10.10'
+    platform :osx, '10.11'
     pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
 end
 

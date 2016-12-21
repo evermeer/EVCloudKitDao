@@ -13,7 +13,7 @@ import CloudKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         // Only call this line once. It will make sure the recordType are there in iCloud.
@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 EVLog("\(count) subscriptions removed")
             })            
         }
+        
+        // Register for notifications
+        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound], categories: nil))
+        application.registerForRemoteNotifications()
         
         // Here we do not call the EVCloudData.publicDB.fetchChangeNotifications. Instead we do that in the LeftMenuViewController after we are sure that all general .connect are setup
         
