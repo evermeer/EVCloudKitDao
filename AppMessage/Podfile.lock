@@ -1,7 +1,7 @@
 PODS:
   - AsyncSwift (2.0.1)
   - CRToast (0.0.9)
-  - EVReflection (3.5.0)
+  - EVReflection (3.5.1)
   - JSQMessagesViewController (7.3.4):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -26,13 +26,13 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   EVReflection:
-    :commit: 762b73aa1cfcc4eb1d4b844006904667cb772026
+    :commit: 84d51b2e00b7b3309d6b4c48eceafa322c280c88
     :git: https://github.com/evermeer/EVReflection.git
 
 SPEC CHECKSUMS:
   AsyncSwift: 632138e42ead868b53c745fcde9bf733ce1527ad
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVReflection: 496fa3246db837cc2acf880627d42eb4389a92bb
+  EVReflection: 84e745e02c5ed634e1e8b1c925fd41d952cd09da
   JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
@@ -42,4 +42,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 7a986551af0747ae803aa5325f8af1c6e8104733
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0.beta.1
