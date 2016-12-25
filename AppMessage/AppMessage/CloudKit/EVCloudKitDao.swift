@@ -436,7 +436,7 @@ open class EVCloudKitDao {
     open func discoverUserInfo(_ completionHandler: @escaping (_ user: AnyObject) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
         container.fetchUserRecordID(completionHandler: {recordID, error in
             self.handleCallback(self.nilNotAllowed(error as Error?, value: recordID), errorHandler: errorHandler, completionHandler: {
-                if #available(iOS 10.0, *) {
+                if #available(iOS 10.0, *, tvOS 10.0, *) {
                     self.container.discoverUserIdentity(withUserRecordID: recordID!) { (user, error) in
                         self.handleCallback(self.nilNotAllowed(error as Error?, value: user), errorHandler: errorHandler, completionHandler: {
                             self.activeUser = user
@@ -470,7 +470,7 @@ open class EVCloudKitDao {
     :return: No return value
     */
     open func allContactsUserInfo(_ completionHandler: @escaping (_ users: [AnyObject]?) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
-        if #available(iOS 10.0, *) {
+		if #available(iOS 10.0, *, tvOS 10.0, *) {
             container.discoverAllIdentities { (users, error) in
                 self.handleCallback(error as Error?, errorHandler:errorHandler, completionHandler: {
                     if let returnData = users {

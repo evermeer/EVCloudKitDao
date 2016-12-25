@@ -85,7 +85,7 @@
 		7F434A2719628D490081F35C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7F434A2819628D490081F35C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7F434A2F19628D490081F35C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudKitDao.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7F434A4619628EAA0081F35C /* EVCloudKitDao.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudKitDao.swift; sourceTree = "<group>"; };
 		7F434A4B1962AE780081F35C /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		7F434A4D1962B94E0081F35C /* AppMessage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = AppMessage.entitlements; sourceTree = "<group>"; };
 		7F434A4E1962B95D0081F35C /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -118,7 +118,7 @@
 		7FC8B3B019E0600900C146AE /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
 		7FCB04A319A8E14F00A257FE /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = News.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		7FD051C019C591B2009B7FEE /* image-not-available.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "image-not-available.jpg"; sourceTree = "<group>"; };
-		7FD41610199666F3003C2CE9 /* EVCloudData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudData.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		7FD41610199666F3003C2CE9 /* EVCloudData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EVCloudData.swift; sourceTree = "<group>"; };
 		7FD67D971C2BD8B40071234B /* Invoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Invoice.swift; sourceTree = "<group>"; };
 		7FEC7BFC1AEA5EE50004F81D /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		7FED8DF91A4A30B70071F7A9 /* EVCloudKitDao.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = EVCloudKitDao.podspec; path = ../EVCloudKitDao.podspec; sourceTree = "<group>"; };
