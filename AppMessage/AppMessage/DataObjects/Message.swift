@@ -7,6 +7,7 @@
 // SwiftLint ignore variable_name
 
 import CloudKit
+import EVReflection
 
 enum MessageTypeEnum: String {
     case Text = "T",
@@ -14,7 +15,7 @@ enum MessageTypeEnum: String {
     Location = "L"
 }
 
-class Message: EVCloudKitDataObject {
+class Message: CKDataObject {
     // From which Channel is this message
     var From: CKReference? // = CKReference(recordID: CKRecordID(recordName: "N/A"), action: CKReferenceAction.None)
     var From_ID: String = ""

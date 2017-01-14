@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AppMessage" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="AppMessage" TARGET_NAME="AppMessage" CONFIG_NAME="Debug" SCHEME_NAME="AppMessage" RUN_TARGET_PROJECT_NAME="AppMessage" RUN_TARGET_NAME="AppMessage" MAKE_ACTIVE="TRUE" WAIT_FOR="FALSE">
+    <envs />
+    <EXTENSION ID="org.jetbrains.appcode.reveal.RevealRunConfigurationExtension">
+      <REVEAL_SETTINGS autoInject="false" autoInstall="true" askToEnableAutoInstall="true" />
+    </EXTENSION>
+    <method />
+  </configuration>
+</component>

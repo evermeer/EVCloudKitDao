@@ -1,12 +1,10 @@
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
+workspace 'EVCloudKitDao'
 
-target 'AppMessage' do
-    platform :ios, '8.0'
-    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
+def libraries
     pod 'SwiftLocation'
     pod 'AsyncSwift'
-
     pod 'JSQMessagesViewController'
     pod 'CRToast'
     pod 'UIImage-Resize'
@@ -15,12 +13,21 @@ target 'AppMessage' do
     #pod 'SSASideMenu' --> for now included
 end
 
+target 'AppMessage' do
+    project 'AppMessage/AppMessage'
+    platform :ios, '9.0'
+    pod 'EVCloudKitDao', :path => "./"
+    libraries
+end
+
 target 'OSXTest' do
+    project 'UnitTests/UnitTests'
     platform :osx, '10.11'
-    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
+    pod 'EVCloudKitDao', :path => "./"
 end
 
 target 'tvOSTest' do
+    project 'UnitTests/UnitTests'
     platform :tvos, '9.0'
-    pod 'EVReflection', :git => 'https://github.com/evermeer/EVReflection.git'
+    pod 'EVCloudKitDao', :path => "./"
 end

@@ -8,6 +8,7 @@
 
 import UIKit
 import CloudKit
+import EVCloudKitDao
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

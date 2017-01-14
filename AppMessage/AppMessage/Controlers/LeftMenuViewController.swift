@@ -8,6 +8,7 @@
 import UIKit
 import CloudKit
 import Async
+import EVCloudKitDao
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 

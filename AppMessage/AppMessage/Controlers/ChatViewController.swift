@@ -14,6 +14,8 @@ import VIPhotoView
 import MapKit
 import UIImage_Resize
 import Async
+import EVCloudKitDao
+import EVReflection
 
 class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, UzysAssetsPickerControllerDelegate, MKMapViewDelegate {
 
@@ -167,7 +169,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             if docDirPaths.count > 0 {
                 let filePath =  (docDirPaths[0] as NSString).appendingPathComponent("\(id).png")
                 if let asset = item as? Asset {
-                    if let image = asset.image() {
+                    if let image = asset.File?.image() {
                         if let myData = UIImagePNGRepresentation(image) {
                             try? myData.write(to: URL(fileURLWithPath: filePath), options: [.atomic])
                         }

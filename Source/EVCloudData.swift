@@ -153,7 +153,7 @@ open class EVCloudData: NSObject {
     /**
      All the data in a dictionary. Each filterId is a dictionary entry that contains another dictionary with the objects in that filter
      */
-    open var data = Dictionary<String, [EVCloudKitDataObject]>()
+    open var data = Dictionary<String, [CKDataObject]>()
     /**
      The caching strategy for each filter for when incomming data should be written to a file
      */
@@ -181,11 +181,11 @@ open class EVCloudData: NSObject {
     /**
      A dictionary of insert event handlers. Each filterId is a dictionary entry containing a insert event handler
      */
-    open var insertedHandlers = Dictionary<String, (_ item: EVCloudKitDataObject) -> Void>()
+    open var insertedHandlers = Dictionary<String, (_ item: CKDataObject) -> Void>()
     /**
      A dictionary of update event handlers. Each filterId is a dictionary entry containing a update event handler
      */
-    open var updateHandlers = Dictionary<String, (_ item: EVCloudKitDataObject, _ dataIndex: Int) -> Void>()
+    open var updateHandlers = Dictionary<String, (_ item: CKDataObject, _ dataIndex: Int) -> Void>()
     /**
      A dictionary of dataChanged event handlers. Each filterId is a dictionary entry containing a dataChanged event handler
      */
@@ -289,7 +289,7 @@ open class EVCloudData: NSObject {
      */
     @discardableResult
     open func restoreDataForFilter(_ filterId: String) -> Bool {
-        if let theData = dao.restoreData("Filter_\(filterId).bak") as? [EVCloudKitDataObject] {
+        if let theData = dao.restoreData("Filter_\(filterId).bak") as? [CKDataObject] {
             data[filterId] = theData
             return true
         }
@@ -350,7 +350,7 @@ open class EVCloudData: NSObject {
      - parameter results:  ?
      - parameter status:   ?
      */
-    fileprivate func postDataCompletedNotification<T:EVCloudKitDataObject>(_ filterId: String, results: [T], status: CompletionStatus) {
+    fileprivate func postDataCompletedNotification<T:CKDataObject>(_ filterId: String, results: [T], status: CompletionStatus) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
@@ -367,7 +367,7 @@ open class EVCloudData: NSObject {
      - parameter filterId: ?
      - parameter item:     ?
      */
-    fileprivate func postDataInsertedNotification<T:EVCloudKitDataObject>(_ filterId: String, item: T) {
+    fileprivate func postDataInsertedNotification<T:CKDataObject>(_ filterId: String, item: T) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
@@ -385,7 +385,7 @@ open class EVCloudData: NSObject {
      - parameter item:      ?
      - parameter dataIndex: ?
      */
-    fileprivate func postDataUpdatedNotification<T:EVCloudKitDataObject>(_ filterId: String, item: T, dataIndex: Int) {
+    fileprivate func postDataUpdatedNotification<T:CKDataObject>(_ filterId: String, item: T, dataIndex: Int) {
         // Verify notifications are wanted
         if postNotifications[filterId] != nil {
             // Post requested notification
@@ -456,20 +456,20 @@ open class EVCloudData: NSObject {
     - parameter item: The object that will be processed
     :return: No return value
     */
-    fileprivate func upsertObject(_ recordId: String, item: EVCloudKitDataObject) {
+    fileprivate func upsertObject(_ recordId: String, item: CKDataObject) {
         EVLog("upsert \(recordId) \(EVReflection.swiftStringFromClass(item))")
         for (filter, predicate) in self.predicates {
             if recordType[filter] == EVReflection.swiftStringFromClass(item) {
                 let itemID: Int? = data[filter]!.EVindexOf {i in return i.recordID.recordName == recordId}
                 if predicate.evaluate(with: item) {
-                    var existingItem: EVCloudKitDataObject?
+                    var existingItem: CKDataObject?
                     if itemID != nil && itemID < data[filter]!.count {
                         existingItem = data[filter]![itemID!]
                     }
                     if existingItem != nil  {
                         EVLog("Update object for filter \(filter)")
                         EVReflection.setPropertiesfromDictionary(item.toDictionary(), anyObject: data[filter]![itemID!])                        
-                        data[filter] = (data[filter]! as NSArray).sortedArray(using: sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
+                        data[filter] = (data[filter]! as NSArray).sortedArray(using: sortOrders[filter]!.sortDescriptors()) as? [CKDataObject]
                         OperationQueue.main.addOperation {
                             (self.updateHandlers[filter]!)(item, itemID!)
                             (self.dataChangedHandlers[filter]!)()
@@ -479,7 +479,7 @@ open class EVCloudData: NSObject {
                     } else {
                         EVLog("Insert object for filter \(filter)")
                         data[filter]!.insert(item, at: 0)
-                        data[filter] = (data[filter]! as NSArray).sortedArray(using: sortOrders[filter]!.sortDescriptors()) as? [EVCloudKitDataObject]
+                        data[filter] = (data[filter]! as NSArray).sortedArray(using: sortOrders[filter]!.sortDescriptors()) as? [CKDataObject]
                         OperationQueue.main.addOperation {
                             (self.insertedHandlers[filter]!)(item)
                             (self.dataChangedHandlers[filter]!)()
@@ -536,7 +536,7 @@ open class EVCloudData: NSObject {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func getItem(_ recordId: String, completionHandler: @escaping (_ result: EVCloudKitDataObject) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
+    open func getItem(_ recordId: String, completionHandler: @escaping (_ result: CKDataObject) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
         dao.getItem(recordId, completionHandler: { result in
             OperationQueue.main.addOperation {
                 self.upsertObject(result.recordID.recordName, item: result)
@@ -557,7 +557,7 @@ open class EVCloudData: NSObject {
      - parameter errorHandler: The function that will be called when there was an error
      :return: No return value
      */
-    open func saveItem<T:EVCloudKitDataObject>(_ item: T, completionHandler: @escaping (_ item: T) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
+    open func saveItem<T:CKDataObject>(_ item: T, completionHandler: @escaping (_ item: T) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
         OperationQueue().addOperation() {
             self.upsertObject(item.recordID.recordName, item: item)
         }
@@ -624,7 +624,7 @@ open class EVCloudData: NSObject {
     :return: No return value
     */
     @discardableResult
-    open func connect<T:EVCloudKitDataObject>(
+    open func connect<T:CKDataObject>(
         _ type: T,
         predicate: NSPredicate,
         orderBy: OrderBy = Descending(field: "creationDate"),
@@ -675,26 +675,26 @@ open class EVCloudData: NSObject {
             
             // Wrapping (Type and optional) the generic function so that we can add it to the collection and prevent nil reference exceptions
             if insertedHandler != nil {
-                func insertedHandlerWrapper(_ item: EVCloudKitDataObject) -> Void {
+                func insertedHandlerWrapper(_ item: CKDataObject) -> Void {
                     if let insertedItem = item as? T {
                         insertedHandler!(insertedItem)
                     }
                 }
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             } else {
-                func insertedHandlerWrapper(_ item: EVCloudKitDataObject) -> Void { }
+                func insertedHandlerWrapper(_ item: CKDataObject) -> Void { }
                 self.insertedHandlers[filterId] = insertedHandlerWrapper
             }
             
             if updatedHandler != nil {
-                func updatedHandlerWrapper(_ item: EVCloudKitDataObject, dataIndex: Int) -> Void {
+                func updatedHandlerWrapper(_ item: CKDataObject, dataIndex: Int) -> Void {
                     if let updatedItem = item as? T {
                         updatedHandler!(updatedItem, dataIndex)
                     }
                 }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
             } else {
-                func updatedHandlerWrapper(_ item: EVCloudKitDataObject, dataIndex: Int) -> Void { }
+                func updatedHandlerWrapper(_ item: CKDataObject, dataIndex: Int) -> Void { }
                 self.updateHandlers[filterId] = updatedHandlerWrapper
             }
             

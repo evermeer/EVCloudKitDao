@@ -8,18 +8,10 @@
 
 import CloudKit
 import UIKit
+import EVReflection
 
-class Asset: EVCloudKitDataObject {
+class Asset: CKDataObject {
     var File: CKAsset?  // = CKAsset(fileURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("image-not-available", ofType: "jpg")!))
     var FileName: String = ""
     var FileType: String = ""
-
-    func image() -> UIImage? {
-        if let file = File {
-            if let data = try? Data(contentsOf: file.fileURL) {
-                return UIImage(data: data)
-            }
-        }
-        return nil
-    }
 }

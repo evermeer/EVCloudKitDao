@@ -1,7 +1,11 @@
 PODS:
   - AsyncSwift (2.0.1)
   - CRToast (0.0.9)
-  - EVReflection (3.5.1)
+  - EVCloudKitDao (3.3.0):
+    - EVReflection/CloudKit
+  - EVReflection/CloudKit (4.0.8):
+    - EVReflection/Core
+  - EVReflection/Core (4.0.8)
   - JSQMessagesViewController (7.3.4):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -13,7 +17,7 @@ PODS:
 DEPENDENCIES:
   - AsyncSwift
   - CRToast
-  - EVReflection (from `https://github.com/evermeer/EVReflection.git`)
+  - EVCloudKitDao (from `./`)
   - JSQMessagesViewController
   - SwiftLocation
   - UIImage-Resize
@@ -21,18 +25,14 @@ DEPENDENCIES:
   - VIPhotoView
 
 EXTERNAL SOURCES:
-  EVReflection:
-    :git: https://github.com/evermeer/EVReflection.git
-
-CHECKOUT OPTIONS:
-  EVReflection:
-    :commit: 84d51b2e00b7b3309d6b4c48eceafa322c280c88
-    :git: https://github.com/evermeer/EVReflection.git
+  EVCloudKitDao:
+    :path: "./"
 
 SPEC CHECKSUMS:
   AsyncSwift: 632138e42ead868b53c745fcde9bf733ce1527ad
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVReflection: 84e745e02c5ed634e1e8b1c925fd41d952cd09da
+  EVCloudKitDao: 0b16a992a83341117b1b78fd1c8545a5a1c05db9
+  EVReflection: ef1057a4dd96670502527f0031053493ae98a9a7
   JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   SwiftLocation: aac16955b508c46b82bf07fcceb7e2a3b382b8d5
@@ -40,6 +40,6 @@ SPEC CHECKSUMS:
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
 
-PODFILE CHECKSUM: 7a986551af0747ae803aa5325f8af1c6e8104733
+PODFILE CHECKSUM: 4fef42d1ae6c4f432dcaa117df3e1accfa55a1a6
 
-COCOAPODS: 1.2.0.beta.1
+COCOAPODS: 1.2.0.beta.3

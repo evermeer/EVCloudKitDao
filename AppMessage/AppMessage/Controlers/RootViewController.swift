@@ -7,6 +7,7 @@
 
 import UIKit
 import Async
+import EVCloudKitDao
 
 class RootViewController: UIViewController {
 

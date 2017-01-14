@@ -7,8 +7,9 @@
 // SwiftLint ignore variable_name
 
 import CloudKit
+import EVReflection
 
-class News: EVCloudKitDataObject {
+class News: CKDataObject {
     var Subject: String = ""
     var Body: String = ""
     var ActionUrl: String = ""

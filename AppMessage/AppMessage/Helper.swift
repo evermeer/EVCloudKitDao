@@ -9,21 +9,22 @@
 import Foundation
 import CRToast
 import Async
+import EVCloudKitDao
 
 class Helper {
 
     class func showMessage(_ message: String, color: UIColor) {
         let options: NSDictionary = [
             kCRToastTextKey : message,
-            kCRToastNotificationTypeKey : CRToastType.navigationBar.rawValue,
-            kCRToastNotificationPresentationTypeKey : CRToastPresentationType.cover.rawValue,
-            kCRToastTimeIntervalKey: 5.0,
-            kCRToastTextAlignmentKey : NSTextAlignment.center.rawValue,
+            kCRToastNotificationTypeKey : NSNumber(value: CRToastType.navigationBar.rawValue),
+            kCRToastNotificationPresentationTypeKey : NSNumber(value: CRToastPresentationType.cover.rawValue),
+            kCRToastTimeIntervalKey: NSNumber(value: 5.0),
+            kCRToastTextAlignmentKey : NSNumber(value: NSTextAlignment.center.rawValue),
             kCRToastBackgroundColorKey : color,
-            kCRToastAnimationInTypeKey : CRToastAnimationType.spring.rawValue,
-            kCRToastAnimationOutTypeKey : CRToastAnimationType.spring.rawValue,
-            kCRToastAnimationInDirectionKey : CRToastAnimationDirection.top.rawValue,
-            kCRToastAnimationOutDirectionKey : CRToastAnimationDirection.bottom.rawValue,
+            kCRToastAnimationInTypeKey : NSNumber(value: CRToastAnimationType.spring.rawValue),
+            kCRToastAnimationOutTypeKey : NSNumber(value: CRToastAnimationType.spring.rawValue),
+            kCRToastAnimationInDirectionKey : NSNumber(value: CRToastAnimationDirection.top.rawValue),
+            kCRToastAnimationOutDirectionKey : NSNumber(value: CRToastAnimationDirection.bottom.rawValue),
         ]
         Async.main {
             CRToastManager.showNotification(options: options as! [AnyHashable: Any], completionBlock: { })

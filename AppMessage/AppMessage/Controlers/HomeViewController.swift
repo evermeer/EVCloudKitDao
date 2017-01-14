@@ -9,4 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
+    override func viewDidAppear(_ animated: Bool) {
+        self.view.backgroundColor = UIColor.white
+    }
 }

@@ -7,15 +7,16 @@
 //
 
 import Foundation
+import EVReflection
 
-class Invoice: EVCloudKitDataObject {
+class Invoice: CKDataObject {
     var InvoiceNumber: String?
     var InvoiceAddress: Address?
     var DeliveryAddress: Address?
     var PostalAddress: Address?
 }
 
-class Address: EVCloudKitDataObject {
+class Address: CKDataObject {
     var Street: String = ""
     var HouseNumber: String = ""
     var PostalCode: String = ""

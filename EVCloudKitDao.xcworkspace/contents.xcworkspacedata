@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:AppMessage/../.gitignore">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/../.swift-version">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/../README.md">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/../EVCloudKitDao.podspec">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/../LICENSE">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/../Podfile">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/../.travis.yml">
+   </FileRef>
+   <FileRef
+      location = "group:Source">
+   </FileRef>
+   <FileRef
+      location = "group:AppMessage/AppMessage.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Pods/../UnitTests/UnitTests.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:UnitTests/UnitTests.xcodeproj">
+   </FileRef>
+</Workspace>

@@ -6,6 +6,7 @@
 //
 
 import CloudKit
+import EVCloudKitDao
 import EVReflection
 
 class TestObject: NSObject {
@@ -313,7 +314,7 @@ class TestsViewController: UIViewController {
     }
 }
 
-open class testObject: EVCloudKitDataObject {
+open class testObject: CKDataObject {
     fileprivate var ignoreString: String = ""
     var saveString: String = ""
 

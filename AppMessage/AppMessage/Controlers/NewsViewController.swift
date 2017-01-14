@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import EVCloudKitDao
 
 class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
