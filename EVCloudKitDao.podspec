@@ -5,10 +5,10 @@ Pod::Spec.new do |s|
     s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
 
     s.homepage     = "https://github.com/evermeer/EVCloudKitDao"
-    s.screenshots  = ["https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot.png?raw=true",
-                    "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot2.png?raw=true",
-                    "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot3.PNG?raw=true",
-                    "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshot4.PNG?raw=true"]
+    s.screenshots  = ["https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshots/Screenshot.png?raw=true",
+                    "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshots/Screenshot2.png?raw=true",
+                    "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshots/Screenshot3.PNG?raw=true",
+                    "https://github.com/evermeer/EVCloudKitDao/blob/master/Screenshots/Screenshot4.PNG?raw=true"]
     s.license      = { :type => "MIT", :file => "LICENSE" }
     s.author    = "evermeer"
     s.authors   = { 'Edwin Vermeer' => 'edwin@evict.nl' }
