@@ -29,6 +29,10 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 }
 
 
+@available(*, deprecated, message: "Use CKDataObject instead")
+open class EVCloudKitDataObject: CKDataObject {
+}
+
 
 /**
  Wrapper class for being able to use a class instance Dictionary.
@@ -37,10 +41,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 private class DataContainerWrapper {
     var publicContainers : Dictionary<String,EVCloudData> = Dictionary<String,EVCloudData>()
     var privateContainers : Dictionary<String,EVCloudData> = Dictionary<String,EVCloudData>()
-}
-
-@available(deprecated, message: "Use EVCloudData instead")
-open class EVCloudKitDataObject: EVCloudData {
 }
 
 /**
