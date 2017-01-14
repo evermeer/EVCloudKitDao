@@ -39,6 +39,9 @@ private class DataContainerWrapper {
     var privateContainers : Dictionary<String,EVCloudData> = Dictionary<String,EVCloudData>()
 }
 
+@available(deprecated, message: "Use EVCloudData instead")
+open class EVCloudKitDataObject: EVCloudData {
+}
 
 /**
  Class for access to  Apple's CloudKit data the easiest way possible
@@ -562,7 +565,7 @@ open class EVCloudData: NSObject {
             self.upsertObject(item.recordID.recordName, item: item)
         }
         dao.saveItem(item, completionHandler: { record in
-            if let savedItem = self.dao.fromCKRecord(record)! as? T {
+            if let savedItem = record.toDataObject() as? T {
                 self.upsertObject(savedItem.recordID.recordName, item: savedItem)
                 item.recordChangeTag = savedItem.recordChangeTag
                 item.lastModifiedUserRecordID = savedItem.lastModifiedUserRecordID

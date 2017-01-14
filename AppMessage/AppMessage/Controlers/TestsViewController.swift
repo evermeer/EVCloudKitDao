@@ -309,7 +309,7 @@ class TestsViewController: UIViewController {
         myObj.saveString = "save this"
         myObj.ignoreString = "Forget about this"
         
-        let record = self.dao.toCKRecord(myObj)
+        let record = myObj.toCKRecord()
         EVLog("record from object: \(record)")
     }
 }

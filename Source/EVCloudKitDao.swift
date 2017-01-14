@@ -314,7 +314,7 @@ open class EVCloudKitDao {
         operation.queuePriority = .veryHigh
         var results = [T]()
         operation.recordFetchedBlock = { record in
-            if let parsed = self.fromCKRecord(record) as? T {
+            if let parsed = record.toDataObject() as? T {
                 results.append(parsed)
             }
         }
@@ -349,7 +349,7 @@ open class EVCloudKitDao {
         let operation = CKQueryOperation(cursor: cursor)
         operation.qualityOfService = .userInitiated
         operation.recordFetchedBlock = { record in
-            if let parsed = self.fromCKRecord(record) as? T {
+            if let parsed = record.toDataObject() as? T {
                 results.append(parsed)
             }
         }
@@ -591,7 +591,7 @@ open class EVCloudKitDao {
         operation.qualityOfService = .userInitiated
         operation.queuePriority = .veryHigh
         operation.perRecordCompletionBlock = { record, id, error in
-            if let parsed = self.fromCKRecord(record) {
+            if let parsed = record?.toDataObject() {
                 completionHandler(parsed)
             } else {
                 if let handler = errorHandler {
@@ -618,7 +618,7 @@ open class EVCloudKitDao {
         operation.queuePriority = .veryHigh
         operation.fetchRecordsCompletionBlock = { result, error in
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                let r: [CKDataObject] = result!.map({ (key, value) in self.fromCKRecord(value)!})
+                let r: [CKDataObject] = result!.map({ (key, value) in value.toDataObject()!})
                 completionHandler(r)
             })
         }
@@ -636,12 +636,12 @@ open class EVCloudKitDao {
     */
     @discardableResult
     open func saveItem(_ item: CKDataObject, completionHandler: @escaping (_ record: CKRecord) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
-        let theRecord = self.toCKRecord(item)
+        let theRecord = item.toCKRecord()
         database.save(theRecord, completionHandler: { record, error in
             self.handleCallback(self.nilNotAllowed(error, value: record), errorHandler: errorHandler, completionHandler: {
                 completionHandler(record!)
             })
-        })
+        })        
     }
 
     /**
@@ -654,7 +654,7 @@ open class EVCloudKitDao {
      */
     @discardableResult
     open func saveItems(_ items: [CKDataObject], completionHandler: @escaping (_ records: [CKRecord]) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKModifyRecordsOperation {
-        let recordsToSave: [CKRecord] = items.map({self.toCKRecord($0)})
+        let recordsToSave: [CKRecord] = items.map({$0.toCKRecord()})
         let operation = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
         operation.isAtomic = false
         operation.database = database
@@ -1135,113 +1135,5 @@ open class EVCloudKitDao {
                 })
         }
         container.add(badgeResetOperation)
-    }
-
-    // ------------------------------------------------------------------------
-    // MARK: - Converting a CKRecord from and to an object
-    // ------------------------------------------------------------------------
-
-    /**
-    Convert a CKrecord to an object
-
-    - parameter record: The CKRecord that will be converted to an object
-    :return: The object that is created from the record
-    */
-    open func fromCKRecord(_ record: CKRecord!) -> CKDataObject? {
-        if record == nil {
-            return nil
-        }
-        if let theObject = EVReflection.fromDictionary(CKRecordToDictionary(record), anyobjectTypeString: record.recordType) as? CKDataObject {
-            theObject.recordID = record.recordID
-            theObject.recordType = record.recordType
-            theObject.creationDate = record.creationDate ?? Date()
-            theObject.creatorUserRecordID = record.creatorUserRecordID
-            theObject.modificationDate = record.modificationDate ?? Date()
-            theObject.lastModifiedUserRecordID = record.lastModifiedUserRecordID
-            theObject.recordChangeTag = record.recordChangeTag
-
-            let data = NSMutableData()
-            let coder = NSKeyedArchiver(forWritingWith: data)
-            record.encodeSystemFields(with: coder)
-            coder.finishEncoding()
-            theObject.encodedSystemFields = data as Data
-            return theObject
-        }
-        return nil
-    }
-
-    /**
-    Convert an object to a CKRecord
-
-    - parameter theObject: The object that will be converted to a CKRecord
-    :return: The CKRecord that is created from theObject
-    */
-    open func toCKRecord(_ theObject: CKDataObject) -> CKRecord {
-        var record: CKRecord!
-        if theObject.encodedSystemFields != nil {
-            let coder = NSKeyedUnarchiver(forReadingWith: theObject.encodedSystemFields! as Data)
-            record = CKRecord(coder: coder)
-            coder.finishDecoding()
-        }
-        if record == nil {
-            record = CKRecord(recordType: EVReflection.swiftStringFromClass(theObject), recordID: theObject.recordID)
-        }
-        let (fromDict, _) = EVReflection.toDictionary(theObject)
-        dictToCKRecord(record, dict: fromDict)
-
-        return record
-    }
-
-    /**
-     Put a dictionary recursively in a CKRecord
-
-     - parameter record: the record
-     - parameter dict:   the dictionary
-     - parameter root:   used for expanding the property name
-     */
-    fileprivate func dictToCKRecord(_ record: CKRecord, dict: NSDictionary, root: String = "") {
-        for (key, value) in dict {
-            if !(["recordID", "recordType", "creationDate", "creatorUserRecordID", "modificationDate", "lastModifiedUserRecordID", "recordChangeTag", "encodedSystemFields"]).contains(key as! String) {
-                if value is NSNull {
-                    // record.setValue(nil, forKey: key) // Swift can not set a value on a nulable type.
-                } else if let dict = value as? NSDictionary {
-                    dictToCKRecord(record, dict: dict, root: "\(root)\(key as! String)__")
-                } else if key as! String != "recordID" {
-                    record.setValue(value, forKey: "\(root)\(key as! String)")
-                }
-            }
-        }
-    }
-
-    /**
-    Convert CKRecord to dictionary
-
-    - parameter record: The CKRecord that will be converted to a dictionary
-    :return: The dictionary that is created from the record
-    */
-    open func CKRecordToDictionary(_ record: CKRecord) -> NSDictionary {
-        let dictionary = NSMutableDictionary()
-        for key in record.allKeys() {
-            if let value = record.object(forKey: key) {
-                var path: [String] = key.components(separatedBy: "__")
-                if path.count == 1 {
-                    dictionary.setObject(value, forKey: key as NSCopying)
-                } else {
-                    var tempDict = dictionary
-                    var tempKey = key
-                    let lastKey = path[path.count - 1]
-                    path.removeLast()
-                    for item in path {
-                        tempKey = item
-                        if tempDict[tempKey] == nil {
-                            tempDict.setObject(NSMutableDictionary(), forKey: tempKey as NSCopying)
-                        }
-                        tempDict = (tempDict[tempKey] as? NSMutableDictionary) ?? NSMutableDictionary()
-                    }
-                    tempDict.setObject(value, forKey: lastKey as NSCopying)
-               }
-            }
-        }
-        return dictionary
     }
 }
