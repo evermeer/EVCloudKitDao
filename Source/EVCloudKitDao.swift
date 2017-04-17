@@ -206,7 +206,7 @@ open class EVCloudKitDao {
             sema.signal()
         })
         let _ = sema.wait(timeout: DispatchTime.distantFuture)
-        EVLog("Container identifier = \(container.containerIdentifier)")
+        EVLog("Container identifier = \(container.containerIdentifier.debugDescription)")
     }
 
     // ------------------------------------------------------------------------
@@ -224,7 +224,7 @@ open class EVCloudKitDao {
     */
     internal func handleCallback(_ error: Error?, errorHandler: ((_ error: Error) -> Void)? = nil, completionHandler: () -> Void) {
         if error != nil {
-            EVLog("Error: \(error?._code) = \(error?.localizedDescription)")
+            EVLog("Error: \(error?._code ?? 0) = \(error?.localizedDescription.debugDescription ?? "")")
             if let handler = errorHandler {
                 handler(error!)
             }
@@ -263,7 +263,7 @@ open class EVCloudKitDao {
         if let userInfo = error?._userInfo as? NSDictionary {
             if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
                 let seconds = Double(retry)
-                NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
+                NSLog("Debug: Should retry in \(seconds) seconds. \(error?.localizedDescription ?? "")")
                 return .retry(afterSeconds: seconds)
             }
         }
@@ -277,19 +277,19 @@ open class EVCloudKitDao {
             if seconds > 1800 {
                 seconds = 1800
             }
-            NSLog("Debug: Should retry in \(seconds) seconds. \(error)")
+            NSLog("Debug: Should retry in \(seconds) seconds. \(error?.localizedDescription ?? "")")
             return .retry(afterSeconds: seconds)
         case .unknownItem, .invalidArguments, .incompatibleVersion, .badContainer, .missingEntitlement, .permissionFailure, .badDatabase, .assetFileNotFound, .operationCancelled, .assetFileModified, .batchRequestFailed, .zoneNotFound, .userDeletedZone, .internalError, .serverRejectedRequest, .constraintViolation:
-            NSLog("Error: \(error)")
+            NSLog("Error: \(error?.localizedDescription ?? "")")
             return .fail
         case .quotaExceeded, .limitExceeded:
-            NSLog("Warning: \(error)")
+            NSLog("Warning: \(error?.localizedDescription ?? "")")
             return .fail
         case .changeTokenExpired,  .serverRecordChanged:
-            NSLog("Info: \(error)")
+            NSLog("Info: \(error?.localizedDescription ?? "")")
             return .recoverableError
         default:
-            NSLog("Error: \(error)") //New error introduced in iOS...?
+            NSLog("Error: \(error?.localizedDescription ?? "")") //New error introduced in iOS...?
             return .fail
         }
     }
@@ -634,7 +634,6 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    @discardableResult
     open func saveItem(_ item: CKDataObject, completionHandler: @escaping (_ record: CKRecord) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
         let theRecord = item.toCKRecord()
         database.save(theRecord, completionHandler: { record, error in
@@ -898,7 +897,7 @@ open class EVCloudKitDao {
                 if let handler = completionHandler {
                     handler()
                 }
-                EVLog("Subscription with id \(key) was removed : \(savedSubscriptions?.description)")
+                EVLog("Subscription with id \(key) was removed : \(savedSubscriptions?.debugDescription ?? "")")
             })
         }
         self.database.add(modifyOperation)
@@ -970,7 +969,7 @@ open class EVCloudKitDao {
                 for subscription: CKSubscription in subscriptions! {
                     self.database.delete(withSubscriptionID: subscription.subscriptionID, completionHandler: {subscriptionId, error in
                         self.handleCallback(error as Error?, errorHandler: errorHandler, completionHandler: {
-                            EVLog("Subscription with id \(subscriptionId) was removed : \(subscription.description)")
+                            EVLog("Subscription with id \(subscriptionId.debugDescription) was removed : \(subscription.debugDescription)")
                         })
                     })
                 }
@@ -1011,7 +1010,7 @@ open class EVCloudKitDao {
             if let queryNotification = cloudNotification as? CKQueryNotification {
                 if queryNotification.recordID != nil {
                     recordID = queryNotification.recordID
-                    EVLog("recordID of notified record = \(recordID)")
+                    EVLog("recordID of notified record = \(recordID.debugDescription)")
                     if queryNotification.queryNotificationReason == .recordDeleted {
                         deleted(recordID!.recordName)
                     } else {
@@ -1083,7 +1082,7 @@ open class EVCloudKitDao {
         operation.fetchNotificationChangesCompletionBlock = { changetoken, error in
             let op = CKMarkNotificationsReadOperation(notificationIDsToMarkRead: array)
             op.start()
-            EVLog("changetoken = \(changetoken)")
+            EVLog("changetoken = \(changetoken.debugDescription)")
             self.previousChangeToken = changetoken
 
             if operation.moreComing {
@@ -1101,7 +1100,7 @@ open class EVCloudKitDao {
     fileprivate var previousChangeToken: CKServerChangeToken? {
         get {
 
-            let encodedObjectData = UserDefaults.standard.object(forKey: "\(container.containerIdentifier)_lastFetchNotificationId") as? Data
+            let encodedObjectData = UserDefaults.standard.object(forKey: "\(container.containerIdentifier.debugDescription)_lastFetchNotificationId") as? Data
             var decodedData: CKServerChangeToken? = nil
             if encodedObjectData != nil {
                 decodedData = NSKeyedUnarchiver.unarchiveObject(with: encodedObjectData!) as? CKServerChangeToken
@@ -1110,7 +1109,7 @@ open class EVCloudKitDao {
         }
         set(newToken) {
             if newToken != nil {
-                UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: newToken!), forKey:"\(container.containerIdentifier)_lastFetchNotificationId")
+                UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: newToken!), forKey:"\(container.containerIdentifier.debugDescription)_lastFetchNotificationId")
             }
         }
     }
