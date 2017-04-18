@@ -362,7 +362,7 @@ override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:
 
 ```
 
-##Error handling
+## Error handling
 All cloudkit function have an errorHandler codeblock. You should handle the error appropriate. There is a helper function for getting a functional error status. In most cases you would get something like the code below. When you are doing data manupilations you should also handle the .RecoverableError
 
 ```swift
