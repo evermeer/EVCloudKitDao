@@ -82,7 +82,7 @@ class TestsViewController: UIViewController {
         // the To for the test message will be the last contact in the list
         let sema = DispatchSemaphore(value: 0)
         dao.allContactsUserInfo({ users in
-            EVLog("AllContactUserInfo count = \(users?.count)");
+            EVLog("AllContactUserInfo count = \(users?.count ?? 0)");
             for user in users! {
                 EVLog("\(showNameFor(user))")
             }
@@ -318,7 +318,7 @@ open class testObject: CKDataObject {
     fileprivate var ignoreString: String = ""
     var saveString: String = ""
 
-    override open func propertyMapping() -> [(String?, String?)] {
+    override open func propertyMapping() -> [(keyInObject: String?, keyInResource: String?)] {
         return [("ignoreString", nil)]
     }
 }
