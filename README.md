@@ -184,8 +184,8 @@ Below is all the code you need to setup a news feed including push notification 
 
 
 ```swift
-// Just enherit from EVCloudData so that you have access to the CloudKit metadata
-class News : EVCloudData {
+// Just enherit from CKDataObject so that you have access to the CloudKit metadata
+class News : CKDataObject {
     var Subject : String = ""
     var Text : String = ""
 }
@@ -277,8 +277,8 @@ class NewsViewController : UIViewController, UITableViewDataSource, UITableViewD
 
 ## How to use the EVCloudKitDao
 ```swift
-// Just enherit from EVCloudData so that you have access to the CloudKit metadata
-class Message : EVCloudData {
+// Just enherit from CKDataObject so that you have access to the CloudKit metadata
+class Message : CKDataObject {
     var From : String = ""
     var To : String = ""
     var Text : String = ""
