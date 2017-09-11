@@ -3,9 +3,9 @@ PODS:
   - CRToast (0.0.9)
   - EVCloudKitDao (3.3.3):
     - EVReflection/CloudKit
-  - EVReflection/CloudKit (4.17.2):
+  - EVReflection/CloudKit (4.19.0):
     - EVReflection/Core
-  - EVReflection/Core (4.17.2)
+  - EVReflection/Core (4.19.0)
   - JSQMessagesViewController (7.3.5):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
@@ -32,7 +32,7 @@ SPEC CHECKSUMS:
   AsyncSwift: 632138e42ead868b53c745fcde9bf733ce1527ad
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
   EVCloudKitDao: c5581a82ab0304be33e3a80bfe49953508b52d7d
-  EVReflection: e01af7fff66f12a4223595cf2f3cab393c3575a1
+  EVReflection: d6f7b1cc8b5cb2f4fb2dea6cbd5ac2a0503ad9a2
   JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
