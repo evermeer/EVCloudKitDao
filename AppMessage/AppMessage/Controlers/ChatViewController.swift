@@ -423,7 +423,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
             } else {
                 cell.textView!.textColor = UIColor.white
             }
-            cell.textView!.linkTextAttributes = [NSForegroundColorAttributeName : cell.textView!.textColor!, NSUnderlineStyleAttributeName : NSUnderlineStyle.styleSingle.rawValue]
+            cell.textView!.linkTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue : cell.textView!.textColor!, NSAttributedStringKey.underlineStyle.rawValue : NSUnderlineStyle.styleSingle.rawValue]
         }
         return cell
     }

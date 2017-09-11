@@ -241,9 +241,9 @@ class TestsViewController: UIViewController {
                 return results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: { item in
                 EVLog("inserted \(item)")
-            }, updatedHandler: { item in
+            }, updatedHandler: { item, index in
                 EVLog("updated \(item)")
-            }, deletedHandler: { recordId in
+            }, deletedHandler: { recordId, index in
                 EVLog("deleted : \(recordId)")
             }, errorHandler: { error in
                 EVLog("<--- ERROR connect")

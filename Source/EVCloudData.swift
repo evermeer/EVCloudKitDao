@@ -46,7 +46,7 @@ private class DataContainerWrapper {
 /**
  Class for access to  Apple's CloudKit data the easiest way possible
  */
-open class EVCloudData: NSObject {
+open class EVCloudData: EVObject {
     
     // ------------------------------------------------------------------------
     // MARK: - Initialisation
@@ -136,7 +136,7 @@ open class EVCloudData: NSObject {
     /**
      Overriding the default innit so that we can startup a timer when this is initialized. The timer is used for delayed cashing. For more info see the casching strategies.
      */
-    override init() {        
+    required public init() {        
         super.init()
         Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(EVCloudData.backupAllData), userInfo: nil, repeats: true)
     }
@@ -627,7 +627,7 @@ open class EVCloudData: NSObject {
     :return: No return value
     */
     @discardableResult
-    open func connect<T:CKDataObject>(
+    open func connect<T: CKDataObject>(
         _ type: T,
         predicate: NSPredicate,
         orderBy: OrderBy = Descending(field: "creationDate"),
