@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import CoreLocation
+import CloudKit
 
 /**
  Enum that will be used to specify the order
@@ -23,6 +25,7 @@ open class OrderBy {
     var field: String = ""
     var direction: SortDirection = .descending
     var parent: OrderBy?
+    var sortDescriptor: NSSortDescriptor? = nil
     
     /**
      Convenience init for creating an order object with all the parameters
@@ -36,6 +39,12 @@ open class OrderBy {
         self.field = field
         self.direction = direction
         self.parent = parent
+        self.sortDescriptor = NSSortDescriptor(key: field, ascending: (direction == .ascending))
+    }
+    
+    public convenience init(sortDescriptor: NSSortDescriptor, parent: OrderBy? = nil) {
+        self.init()
+        self.sortDescriptor = sortDescriptor
     }
     
     /**
@@ -60,6 +69,10 @@ open class OrderBy {
         return OrderBy(field: field, parent: self, direction: .descending)
     }
     
+    open func Distance(_ field: String, relativeLocation: CLLocation) -> OrderBy {
+        return OrderBy(sortDescriptor: CKLocationSortDescriptor(key: field, relativeLocation: relativeLocation), parent: self)
+    }
+    
     /**
      Build up an array of sortDescriptors
      
@@ -67,7 +80,9 @@ open class OrderBy {
      */
     open func sortDescriptors() -> [NSSortDescriptor] {
         var result: [NSSortDescriptor] = parent?.sortDescriptors() ?? []
-        result.append( NSSortDescriptor(key: field, ascending: (direction == .ascending)))
+        if let sort = self.sortDescriptor {
+            result.append(sort)
+        }
         return result
     }
 }
@@ -93,5 +108,12 @@ open class Descending: OrderBy {
      */
     public convenience required init(field: String) {
         self.init(field: field, parent: nil, direction: .descending)
+    }
+}
+
+// Just here so that we can use a nice name while ordering.
+open class Distance: OrderBy {
+    public convenience required init(field: String, relativeLocation: CLLocation) {
+        self.init(sortDescriptor: CKLocationSortDescriptor(key: field, relativeLocation: relativeLocation), parent: nil)
     }
 }
