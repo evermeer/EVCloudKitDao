@@ -1126,7 +1126,9 @@ open class EVCloudKitDao {
             }
             self.handleCallback(error as Error?, errorHandler: handleError, completionHandler: {
                 #if os(iOS)
-                    UIApplication.shared.applicationIconBadgeNumber = count
+                    OperationQueue.main.addOperation {
+                        UIApplication.shared.applicationIconBadgeNumber = count
+                    }
                 #elseif os(OSX)
                     //TODO: Set badge?
                     NSLog("How to set the badge on OSX?")
