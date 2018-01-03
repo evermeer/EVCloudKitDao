@@ -262,7 +262,7 @@ open class EVCloudKitDao {
         // Or if there is a retry delay specified in the error, then use that.
         if let userInfo = error?._userInfo as? NSDictionary {
             if let retry = userInfo[CKErrorRetryAfterKey] as? NSNumber {
-                let seconds = Double(retry)
+                let seconds = Double(truncating: retry)
                 NSLog("Debug: Should retry in \(seconds) seconds. \(error?.localizedDescription ?? "")")
                 return .retry(afterSeconds: seconds)
             }
