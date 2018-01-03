@@ -4,13 +4,14 @@ workspace 'EVCloudKitDao'
 
 def libraries
     pod 'SwiftLocation'
-    pod 'AsyncSwift'
+    #pod 'AsyncSwift' --> for now included
     pod 'JSQMessagesViewController'
     pod 'CRToast'
     pod 'UIImage-Resize'
     pod 'UzysAssetsPickerController'
     pod 'VIPhotoView'
     #pod 'SSASideMenu' --> for now included
+    pod 'EVReflection/CloudKit', :git => 'https://github.com/evermeer/EVReflection.git'
 end
 
 target 'AppMessage' do

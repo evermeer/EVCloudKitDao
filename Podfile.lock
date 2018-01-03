@@ -1,23 +1,24 @@
 PODS:
-  - AsyncSwift (2.0.1)
   - CRToast (0.0.9)
-  - EVCloudKitDao (3.3.3):
+  - EVCloudKitDao (3.5.0):
     - EVReflection/CloudKit
-  - EVReflection/CloudKit (4.19.0):
+  - EVReflection/CloudKit (5.4.0):
     - EVReflection/Core
-  - EVReflection/Core (4.19.0)
+  - EVReflection/Core (5.4.0)
   - JSQMessagesViewController (7.3.5):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
-  - SwiftLocation (2.0.7)
+  - SwiftLocation (3.1.0):
+    - SwiftyJSON (~> 4.0.0-alpha.1)
+  - SwiftyJSON (4.0.0)
   - UIImage-Resize (1.0.1)
   - UzysAssetsPickerController (0.9.9)
   - VIPhotoView (0.1)
 
 DEPENDENCIES:
-  - AsyncSwift
   - CRToast
   - EVCloudKitDao (from `./`)
+  - EVReflection/CloudKit (from `https://github.com/evermeer/EVReflection.git`)
   - JSQMessagesViewController
   - SwiftLocation
   - UIImage-Resize
@@ -27,19 +28,26 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   EVCloudKitDao:
     :path: ./
+  EVReflection:
+    :git: https://github.com/evermeer/EVReflection.git
+
+CHECKOUT OPTIONS:
+  EVReflection:
+    :commit: 09e6acdf49e8be89f402d3e6feee3413ce5c53dd
+    :git: https://github.com/evermeer/EVReflection.git
 
 SPEC CHECKSUMS:
-  AsyncSwift: 632138e42ead868b53c745fcde9bf733ce1527ad
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVCloudKitDao: c5581a82ab0304be33e3a80bfe49953508b52d7d
-  EVReflection: d6f7b1cc8b5cb2f4fb2dea6cbd5ac2a0503ad9a2
+  EVCloudKitDao: b79984e657dc7add73be3f1e90eb4e33509ea3b3
+  EVReflection: fcea2958ae3bf621293afb800b708c1c9daaf89e
   JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
-  SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
+  SwiftLocation: 8f5ef4f510a45e43239de57a3145b3669301e898
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
 
-PODFILE CHECKSUM: 4fef42d1ae6c4f432dcaa117df3e1accfa55a1a6
+PODFILE CHECKSUM: 5d40e568a3c21f9601112d4ce2cc9f5ceebd9d7d
 
-COCOAPODS: 1.3.0
+COCOAPODS: 1.3.1

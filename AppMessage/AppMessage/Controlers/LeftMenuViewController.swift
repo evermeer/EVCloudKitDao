@@ -7,7 +7,6 @@
 
 import UIKit
 import CloudKit
-import Async
 import EVCloudKitDao
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -144,9 +143,8 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     // ------------------------------------------------------------------------
 
     func connectToNews(_ retryCount: Double = 1) {
-        let loc: CLLocation! = nil
         EVCloudData.publicDB.connect(
-            News(), predicate: NSPredicate(value: true), orderBy: Distance(field: "", relativeLocation: loc).Ascending("Subject").Descending("creationDate"), filterId: "News_All", configureNotificationInfo: { notificationInfo in
+            News(), predicate: NSPredicate(value: true), orderBy: Ascending(field: "Subject").Descending("creationDate"), filterId: "News_All", configureNotificationInfo: { notificationInfo in
                 //notificationInfo.alertBody = "News update"
                 notificationInfo.shouldSendContentAvailable = true // is already the default
                 notificationInfo.alertLocalizationKey = "News: %1$@"

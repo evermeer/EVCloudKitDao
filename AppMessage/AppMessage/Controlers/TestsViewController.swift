@@ -20,6 +20,9 @@ class TestsViewController: UIViewController {
     var createdId = "";
 
     @IBAction func runTest(_ sender: AnyObject) {
+        
+        conflictTest()
+
         getUserInfoTest() // will set the self.userId
 
         ingnoreFieldTest()
@@ -43,6 +46,28 @@ class TestsViewController: UIViewController {
         connectTest()
 
         alternateContainerTest()
+    }
+    
+    func conflictTest() {
+        let message = Message()
+        message.recordID = CKRecordID(recordName: "We use this twice")
+        message.Text = "This is the message text"
+
+        let message2 = Message()
+        message2.recordID = CKRecordID(recordName: "We use this twice")
+        message2.Text = "This is an other message text"
+
+        self.dao.saveItem(message, completionHandler: {record in
+            EVLog("saveItem Message: \(record.recordID.recordName)");
+        }, errorHandler: {error in
+            EVLog("<--- ERROR saveItem message \(error)");
+        })
+
+        self.dao.saveItem(message, completionHandler: {record in
+            EVLog("saveItem Message: \(record.recordID.recordName)");
+        }, errorHandler: {error in
+            EVLog("<--- ERROR saveItem message \(error)");
+        })
     }
 
     func getUserInfoTest() {

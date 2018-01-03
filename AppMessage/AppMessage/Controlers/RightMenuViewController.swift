@@ -7,7 +7,6 @@
 
 import UIKit
 import CloudKit
-import Async
 import EVCloudKitDao
 
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {

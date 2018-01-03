@@ -455,7 +455,6 @@ open class EVCloudKitDao {
         })
     }
 
-
     // discoverAllContactUserInfosWithCompletionHandler not available on tvOS
     #if os(tvOS)
     public func allContactsUserInfo(completionHandler: (_ users: [CKDiscoveredUserInfo]?) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
