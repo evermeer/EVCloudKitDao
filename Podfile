@@ -11,7 +11,7 @@ def libraries
     pod 'UzysAssetsPickerController'
     pod 'VIPhotoView'
     #pod 'SSASideMenu' --> for now included
-    pod 'EVReflection/CloudKit', :git => 'https://github.com/evermeer/EVReflection.git'
+    pod 'EVReflection/CloudKit'
 end
 
 target 'AppMessage' do

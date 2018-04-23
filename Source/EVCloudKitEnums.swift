@@ -5,6 +5,7 @@
 //  Copyright © 2015 mirabeau. All rights reserved.
 //
 
+import CloudKit
 
 // ------------------------------------------------------------------------
 // MARK: - EVCloudKitDao enums
@@ -155,4 +156,14 @@ func !=(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
     return !(leftPart == rightPart)
 }
 
+/**
+ Helper function for easy acces to the cloudkit error code
+ */
+public extension Error {
+    public var code: CKError.Code {
+        get {
+            return CKError(_nsError: self as NSError).code
+        }
+    }
+}
 

@@ -1,14 +1,14 @@
 PODS:
   - CRToast (0.0.9)
-  - EVCloudKitDao (3.5.0):
+  - EVCloudKitDao (3.5.1):
     - EVReflection/CloudKit
-  - EVReflection/CloudKit (5.4.0):
+  - EVReflection/CloudKit (5.6.1):
     - EVReflection/Core
-  - EVReflection/Core (5.4.0)
+  - EVReflection/Core (5.6.1)
   - JSQMessagesViewController (7.3.5):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
-  - SwiftLocation (3.1.0):
+  - SwiftLocation (3.2.3):
     - SwiftyJSON (~> 4.0.0-alpha.1)
   - SwiftyJSON (4.0.0)
   - UIImage-Resize (1.0.1)
@@ -18,7 +18,7 @@ PODS:
 DEPENDENCIES:
   - CRToast
   - EVCloudKitDao (from `./`)
-  - EVReflection/CloudKit (from `https://github.com/evermeer/EVReflection.git`)
+  - EVReflection/CloudKit
   - JSQMessagesViewController
   - SwiftLocation
   - UIImage-Resize
@@ -28,26 +28,19 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   EVCloudKitDao:
     :path: ./
-  EVReflection:
-    :git: https://github.com/evermeer/EVReflection.git
-
-CHECKOUT OPTIONS:
-  EVReflection:
-    :commit: 09e6acdf49e8be89f402d3e6feee3413ce5c53dd
-    :git: https://github.com/evermeer/EVReflection.git
 
 SPEC CHECKSUMS:
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVCloudKitDao: b79984e657dc7add73be3f1e90eb4e33509ea3b3
-  EVReflection: fcea2958ae3bf621293afb800b708c1c9daaf89e
+  EVCloudKitDao: 153da4f81e8615b3e004cfe408e1bd28dd953802
+  EVReflection: d05ebbafc851b7a4cd3d625182662463a5819ab8
   JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
-  SwiftLocation: 8f5ef4f510a45e43239de57a3145b3669301e898
+  SwiftLocation: a3c3bc2023118171ef3572188a31def94aa0892c
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   UIImage-Resize: fa776860f10e6900bbaf53a73e494bdceaaccc77
   UzysAssetsPickerController: 47c27bd96955467925f3d4d80b1e2e8aaeff766d
   VIPhotoView: bdc0cf8ddadda754b451869bd3a919e8eb5c11ab
 
-PODFILE CHECKSUM: 5d40e568a3c21f9601112d4ce2cc9f5ceebd9d7d
+PODFILE CHECKSUM: 802654b43f9d50db77cbd50f60af97e5020f6f5a
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0

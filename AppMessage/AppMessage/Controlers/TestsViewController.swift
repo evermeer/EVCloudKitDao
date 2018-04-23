@@ -153,8 +153,8 @@ class TestsViewController: UIViewController {
     func saveAndDeleteTest() {
         let userIdTo: String = userId
         let message = Message()
-        message.From = dao.referenceForId(userId)
-        message.To = dao.referenceForId(userIdTo)
+        message.setFromFields(userId)
+        message.setToFields(userIdTo)
         message.Text = "This is the message text"
         message.MessageType = MessageTypeEnum.Text.rawValue
 

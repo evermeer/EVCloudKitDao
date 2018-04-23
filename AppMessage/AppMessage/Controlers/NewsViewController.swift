@@ -69,6 +69,7 @@ class NewsViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
         //This line all you need to get the correct data for the cell
         if let news: News = EVCloudData.publicDB.data["News_All"]![(indexPath as NSIndexPath).row] as? News {
+            print("\(news)")
             cell.textLabel?.text = "\(news.Subject)"
             cell.detailTextLabel?.text = "(\(news.creationDate)) - \(news.Body)"
         }

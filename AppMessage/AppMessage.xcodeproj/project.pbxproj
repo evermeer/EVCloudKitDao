@@ -291,7 +291,7 @@
 				TargetAttributes = {
 					7F434A2219628D490081F35C = {
 						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = NFYKDD8CR4;
+						DevelopmentTeam = X356V8CMHF;
 						LastSwiftMigration = 0900;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -562,16 +562,16 @@
 				CODE_SIGN_ENTITLEMENTS = AppMessage/AppMessage.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = NFYKDD8CR4;
+				DEVELOPMENT_TEAM = X356V8CMHF;
 				INFOPLIST_FILE = AppMessage/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.clockwork.AppMessage;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.saz.AppMessage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AppMessage/AppMessage-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -587,15 +587,15 @@
 				CODE_SIGN_ENTITLEMENTS = AppMessage/AppMessage.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = NFYKDD8CR4;
+				DEVELOPMENT_TEAM = X356V8CMHF;
 				INFOPLIST_FILE = AppMessage/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.clockwork.AppMessage;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.saz.AppMessage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AppMessage/AppMessage-Bridging-Header.h";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

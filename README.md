@@ -375,6 +375,9 @@ func initializeCommunication(retryCount: Double = 1) {
                     self.initializeCommunication(retryCount: retryCount + 1)
                 }
             case .Fail:
+                if error.code == .limitExceeded {
+                    //TODO: try again with a smaller load?
+                }            
                 Helper.showError("Could not load messages: \(error.localizedDescription)")
             default: // For here there is no need to handle the .Success, and .RecoverableError
                 break
