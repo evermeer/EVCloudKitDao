@@ -64,7 +64,7 @@ open class EVCloudKitDao {
     }
 
     /**
-    Singleton acces to the wrapper class with the dictionaries with public and private containers.
+    Singleton access to the wrapper class with the dictionaries with public and private containers.
 
     :return: The container wrapper class
     */
@@ -74,7 +74,7 @@ open class EVCloudKitDao {
     }
 
     /**
-    Singleton acces to a specific named public container
+    Singleton access to a specific named public container
     - parameter containterIdentifier: The identifier of the public container that you want to use.
 
     :return: The public container for the identifier.
@@ -88,7 +88,7 @@ open class EVCloudKitDao {
     }
 
     /**
-    Singleton acces to a specific named private container
+    Singleton access to a specific named private container
     - parameter containterIdentifier: The identifier of the private container that you want to use.
 
     :return: The private container for the identifier.
@@ -125,7 +125,7 @@ open class EVCloudKitDao {
     fileprivate var database: CKDatabase!
 
     /**
-    The iClout account status of the current user
+    The iCloud account status of the current user
 
     :return: The account status of the current user
     */
@@ -154,7 +154,7 @@ open class EVCloudKitDao {
     fileprivate var ioQueue: DispatchQueue!
 
     /**
-    On init set a quick refrence to the container and database
+    On init set a quick reference to the container and database
     */
     init() {
         self.initializeDatabase()
