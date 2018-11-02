@@ -92,7 +92,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to the wrapper class with the dictionaries with public and private containers.
+     Singleton access to the wrapper class with the dictionaries with public and private containers.
      
      :return: The container wrapper class
      */
