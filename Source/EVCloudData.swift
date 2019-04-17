@@ -92,7 +92,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to the wrapper class with the dictionaries with public and private containers.
+     Singleton access to the wrapper class with the dictionaries with public and private containers.
      
      :return: The container wrapper class
      */
@@ -102,7 +102,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to a specific named public container
+     Singleton access to a specific named public container
      - parameter containterIdentifier: The identifier of the public container that you want to use.
      
      :return: The public container for the identifier.
@@ -118,7 +118,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to a specific named private container
+     Singleton access to a specific named private container
      - parameter containterIdentifier: The identifier of the private container that you want to use.
      
      :return: The private container for the identifier.
