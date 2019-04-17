@@ -121,8 +121,8 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
             let lastName: String = (user as! CKUserIdentity).nameComponents?.familyName ?? ""
             startChat((user as! CKUserIdentity).userRecordID!.recordName, firstName: firstName, lastName: lastName)
         } else {
-            let firstName: String = (user as! CKDiscoveredUserInfo).firstName ?? ""
-            let lastName: String = (user as! CKDiscoveredUserInfo).lastName ?? ""
+            let firstName: String = (user as! CKDiscoveredUserInfo).displayContact?.givenName ?? ""
+            let lastName: String = (user as! CKDiscoveredUserInfo).displayContact?.familyName ?? ""
             startChat((user as! CKDiscoveredUserInfo).userRecordID!.recordName, firstName: firstName, lastName: lastName)
         }
     }

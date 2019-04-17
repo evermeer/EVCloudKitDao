@@ -28,7 +28,7 @@ class RootViewController: UIViewController {
         NotificationCenter.default.addObserver(forName: NSNotification.Name.NSUbiquityIdentityDidChange, object: nil, queue: nil) { _ in
             EVLog("The user’s iCloud login changed: should refresh all user data.")
             Async.main {
-                self.viewController?.removeFromParentViewController()
+                self.viewController?.removeFromParent()
             }
             return
         }

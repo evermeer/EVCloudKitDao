@@ -26,7 +26,7 @@ class Helper {
             kCRToastAnimationOutDirectionKey : NSNumber(value: CRToastAnimationDirection.bottom.rawValue),
         ]
         Async.main {
-            CRToastManager.showNotification(options: options as! [AnyHashable: Any], completionBlock: { })
+            CRToastManager.showNotification(options: options as? [AnyHashable: Any], completionBlock: { })
         }
     }
 
