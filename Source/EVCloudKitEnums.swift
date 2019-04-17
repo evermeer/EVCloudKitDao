@@ -160,7 +160,7 @@ func !=(leftPart: CachingStrategy, rightPart: CachingStrategy) -> Bool {
  Helper function for easy acces to the cloudkit error code
  */
 public extension Error {
-    public var code: CKError.Code {
+    var code: CKError.Code {
         get {
             return CKError(_nsError: self as NSError).code
         }

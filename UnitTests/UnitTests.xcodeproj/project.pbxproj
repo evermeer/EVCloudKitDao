@@ -110,7 +110,6 @@
 				7F29764B1BB93D6A0074C85A /* Frameworks */,
 				7F29764C1BB93D6A0074C85A /* Resources */,
 				3E52345FF6739CBA276246EC /* [CP] Embed Pods Frameworks */,
-				45893CE5A0396ECF318B79BE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -130,7 +129,6 @@
 				7F4A36FA1BDD90C600A0F73F /* Frameworks */,
 				7F4A36FB1BDD90C600A0F73F /* Resources */,
 				ADE99A687A8D897407B383BE /* [CP] Embed Pods Frameworks */,
-				B9C7438CE2E2DFE1691BC7F4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -204,7 +202,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-OSXTest/Pods-OSXTest-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/EVCloudKitDao-macOS/EVCloudKitDao.framework",
 				"${BUILT_PRODUCTS_DIR}/EVReflection-macOS/EVReflection.framework",
 			);
@@ -215,22 +213,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		45893CE5A0396ECF318B79BE /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-OSXTest/Pods-OSXTest-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AB4631C0687F8C2AA28625F6 /* [CP] Check Pods Manifest.lock */ = {
@@ -257,7 +240,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/EVCloudKitDao-tvOS/EVCloudKitDao.framework",
 				"${BUILT_PRODUCTS_DIR}/EVReflection-tvOS/EVReflection.framework",
 			);
@@ -268,7 +251,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B4BA76C8A834672D31200EB2 /* [CP] Check Pods Manifest.lock */ = {
@@ -287,21 +270,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B9C7438CE2E2DFE1691BC7F4 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

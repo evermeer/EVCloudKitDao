@@ -177,7 +177,7 @@ open class EVCloudKitDao {
     open func initializeDatabase(_ containerIdentifier: String? = nil) {
         let pathDir = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)
         if pathDir.count > 0 {
-            fileDirectory = pathDir[0] as NSString!
+            fileDirectory = pathDir[0] as NSString
         } else {
             fileDirectory = ""
         }
@@ -253,7 +253,7 @@ open class EVCloudKitDao {
     - parameter error: The CloudKit error for which you want a functional status.
     - parameter retryAttempt: In case we are retrying a function this parameter has to be incremented each time.
     */
-    open static func handleCloudKitErrorAs(_ error: Error?, retryAttempt: Double = 1) -> HandleCloudKitErrorAs {
+    public static func handleCloudKitErrorAs(_ error: Error?, retryAttempt: Double = 1) -> HandleCloudKitErrorAs {
         // There is no error
         if error == nil {
             return .success
@@ -327,8 +327,8 @@ open class EVCloudKitDao {
                     }
                 }
             })
-        } as ((CKQueryCursor?, Error?) -> Void)
-        operation.resultsLimit = CKQueryOperationMaximumResults
+        } as ((CKQueryOperation.Cursor?, Error?) -> Void)
+        operation.resultsLimit = CKQueryOperation.maximumResults
         database.add(operation)
         return operation
     }
@@ -344,7 +344,7 @@ open class EVCloudKitDao {
     :return: No return value
     */
     @discardableResult
-    fileprivate func queryRecords<T: CKDataObject>(_ cursor: CKQueryCursor, continueWithResults: [T], completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
+    fileprivate func queryRecords<T: CKDataObject>(_ cursor: CKQueryOperation.Cursor, continueWithResults: [T], completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         var results = continueWithResults
         let operation = CKQueryOperation(cursor: cursor)
         operation.qualityOfService = .userInitiated
@@ -363,7 +363,7 @@ open class EVCloudKitDao {
                 }
             })
         }
-        operation.resultsLimit = CKQueryOperationMaximumResults
+        operation.resultsLimit = CKQueryOperation.maximumResults
         database.add(operation)
         return operation
     }
@@ -376,8 +376,8 @@ open class EVCloudKitDao {
     - parameter recordId: The record id that will be converted to a CKReference
     :return: The CKReference that is created from the recordId
     */
-    open func referenceForId(_ recordId: String) -> CKReference {
-        return CKReference(recordID: CKRecordID(recordName: recordId), action: CKReferenceAction.deleteSelf)
+    open func referenceForId(_ recordId: String) -> CKRecord.Reference {
+        return CKRecord.Reference(recordID: CKRecord.ID(recordName: recordId), action: CKRecord_Reference_Action.deleteSelf)
     }
 
     // ------------------------------------------------------------------------
@@ -418,10 +418,10 @@ open class EVCloudKitDao {
     :return: No return value
     */
     open func requestDiscoverabilityPermission(_ completionHandler: @escaping (_ granted: Bool) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
-        container.requestApplicationPermission(CKApplicationPermissions.userDiscoverability, completionHandler: { (status: CKApplicationPermissionStatus, error: Error?) -> Void in
+        container.requestApplicationPermission(CKContainer_Application_Permissions.userDiscoverability, completionHandler: { (status: CKContainer_Application_PermissionStatus, error: Error?) -> Void in
 
             self.handleCallback(error, errorHandler: errorHandler, completionHandler: {
-                completionHandler(status == CKApplicationPermissionStatus.granted)
+                completionHandler(status == CKContainer_Application_PermissionStatus.granted)
             })
         } )
     }
@@ -586,7 +586,7 @@ open class EVCloudKitDao {
     */
     @discardableResult
     open func getItem(_ recordId: String, completionHandler: @escaping (_ result: CKDataObject) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKFetchRecordsOperation {
-        let operation = CKFetchRecordsOperation(recordIDs: [CKRecordID(recordName: recordId)])
+        let operation = CKFetchRecordsOperation(recordIDs: [CKRecord.ID(recordName: recordId)])
         operation.qualityOfService = .userInitiated
         operation.queuePriority = .veryHigh
         operation.perRecordCompletionBlock = { record, id, error in
@@ -612,7 +612,7 @@ open class EVCloudKitDao {
      */
     @discardableResult
     open func getItems(_ recordIds: [String], completionHandler: @escaping (_ results: [CKDataObject]) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKFetchRecordsOperation {
-        let operation = CKFetchRecordsOperation(recordIDs: recordIds.map({CKRecordID(recordName: $0)}))
+        let operation = CKFetchRecordsOperation(recordIDs: recordIds.map({CKRecord.ID(recordName: $0)}))
         operation.qualityOfService = .userInitiated
         operation.queuePriority = .veryHigh
         operation.fetchRecordsCompletionBlock = { result, error in
@@ -656,7 +656,7 @@ open class EVCloudKitDao {
         let operation = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: nil)
         operation.isAtomic = false
         operation.database = database
-        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: Error?) -> Void in
+        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecord.ID]?, operationError: Error?) -> Void in
             self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords as AnyObject?), errorHandler: errorHandler, completionHandler: {
                 completionHandler(savedRecords!)
             })
@@ -674,8 +674,8 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordID: CKRecordID) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
-        database.delete(withRecordID: CKRecordID(recordName: recordId), completionHandler: {recordID, error in
+    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordID: CKRecord.ID) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) {
+        database.delete(withRecordID: CKRecord.ID(recordName: recordId), completionHandler: {recordID, error in
             self.handleCallback(self.nilNotAllowed(error as Error?, value: recordID), errorHandler: errorHandler, completionHandler: {
                 completionHandler(recordID!)
             })
@@ -693,11 +693,11 @@ open class EVCloudKitDao {
      */
     @discardableResult
     open func deleteItems(_ items: [CKDataObject], completionHandler: @escaping (_ records: [CKRecord]) -> Void, errorHandler:((_ error: Error) -> Void)? = nil) -> CKModifyRecordsOperation {
-        let recordsToDelete: [CKRecordID] = items.map({$0.recordID})
+        let recordsToDelete: [CKRecord.ID] = items.map({$0.recordID})
         let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordsToDelete)
         operation.isAtomic = false
         operation.database = database
-        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, operationError: Error?) -> Void in
+        operation.modifyRecordsCompletionBlock = { (savedRecords: [CKRecord]?, deletedRecords: [CKRecord.ID]?, operationError: Error?) -> Void in
             self.handleCallback(self.nilNotAllowed(operationError, value: savedRecords as AnyObject?), errorHandler: errorHandler, completionHandler: {
                 completionHandler(savedRecords!)
             })
@@ -740,8 +740,8 @@ open class EVCloudKitDao {
     @discardableResult
     open func query<T: CKDataObject>(_ type: T, referenceRecordName: String, referenceField: String, orderBy: OrderBy = Descending(field: "creationDate"), completionHandler: @escaping (_ results: [T], _ isFinished: Bool) -> Bool, errorHandler:((_ error: Error) -> Void)? = nil) -> CKQueryOperation {
         let recordType = EVReflection.swiftStringFromClass(type)
-        let parentId = CKRecordID(recordName: referenceRecordName)
-        let parent = CKReference(recordID: parentId, action: CKReferenceAction.none)
+        let parentId = CKRecord.ID(recordName: referenceRecordName)
+        let parent = CKRecord.Reference(recordID: parentId, action: CKRecord_Reference_Action.none)
         let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", referenceField, parent))
         query.sortDescriptors = orderBy.sortDescriptors()
         return queryRecords(type, query:query, completionHandler: completionHandler, errorHandler: errorHandler)
@@ -820,13 +820,13 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func subscribe(_ type: CKDataObject, predicate: NSPredicate, filterId: String, configureNotificationInfo:((_ notificationInfo: CKNotificationInfo ) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
+    open func subscribe(_ type: CKDataObject, predicate: NSPredicate, filterId: String, configureNotificationInfo:((_ notificationInfo: CKSubscription.NotificationInfo ) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         let recordType = EVReflection.swiftStringFromClass(type)
         let key = "type_\(recordType)_id_\(filterId)"
 
         let createSubscription = { () -> () in
             let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
-            subscription.notificationInfo = CKNotificationInfo()
+            subscription.notificationInfo = CKSubscription.NotificationInfo()
 // tvOS does not have visible remote notifications. This property is not available.
 #if os(tvOS)
 #else
@@ -912,9 +912,9 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func subscribe(_ type: CKDataObject, referenceRecordName: String, referenceField: String, configureNotificationInfo:((_ notificationInfo: CKNotificationInfo) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
-        let parentId = CKRecordID(recordName: referenceRecordName)
-        let parent = CKReference(recordID: parentId, action: CKReferenceAction.none)
+    open func subscribe(_ type: CKDataObject, referenceRecordName: String, referenceField: String, configureNotificationInfo:((_ notificationInfo: CKSubscription.NotificationInfo) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
+        let parentId = CKRecord.ID(recordName: referenceRecordName)
+        let parent = CKRecord.Reference(recordID: parentId, action: CKRecord_Reference_Action.none)
         let predicate = NSPredicate(format: "%K == %@", referenceField, parent)
         subscribe(type, predicate:predicate, filterId: "reference_\(referenceField)_\(referenceRecordName)", configureNotificationInfo: configureNotificationInfo, errorHandler: errorHandler)
     }
@@ -940,7 +940,7 @@ open class EVCloudKitDao {
     - parameter errorHandler: The function that will be called when there was an error
     :return: No return value
     */
-    open func subscribe(_ type: CKDataObject, configureNotificationInfo:((_ notificationInfo: CKNotificationInfo) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
+    open func subscribe(_ type: CKDataObject, configureNotificationInfo:((_ notificationInfo: CKSubscription.NotificationInfo) -> Void)? = nil, errorHandler:((_ error: Error) -> Void)? = nil) {
         subscribe(type, predicate: NSPredicate(value: true), filterId: "all", configureNotificationInfo: configureNotificationInfo, errorHandler: errorHandler)
     }
 
@@ -1004,8 +1004,8 @@ open class EVCloudKitDao {
         //EVLog("Notification alert body : \(cloudNotification.alertBody)")
 
         // Handle CloudKit subscription notifications
-        var recordID: CKRecordID?
-        if cloudNotification.notificationType == CKNotificationType.query {
+        var recordID: CKRecord.ID?
+        if cloudNotification?.notificationType == CKNotification.NotificationType.query {
             if let queryNotification = cloudNotification as? CKQueryNotification {
                 if queryNotification.recordID != nil {
                     recordID = queryNotification.recordID
@@ -1017,9 +1017,9 @@ open class EVCloudKitDao {
                         getItem(recordID!.recordName, completionHandler: { item in
                             EVLog("getItem: recordType = \(EVReflection.swiftStringFromClass(item)), with the keys and values:")
                             EVReflection.logObject(item)
-                            if queryNotification.queryNotificationReason == CKQueryNotificationReason.recordCreated {
+                            if queryNotification.queryNotificationReason == CKQueryNotification.Reason.recordCreated {
                                 inserted(recordID!.recordName, item)
-                            } else if queryNotification.queryNotificationReason == CKQueryNotificationReason.recordUpdated {
+                            } else if queryNotification.queryNotificationReason == CKQueryNotification.Reason.recordUpdated {
                                 updated(recordID!.recordName, item)
                             }
                             }, errorHandler: { error in
@@ -1027,15 +1027,15 @@ open class EVCloudKitDao {
                         })
                     }
                 } else {
-                    EVLog("WARNING: CKQueryNotification without a recordID.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification)")
+                    EVLog("WARNING: CKQueryNotification without a recordID.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification.debugDescription)")
                 }
             } else {
                 executeIfNonQuery()
-                EVLog("WARNING: notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification)")
+                EVLog("WARNING: notificationType is Query but the notification is not a CKQueryNotification.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification.debugDescription)")
             }
         } else {
             executeIfNonQuery()
-            EVLog("WARNING: The retrieved notification is not a CloudKit query notification.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification)")
+            EVLog("WARNING: The retrieved notification is not a CloudKit query notification.\n===>userInfo = \(userInfo)\nnotification = \(cloudNotification.debugDescription)")
         }
         fetchChangeNotifications(recordID, inserted: inserted, updated: updated, deleted: deleted, completed:completed)
     }
@@ -1051,8 +1051,8 @@ open class EVCloudKitDao {
     - parameter completed: Executed if all notifications are processed
     :return: No return value
     */
-    open func fetchChangeNotifications(_ skipRecordID: CKRecordID?, inserted:@escaping (_ recordID: String, _ item: CKDataObject) -> Void, updated:@escaping (_ recordID: String, _ item: CKDataObject) -> Void, deleted:@escaping (_ recordId: String) -> Void, completed:@escaping ()-> Void) {
-        var array: [CKNotificationID] = [CKNotificationID]()
+    open func fetchChangeNotifications(_ skipRecordID: CKRecord.ID?, inserted:@escaping (_ recordID: String, _ item: CKDataObject) -> Void, updated:@escaping (_ recordID: String, _ item: CKDataObject) -> Void, deleted:@escaping (_ recordId: String) -> Void, completed:@escaping ()-> Void) {
+        var array: [CKNotification.ID] = [CKNotification.ID]()
         let operation = CKFetchNotificationChangesOperation(previousServerChangeToken: self.previousChangeToken)
         operation.notificationChangedBlock = { notification in
             if notification.notificationType == .query {

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name         = "EVCloudKitDao"
-    s.version      = "3.5.1"
+    s.version      = "3.5.2"
     s.summary      = "iOS: Simplified access to Apple’s CloudKit"
     s.description  = "Simplified access to Apple’s CloudKit using reflection and generics"
 
@@ -19,7 +19,8 @@ Pod::Spec.new do |s|
     #s.watchos.deployment_target = '3.0'
     s.tvos.deployment_target = '9.0'
 
-    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0' }
+    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
+    s.swift_versions = ['5.0']
 
     s.source       = { :git => "https://github.com/evermeer/EVCloudKitDao.git", :tag => s.version.to_s }
     s.source_files  = 'Source/*'

@@ -590,7 +590,7 @@ open class EVCloudData: EVObject {
      - parameter errorHandler: The function that will be called when there was an error
      :return: No return value
      */
-    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordId: CKRecordID) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
+    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordId: CKRecord.ID) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
         self.deleteObject(recordId)
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
@@ -634,7 +634,7 @@ open class EVCloudData: EVObject {
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.direct,
         postNotifications: Bool? = nil,
-        configureNotificationInfo:((_ notificationInfo:CKNotificationInfo ) -> Void)? = nil,
+        configureNotificationInfo:((_ notificationInfo: CKSubscription.NotificationInfo ) -> Void)? = nil,
         completionHandler: ((_ results: [T], _ status: CompletionStatus) -> Bool)? = nil,
         insertedHandler:((_ item: T) -> Void)? = nil,
         updatedHandler:((_ item: T, _ dataIndex: Int) -> Void)? = nil,

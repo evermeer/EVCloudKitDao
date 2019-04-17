@@ -2,7 +2,7 @@
 //  EVSort.swift
 //
 //  Created by Edwin Vermeer on 2/7/16.
-//  Copyright © 2016 mirabeau. All rights reserved.
+//  Copyright © 2016. All rights reserved.
 //
 
 import Foundation
