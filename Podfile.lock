@@ -1,6 +1,6 @@
 PODS:
   - CRToast (0.0.9)
-  - EVCloudKitDao (3.5.2):
+  - EVCloudKitDao (3.6.0):
     - EVReflection/CloudKit
   - EVReflection/CloudKit (5.10.1):
     - EVReflection/Core
@@ -43,7 +43,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
-  EVCloudKitDao: e2f72f5e2b00a16e3746c6a9f3c8571ea2ecbdb9
+  EVCloudKitDao: 939aaf7283d5cd3d457c002d833b66c69298a4bc
   EVReflection: 8124de482178d34ccd56473e16cd95990f9a1113
   JSQMessagesViewController: 6587f56aedbcb150a8ba1d968e1ef58b1bc758b7
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
