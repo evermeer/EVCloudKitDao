@@ -340,7 +340,7 @@ open class EVCloudData: EVObject {
         var result: CompletionStatus?
         
         if (notification as NSNotification).userInfo?["status"] != nil {
-            result = CompletionStatus(rawValue: Int(truncating: ((notification as NSNotification).userInfo?["status"])! as! NSNumber))
+            result = CompletionStatus(rawValue: Int(((notification as NSNotification).userInfo?["status"])! as! NSNumber))
         }
         
         return result
