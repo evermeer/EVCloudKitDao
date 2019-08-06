@@ -92,7 +92,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to the wrapper class with the dictionaries with public and private containers.
+     Singleton access to the wrapper class with the dictionaries with public and private containers.
      
      :return: The container wrapper class
      */
@@ -102,7 +102,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to a specific named public container
+     Singleton access to a specific named public container
      - parameter containterIdentifier: The identifier of the public container that you want to use.
      
      :return: The public container for the identifier.
@@ -118,7 +118,7 @@ open class EVCloudData: EVObject {
     }
     
     /**
-     Singleton acces to a specific named private container
+     Singleton access to a specific named private container
      - parameter containterIdentifier: The identifier of the private container that you want to use.
      
      :return: The private container for the identifier.
@@ -340,7 +340,7 @@ open class EVCloudData: EVObject {
         var result: CompletionStatus?
         
         if (notification as NSNotification).userInfo?["status"] != nil {
-            result = CompletionStatus(rawValue: Int(((notification as NSNotification).userInfo?["status"])! as! NSNumber))
+            result = CompletionStatus(rawValue: Int(truncating: ((notification as NSNotification).userInfo?["status"])! as! NSNumber))
         }
         
         return result
@@ -590,7 +590,7 @@ open class EVCloudData: EVObject {
      - parameter errorHandler: The function that will be called when there was an error
      :return: No return value
      */
-    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordId: CKRecordID) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
+    open func deleteItem(_ recordId: String, completionHandler: @escaping (_ recordId: CKRecord.ID) -> Void, errorHandler:@escaping (_ error: Error) -> Void) {
         self.deleteObject(recordId)
         dao.deleteItem(recordId, completionHandler: { recordId in
             self.deleteObject(recordId.recordName)
@@ -634,7 +634,7 @@ open class EVCloudData: EVObject {
         filterId: String,
         cachingStrategy: CachingStrategy = CachingStrategy.direct,
         postNotifications: Bool? = nil,
-        configureNotificationInfo:((_ notificationInfo:CKNotificationInfo ) -> Void)? = nil,
+        configureNotificationInfo:((_ notificationInfo: CKSubscription.NotificationInfo ) -> Void)? = nil,
         completionHandler: ((_ results: [T], _ status: CompletionStatus) -> Bool)? = nil,
         insertedHandler:((_ item: T) -> Void)? = nil,
         updatedHandler:((_ item: T, _ dataIndex: Int) -> Void)? = nil,

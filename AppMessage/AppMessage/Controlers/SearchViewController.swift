@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Async
 import EVCloudKitDao
 
 class SearchViewController: UITableViewController, UISearchBarDelegate {

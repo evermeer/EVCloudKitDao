@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13BCB1C81F7BC817002C7DD4 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13BCB1C71F7BC817002C7DD4 /* Async.swift */; };
 		437210433C525AAAFE3EB76C /* Pods_AppMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 495AC817462253B57CD42BDB /* Pods_AppMessage.framework */; };
 		7F0791301E1CF12B00A015A7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F07912F1E1CF12B00A015A7 /* main.m */; };
 		7F0992E51AEA3BAD00522AE6 /* SSASideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F0992E41AEA3BAD00522AE6 /* SSASideMenu.swift */; };
@@ -44,12 +45,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		13BCB1C71F7BC817002C7DD4 /* Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
 		318A421B62B0803009675CC1 /* Pods_OSXTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OSXTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F3763EA1FE6EAFCB50FEE13 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		495AC817462253B57CD42BDB /* Pods_AppMessage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppMessage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A37604C591D9D2C1ACDE570 /* Pods-tvOSTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tvOSTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest.debug.xcconfig"; sourceTree = "<group>"; };
 		56AC44394D39E4B9E0FB5BF7 /* Pods-tvOSTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tvOSTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-tvOSTest/Pods-tvOSTest.release.xcconfig"; sourceTree = "<group>"; };
-		76DC8AB6EBB0A7A54F0CE47C /* Pods-AppMessage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.release.xcconfig"; path = "Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.release.xcconfig"; sourceTree = "<group>"; };
+		76DC8AB6EBB0A7A54F0CE47C /* Pods-AppMessage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.release.xcconfig"; sourceTree = "<group>"; };
 		7F07912F1E1CF12B00A015A7 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../main.m; sourceTree = "<group>"; };
 		7F0992E41AEA3BAD00522AE6 /* SSASideMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSASideMenu.swift; sourceTree = "<group>"; };
 		7F29765A1BB943660074C85A /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -92,7 +94,7 @@
 		8C5A528F57F9FC15B6FB0AB1 /* Pods_tvOSTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_tvOSTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA87045DC3B55E2BD1BFB441 /* Pods-OSXTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest.release.xcconfig"; sourceTree = "<group>"; };
 		E3D7D5BA450A98468299F193 /* Pods-OSXTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSXTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OSXTest/Pods-OSXTest.debug.xcconfig"; sourceTree = "<group>"; };
-		EC96F6AF35160C66E41AA545 /* Pods-AppMessage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.debug.xcconfig"; sourceTree = "<group>"; };
+		EC96F6AF35160C66E41AA545 /* Pods-AppMessage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.debug.xcconfig"; sourceTree = "<group>"; };
 		F6C8B12BC4A097CEAA0D7304 /* Pods-AppMessage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppMessage.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,9 +111,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		13BCB1C61F7BC7F2002C7DD4 /* AsyncSwift */ = {
+			isa = PBXGroup;
+			children = (
+				13BCB1C71F7BC817002C7DD4 /* Async.swift */,
+			);
+			name = AsyncSwift;
+			sourceTree = "<group>";
+		};
 		7F0992E21AEA3B6100522AE6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				13BCB1C61F7BC7F2002C7DD4 /* AsyncSwift */,
 				7F0992E31AEA3B8C00522AE6 /* SSASideMenu */,
 			);
 			name = Frameworks;
@@ -257,7 +268,6 @@
 				7F434A2019628D490081F35C /* Frameworks */,
 				7F434A2119628D490081F35C /* Resources */,
 				3B1DEF1A99D1A9789AECD94A /* [CP] Embed Pods Frameworks */,
-				1923974CB45A0015A5025458 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -275,13 +285,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = mirabeau;
 				TargetAttributes = {
 					7F434A2219628D490081F35C = {
 						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = NFYKDD8CR4;
-						LastSwiftMigration = 0800;
+						DevelopmentTeam = X356V8CMHF;
+						LastSwiftMigration = 1020;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -301,6 +311,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -338,55 +349,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1923974CB45A0015A5025458 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3B1DEF1A99D1A9789AECD94A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AsyncSwift/Async.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-AppMessage/Pods-AppMessage-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CRToast/CRToast.framework",
 				"${BUILT_PRODUCTS_DIR}/EVCloudKitDao-iOS/EVCloudKitDao.framework",
 				"${BUILT_PRODUCTS_DIR}/EVReflection-iOS/EVReflection.framework",
 				"${BUILT_PRODUCTS_DIR}/JSQMessagesViewController/JSQMessagesViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/JSQSystemSoundPlayer/JSQSystemSoundPlayer.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftLocation/SwiftLocation.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/UIImage-Resize/UIImage_Resize.framework",
 				"${BUILT_PRODUCTS_DIR}/UzysAssetsPickerController/UzysAssetsPickerController.framework",
 				"${BUILT_PRODUCTS_DIR}/VIPhotoView/VIPhotoView.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Async.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CRToast.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EVCloudKitDao.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EVReflection.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQMessagesViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQSystemSoundPlayer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftLocation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIImage_Resize.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UzysAssetsPickerController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VIPhotoView.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-AppMessage/Pods-AppMessage-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AppMessage/Pods-AppMessage-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FF84867C1F191110DEC17531 /* [CP] Check Pods Manifest.lock */ = {
@@ -422,6 +418,7 @@
 				7FC46F8619813D77000A875F /* RootViewController.swift in Sources */,
 				7FF447441A16964C0003AE91 /* ChatViewController.swift in Sources */,
 				7FFD4C0D1A222E9D00E03FAB /* Helper.swift in Sources */,
+				13BCB1C81F7BC817002C7DD4 /* Async.swift in Sources */,
 				7F76554C197FF0FE008AD0D5 /* Asset.swift in Sources */,
 				7FC8B3B119E0600900C146AE /* MenuViewController.swift in Sources */,
 				7F0992E51AEA3BAD00522AE6 /* SSASideMenu.swift in Sources */,
@@ -443,18 +440,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -491,18 +497,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -538,16 +553,16 @@
 				CODE_SIGN_ENTITLEMENTS = AppMessage/AppMessage.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = NFYKDD8CR4;
+				DEVELOPMENT_TEAM = X356V8CMHF;
 				INFOPLIST_FILE = AppMessage/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.clockwork.AppMessage;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.BD.AppMessage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AppMessage/AppMessage-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -562,15 +577,15 @@
 				CODE_SIGN_ENTITLEMENTS = AppMessage/AppMessage.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = NFYKDD8CR4;
+				DEVELOPMENT_TEAM = X356V8CMHF;
 				INFOPLIST_FILE = AppMessage/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.clockwork.AppMessage;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.BD.AppMessage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "AppMessage/AppMessage-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

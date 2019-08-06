@@ -8,7 +8,6 @@
 
 import Foundation
 import CRToast
-import Async
 import EVCloudKitDao
 
 class Helper {
@@ -27,7 +26,7 @@ class Helper {
             kCRToastAnimationOutDirectionKey : NSNumber(value: CRToastAnimationDirection.bottom.rawValue),
         ]
         Async.main {
-            CRToastManager.showNotification(options: options as! [AnyHashable: Any], completionBlock: { })
+            CRToastManager.showNotification(options: options as? [AnyHashable: Any], completionBlock: { })
         }
     }
 

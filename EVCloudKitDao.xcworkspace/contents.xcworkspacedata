@@ -5,9 +5,6 @@
       location = "group:AppMessage/../.gitignore">
    </FileRef>
    <FileRef
-      location = "group:AppMessage/../.swift-version">
-   </FileRef>
-   <FileRef
       location = "group:AppMessage/../README.md">
    </FileRef>
    <FileRef

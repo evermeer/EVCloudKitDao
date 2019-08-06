@@ -20,6 +20,9 @@ class TestsViewController: UIViewController {
     var createdId = "";
 
     @IBAction func runTest(_ sender: AnyObject) {
+        
+        conflictTest()
+
         getUserInfoTest() // will set the self.userId
 
         ingnoreFieldTest()
@@ -43,6 +46,28 @@ class TestsViewController: UIViewController {
         connectTest()
 
         alternateContainerTest()
+    }
+    
+    func conflictTest() {
+        let message = Message()
+        message.recordID = CKRecord.ID(recordName: "We use this twice")
+        message.Text = "This is the message text"
+
+        let message2 = Message()
+        message2.recordID = CKRecord.ID(recordName: "We use this twice")
+        message2.Text = "This is an other message text"
+
+        self.dao.saveItem(message, completionHandler: {record in
+            EVLog("saveItem Message: \(record.recordID.recordName)");
+        }, errorHandler: {error in
+            EVLog("<--- ERROR saveItem message \(error)");
+        })
+
+        self.dao.saveItem(message, completionHandler: {record in
+            EVLog("saveItem Message: \(record.recordID.recordName)");
+        }, errorHandler: {error in
+            EVLog("<--- ERROR saveItem message \(error)");
+        })
     }
 
     func getUserInfoTest() {
@@ -128,8 +153,8 @@ class TestsViewController: UIViewController {
     func saveAndDeleteTest() {
         let userIdTo: String = userId
         let message = Message()
-        message.From = dao.referenceForId(userId)
-        message.To = dao.referenceForId(userIdTo)
+        message.setFromFields(userId)
+        message.setToFields(userIdTo)
         message.Text = "This is the message text"
         message.MessageType = MessageTypeEnum.Text.rawValue
 
@@ -174,7 +199,7 @@ class TestsViewController: UIViewController {
         })
 
         // Get all records of a recordType that are created by me using a predicate
-        let predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecordID(recordName: userId))
+        let predicate = NSPredicate(format: "creatorUserRecordID == %@", CKRecord.ID(recordName: userId))
         dao.query(Message(), predicate:predicate, completionHandler: { results, isFinished in
             EVLog("query recordType created by: result count = \(results.count)")
             return false

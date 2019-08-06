@@ -13,7 +13,6 @@ import SwiftLocation
 import VIPhotoView
 import MapKit
 import UIImage_Resize
-import Async
 import EVCloudKitDao
 import EVReflection
 
@@ -170,7 +169,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 let filePath =  (docDirPaths[0] as NSString).appendingPathComponent("\(id).png")
                 if let asset = item as? Asset {
                     if let image = asset.File?.image() {
-                        if let myData = UIImagePNGRepresentation(image) {
+                        if let myData = image.pngData() {
                             try? myData.write(to: URL(fileURLWithPath: filePath), options: [.atomic])
                         }
                     }
@@ -336,7 +335,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 let docDirPath = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0] as NSString
                 let filePath =  docDirPath.appendingPathComponent("Image_\(i).png")
                 let image = getUIImageFromCTAsset(asset as! ALAsset)
-                if let myData = UIImagePNGRepresentation(image) {
+                if let myData = image.pngData() {
                     try? myData.write(to: URL(fileURLWithPath: filePath), options: [.atomic])
                 }
 
@@ -400,7 +399,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         let representation: ALAssetRepresentation = (asset as ALAsset).defaultRepresentation()
         let img: CGImage = representation.fullResolutionImage().takeUnretainedValue()
         let scale: CGFloat = CGFloat(representation.scale())
-        let orientation: UIImageOrientation = UIImageOrientation(rawValue: representation.orientation().rawValue)!
+        let orientation: UIImage.Orientation = UIImage.Orientation(rawValue: representation.orientation().rawValue)!
         let image: UIImage = UIImage(cgImage: img, scale: scale, orientation: orientation)
 
         return image.resizedImageToFit(in: CGSize(width: 640, height: 640), scaleIfSmaller: true)
@@ -499,15 +498,15 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 firstName = (EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.nameComponents?.givenName ?? ""
                 lastName = (EVCloudData.publicDB.dao.activeUser as? CKUserIdentity)?.nameComponents?.familyName ?? ""
             } else {
-                firstName = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.firstName ?? ""
-                lastName    = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.lastName ?? ""
+                firstName = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.displayContact?.givenName ?? ""
+                lastName    = (EVCloudData.publicDB.dao.activeUser as? CKDiscoveredUserInfo)?.displayContact?.familyName ?? ""
             }
 
-            initials = "\(String(describing: firstName.characters.first)) \(String(describing: lastName.characters.first))"
+            initials = "\(String(describing: firstName.first)) \(String(describing: lastName.first))"
             //initials = "\(Array(arrayLiteral: firstName)[0]) \(Array(arrayLiteral: lastName)[0])"
         } else {
             //initials = "\(Array(arrayLiteral: chatWithFirstName)[0]) \(Array(arrayLiteral: chatWithLastName)[0])"
-            initials = "\(String(describing: chatWithFirstName.characters.first)) \(String(describing: chatWithLastName.characters.first))"
+            initials = "\(String(describing: chatWithFirstName.first)) \(String(describing: chatWithLastName.first))"
         }
 
         let size: CGFloat = 14
@@ -549,7 +548,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         if data.MessageType == MessageTypeEnum.Picture.rawValue {
             viewController.title = "Photo"
             let photoView = VIPhotoView(frame:self.navigationController!.view.bounds, andImage:(message.media as? JSQPhotoMediaItem)?.image)
-            photoView?.autoresizingMask = UIViewAutoresizing(rawValue:1 << 6 - 1)
+            photoView?.autoresizingMask = UIView.AutoresizingMask(rawValue:1 << 6 - 1)
             viewController.view.addSubview(photoView!)
             self.navigationController!.pushViewController(viewController, animated: true)
         } else if data.MessageType == MessageTypeEnum.Location.rawValue {
@@ -569,8 +568,9 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
         }
     }
 
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
-        mapView.setRegion(MKCoordinateRegionMakeWithDistance(view.annotation!.coordinate, 1000, 1000), animated: true)
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        let region = MKCoordinateRegion(center: view.annotation!.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(region, animated: true)
     }
 
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, didTapCellAt indexPath: IndexPath!, touchLocation: CGPoint) {
@@ -591,7 +591,7 @@ class ChatViewController: JSQMessagesViewController, UIActionSheetDelegate, Uzys
                 self.localData = [JSQMessage?](repeating: nil, count: count)
             }
             if id < count {
-                data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as! Message
+                data = EVCloudData.publicDB.data[self.dataID]![count - id - 1] as? Message
             } else {
                 data = Message()
             }
