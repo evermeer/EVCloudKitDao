@@ -825,7 +825,7 @@ open class EVCloudKitDao {
         let key = "type_\(recordType)_id_\(filterId)"
 
         let createSubscription = { () -> () in
-            let subscription = CKSubscription(recordType: recordType, predicate: predicate, subscriptionID:key, options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+            let subscription = CKQuerySubscription(recordType: recordType, predicate: predicate, subscriptionID: key, options: [CKQuerySubscription.Options.firesOnRecordCreation, CKQuerySubscription.Options.firesOnRecordUpdate, CKQuerySubscription.Options.firesOnRecordDeletion])
             subscription.notificationInfo = CKSubscription.NotificationInfo()
 // tvOS does not have visible remote notifications. This property is not available.
 #if os(tvOS)
@@ -843,10 +843,10 @@ open class EVCloudKitDao {
             })
         }
 
-        // If the subscription exists and the predicate is the same, then we don't need to create this subscrioption. If the predicate is difrent, then we first need to delete the old
+        // If the subscription exists and the predicate is the same, then we don't need to create this subscription. If the predicate is different, then we first need to delete the old
         database.fetch(withSubscriptionID: key, completionHandler: { (subscription, error) in
-            if let deleteSubscription: CKSubscription = subscription {
-                if predicate.predicateFormat != deleteSubscription.predicate?.predicateFormat {
+            if let deleteSubscription = subscription as? CKQuerySubscription {
+                if predicate.predicateFormat != deleteSubscription.predicate.predicateFormat {
                     self.unsubscribeWithoutTest(key, completionHandler:createSubscription, errorHandler: errorHandler)
                 }
             } else {
